@@ -742,6 +742,9 @@ resize();
 renderer.compile(scene, camera);
 reset();
 playBtn.disabled = false;
+// QA hooks (used by qa/capture.js): jump to any time and render that exact frame
+window.__duration = DURATION;
+window.__seek = (time) => { pause(); t = Math.max(0, Math.min(DURATION, time)); update(t); renderer.render(scene, camera); drawHud(0); };
 window.__ready = true;
 </script>
 </body>

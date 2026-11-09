@@ -1,0 +1,8 @@
+{
+  "name": "animation-qa",
+  "private": true,
+  "description": "Local copy of Three.js for qa/capture.js (the cloud container cannot reach the CDN). Playwright is pre-installed in the container.",
+  "dependencies": {
+    "three": "0.160.0"
+  }
+}

@@ -27,6 +27,12 @@ _Last verified: 2026-11-10. All four pages loaded and rendered with no console e
    - QA capture clean; MP4 rendered (1080×1920, 14 MB). **Owner feedback and phone numbers: not yet received.**
    - `vo-full-tight.mp3` holds the whole 60.3 s narration for the remaining parts.
 
+9. **Antikythera, full video, 60.4 s (2026-11-10).** The owner supplied the script and asked for the rest.
+   - The script was force-aligned to `vo-full-tight.mp3` (all 177 words); `words.js` holds the caption cards. Part-1 captions were corrected to the script.
+   - 33 set-ups. New in `world2.js`: statue field, ancient ship, lump and restored machine, a room dressed as museum / workshop / lab, a dark stage (gear burst, Sun-Moon-planets, eclipse, X-ray letters), Greek exteriors (sundial court, Olympia, Athens 2005 with truck, hill of passing eras).
+   - Six new characters in `cast.js` (diver in helmet, archaeologist, ancient craftsman, two scientists, runners).
+   - QA capture clean (242 frames). MP4 rendered at 1080×1920. **Owner feedback and phone numbers: not yet received.**
+
 ## Verified working (tested here)
 - **All pages load and render deterministically** through `__seek`, with no errors (capture.js, 2026-11-10).
 - **Showcase 01:**
@@ -70,7 +76,7 @@ lib/character.js  rasterSVG(), Character (cards, face rig, hands, IK, key/rim li
 lib/assets.js     prop() GLB loader/cloner, node(), pbr() texture-set material
 productions/test-01-mailbox/       index.html, PLAN.md, QA.md, contact-sheet.png
 productions/test-02-mailbox/       same
-productions/antikythera-01/        index.html, main.js (shots, sound), world.js (sets), cast.js (characters), vo.mp3, vo-full-tight.mp3, PLAN.md, QA.md, contact-sheet.png
+productions/antikythera-01/        index.html, main.js (shots, sound), world.js + world2.js (sets), cast.js (characters), words.js (caption cards), vo-full-tight.mp3, PLAN.md, QA.md, contact-sheet.jpg
 lib/shots.js, lib/captions.js, lib/toon.js   shot dissolves, captions, toon characters (2026-11-10)
 assets/fonts/fredoka-700.woff2     caption font (SIL OFL)
 productions/showcase-01-watchmaker/ index.html (scene), augusta.js (SVG character art + dims), PLAN.md, QA.md, contact-sheet.png
@@ -110,7 +116,9 @@ Git-ignored: `qa/node_modules`, `qa/out`, `exports/` (MP4s), `tools/node_modules
 - **Speech-to-text:** model hosts (Hugging Face etc.) are blocked in the container. `pocketsphinx` from PyPI works offline and gave usable word timings; small words can be wrong, so ask the owner for the script text.
 - **Silence removal:** `ffmpeg silenceremove=stop_periods=-1:stop_duration=0.07:stop_threshold=-38dB`.
 - **`#include` in a shader string must start its own line.**
-- **MP4 render speed:** about 1.4 s per frame for this scene.
+- **MP4 render speed:** about 1.4 s per frame for this scene (the full minute takes about 45 minutes).
+- **Forced alignment:** with the script text, `pocketsphinx` `set_align_text` gives exact word times; add unknown words with `add_word` (e.g. "antikythera").
+- **Character size:** a `ToonActor` of height 1.6 stands only about 1.2 m tall; next to furniture scale the root by about 1.4.
 
 ## Important decisions
 - **Browser + Three.js only;** the phone is the renderer. No Blender, Remotion or Node on the owner's side.

@@ -6,8 +6,8 @@ import { toon, canvasTex, rng } from '../../lib/toon.js';
 
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
 const lerp = (a, b, k) => a + (b - a) * k;
-const mesh = (g, m, x = 0, y = 0, z = 0, o = {}) => { const s = new THREE.Mesh(g, m); s.position.set(x, y, z); s.castShadow = o.cast !== false; s.receiveShadow = o.recv !== false; return s; };
-const TONE = `#include <tonemapping_fragment>\n#include <colorspace_fragment>`;
+export const mesh = (g, m, x = 0, y = 0, z = 0, o = {}) => { const s = new THREE.Mesh(g, m); s.position.set(x, y, z); s.castShadow = o.cast !== false; s.receiveShadow = o.recv !== false; return s; };
+export const TONE = `#include <tonemapping_fragment>\n#include <colorspace_fragment>`;
 
 /* =====================================================================
    Waves (shared by the water shader and the boat)
@@ -27,11 +27,11 @@ const WAVE_GLSL = `
 /* =====================================================================
    1. Seabed: wreck, amphorae, statue, mechanism
    ===================================================================== */
-function amphoraGeo() {
+export function amphoraGeo() {
   const p = [[0, 0], [.05, .02], [.13, .2], [.17, .42], [.15, .6], [.08, .72], [.055, .8], [.055, .9], [.085, .93], [.085, .96], [.05, .96]];
   return new THREE.LatheGeometry(p.map(([x, y]) => new THREE.Vector2(x, y)), 14);
 }
-function gearGeo(r, teeth, depth, spokes = 4, hole = .18) {
+export function gearGeo(r, teeth, depth, spokes = 4, hole = .18) {
   const s = new THREE.Shape(), n = teeth * 2;
   for (let i = 0; i <= n; i++) { const a = i / n * Math.PI * 2, rr = i % 2 ? r : r * (1 - 2.2 / teeth - .03); const x = Math.cos(a) * rr, y = Math.sin(a) * rr; i ? s.lineTo(x, y) : s.moveTo(x, y); }
   const ri = r * .78, rh = r * hole + r * .1, gap = .2;                                                // sector windows leave spokes
@@ -123,7 +123,7 @@ export function buildSeabed() {
   anim.rays = [];
   for (let i = 0; i < 9; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(.9 + R() * 1.6, 15), new THREE.MeshBasicMaterial({ map: rayTex, transparent: true, opacity: .3, depthWrite: false, blending: THREE.AdditiveBlending, color: '#9fe8ff', side: THREE.DoubleSide, fog: false }));
     m.position.set(-7 + i * 1.75 + R(), 6.2, -3 + R() * 5); m.rotation.set(0, R() * .5 - .25, .34 + R() * .1); m.renderOrder = 4; G.add(m); anim.rays.push(m); }
-  { const m = new THREE.Mesh(new THREE.PlaneGeometry(90, 90), new THREE.MeshBasicMaterial({ color: '#8fe6ff', fog: false, side: THREE.DoubleSide })); m.rotation.x = Math.PI / 2; m.position.y = 16; G.add(m); }
+  { const m = new THREE.Mesh(new THREE.PlaneGeometry(90, 90), new THREE.MeshBasicMaterial({ color: '#8fe6ff', fog: false, side: THREE.DoubleSide })); m.rotation.x = Math.PI / 2; m.position.y = 16; G.add(m); anim.surface = m; }
 
   /* ---- the mechanism (hero prop) ---- */
   const M = new THREE.Group(); M.position.set(1.62, .3, 2.66); M.rotation.set(-.5, -.12, .1); G.add(M);
@@ -169,7 +169,7 @@ export function buildSeabed() {
     anim.gearMat.emissiveIntensity = glow * (.6 + .12 * Math.sin(t * 14)); anim.glowLight.intensity = glow * .45;
     const spin = Math.max(0, t - 2.49) * 1.6; anim.gears.forEach(([g, ratio]) => { g.rotation.z = spin * ratio; });
   }
-  return { group: G, update, mech: M, dune };
+  return { group: G, update, mech: M, dune, surface: anim.surface };
 }
 
 /* =====================================================================
@@ -249,15 +249,19 @@ ${TONE}
   const gulls = []; for (let i = 0; i < 4; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(.9, .45), new THREE.MeshBasicMaterial({ map: gullT, transparent: true, depthWrite: false, fog: false })); G.add(m); gulls.push(m); }
 
   const cCalm = { deep: new THREE.Color('#0d6fb0'), shal: new THREE.Color('#35c3dc'), top: new THREE.Color('#1c66d2'), hor: new THREE.Color('#c4e8fb') };
+  const cDusk = { deep: new THREE.Color('#1c5c9a'), shal: new THREE.Color('#f0a45e'), top: new THREE.Color('#2f5fc0'), hor: new THREE.Color('#ffc27a') };
+  const cNight = { deep: new THREE.Color('#0a1a30'), shal: new THREE.Color('#1c3a55'), top: new THREE.Color('#070d1e'), hor: new THREE.Color('#1d2c48') };
   const cStorm = { deep: new THREE.Color('#1d3d52'), shal: new THREE.Color('#4a7f8c'), top: new THREE.Color('#27344d'), hor: new THREE.Color('#7f93a8') };
   /** returns the horizon colour (use it for fog) */
-  function update(t, camera, { storm = 0, flash = 0, boltAt = null, boat = null, glint = null, gullsAt = null, fogNear = 30, fogFar = 160 } = {}) {
+  function update(t, camera, { storm = 0, flash = 0, boltAt = null, boat = null, glint = null, gullsAt = null, fogNear = 30, fogFar = 160, dusk = 0, night = 0, water: showWater = true } = {}) {
     U.time.value = t; U.storm.value = storm; U.cDeep.value.lerpColors(cCalm.deep, cStorm.deep, storm); U.cShallow.value.lerpColors(cCalm.shal, cStorm.shal, storm);
     SU.top.value.lerpColors(cCalm.top, cStorm.top, storm); SU.hor.value.lerpColors(cCalm.hor, cStorm.hor, storm); SU.flash.value = flash;
+    for (const [k, pal] of [[dusk, cDusk], [night, cNight]]) if (k > 0) { U.cDeep.value.lerp(pal.deep, k); U.cShallow.value.lerp(pal.shal, k); SU.top.value.lerp(pal.top, k); SU.hor.value.lerp(pal.hor, k); }
+    water.visible = showWater;
     U.fogColor.value.copy(SU.hor.value); U.fogNear.value = fogNear; U.fogFar.value = fogFar; U.light.value.setScalar(1 + flash * 1.4);
     U.boat.value.set(boat ? boat.x : 0, boat ? boat.z : 0, boat ? boat.r : 1, boat ? 1 : 0); U.glint.value.set(glint ? glint.x : 0, glint ? glint.z : 0, glint ? glint.r : 1, glint ? glint.a : 0);
     sky.position.copy(camera.position); water.position.set(Math.round(camera.position.x / 10) * 10, 0, Math.round(camera.position.z / 10) * 10);
-    clouds.forEach((m, i) => { m.material.opacity = 1 - storm * .95; m.quaternion.copy(camera.quaternion); m.position.x += 0; });
+    clouds.forEach((m, i) => { m.material.opacity = (1 - storm * .95) * (1 - night); m.material.color.setRGB(1, 1 - dusk * .22, 1 - dusk * .4); m.quaternion.copy(camera.quaternion); m.position.x += 0; });
     darks.forEach((m, i) => { const u = m.userData, a = u.a + (1 - storm) * 1.1 + t * .012; m.position.set(camera.position.x + Math.sin(a) * u.d, u.y + (1 - storm) * 40, camera.position.z - Math.cos(a) * u.d);
       m.scale.set(u.s, u.s, 1); m.quaternion.copy(camera.quaternion); m.material.opacity = Math.min(.92, storm * 1.4); m.material.color.setScalar(1 + flash * 2.5); });
     bolt.visible = !!boltAt && flash > .25; if (boltAt) { bolt.position.set(boltAt.x, boltAt.y, boltAt.z); bolt.quaternion.copy(camera.quaternion); }
@@ -267,7 +271,7 @@ ${TONE}
       m.position.set(gullsAt.x + Math.cos(a) * r, gullsAt.y + i * .8 + .4 * Math.sin(t * 1.3 + i), gullsAt.z - 6 + Math.sin(a) * r * .5); m.quaternion.copy(camera.quaternion); m.scale.set(1, .75 + .45 * Math.sin(t * 7 + i * 2), 1); });
     return SU.hor.value;
   }
-  return { group: G, update };
+  return { group: G, update, hor: SU.hor.value };
 }
 
 /* =====================================================================
@@ -344,7 +348,7 @@ export function buildBoat() {
     const fp = anim.flag.geometry.attributes.position; for (let k = 0; k < fp.count; k++) fp.setZ(k, .06 * Math.sin(fp.getX(k) * 14 - t * (8 + storm * 8)) * (-fp.getX(k) / .6)); fp.needsUpdate = true;
     anim.wheel.rotation.z = t * 2.2;
   }
-  return { group: B, update, DECK };
+  return { group: B, update, DECK, deckhouseTop: DECK + .565 };
 }
 
 /* =====================================================================

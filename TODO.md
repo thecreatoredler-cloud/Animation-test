@@ -1,11 +1,12 @@
 # TODO (ordered by priority)
 
 **Next up:**
-1. **Get the owner's verdict on `productions/antikythera-01/`** (MP4 sent 2026-11-10) and the phone results card. Confirm the script wording ("the" / "near a").
-2. **Continue the video** with `vo-full-tight.mp3` (10.4–60.3 s: the diver's report, the statues, the bronze lump, the gears, what it computed, the X-ray scans, the ending). Write the plan for the next part first.
-3. **Improve from QA:** in-between motion for characters (anticipation, arm follow-through), stronger seabed light shafts, better storm clouds, 2D effects helper (dust, sparkles, speed lines), performance check of dissolve frames on the phone.
+1. **Get the owner's verdict on the full Antikythera video** (MP4 sent 2026-11-10) and the phone results card: FPS, 1% low, slow frames, quality level, and how long "Preparing…" takes.
+2. **Improve from QA** (productions/antikythera-01/QA.md): richer dressing for the part-2 sets, in-between character motion (walks, anticipation, arm follow-through), a 2D effects helper, better night ship lighting.
+3. **Performance if the phone struggles:** build sets lazily or free them after use, merge static meshes, lower dissolve cost.
+4. **Turn the Antikythera modules into reusable lib pieces** (room set, exterior kit, boat) for the next video.
 
-Done on 2026-11-10 (see CURRENT_PROGRESS.md): shot dissolves, ink outline pass, simple pose-to-pose characters, captions module, voice-over playback.
+Done on 2026-11-10 (see CURRENT_PROGRESS.md): shot dissolves, ink outline pass, simple pose-to-pose characters, captions module, voice-over playback, first full 60 s video.
 
 The older list follows; items 3, 5 and 7 are partly superseded by the 2026-11-10 work.
 

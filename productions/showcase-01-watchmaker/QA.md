@@ -26,7 +26,7 @@ Warmth matches. Saturation is close. The image is still a bit darker, more contr
 | # | Section | Result | Notes |
 |---|---|---|---|
 | 1 | Visual style | PASS | Illustrated character with ink outlines inside a real, textured 3D room. |
-| 2 | Environment | PASS | 15 Poly Haven models (bench, lamp, 7 clocks, bookshelf, cabinet, oil lamp, vase, tools, frame) with real PBR textures; plaster, wainscot and wood-floor texture sets; 3 code-built pendulum clocks; 54 books; a window onto a night street; foreground pocket watches; doorway frame. |
+| 2 | Environment | PASS | 13 Poly Haven models placed 16 times (bench, lamp, 7 clocks, bookshelf, cabinet, oil lamp, vase, tools, frame) with real PBR textures; plaster, wainscot and wood-floor texture sets; 3 code-built pendulum clocks; 54 books; a window onto a night street; foreground pocket watches; doorway frame. |
 | 3 | Character | PASS | Layered SVG at 2× resolution. The face rig has separate eyes, lids, pupils, brows, 6 mouths and a flip-up loupe showing a magnified eye. 4 hand shapes. IK reaching. Bun follow-through. Shadow from a twin rig. |
 | 4 | Lighting | PASS | Warm lamp spotlight with shadow as key; cool moon as rim and fill (shadow on high); practical glows (bulb, oil lamp, street lamp); lamp cone and moonbeam; dust; the character lit by key and rim in screen space. |
 | 5 | Camera | PASS | Four shots on one continuous path: doorway dolly-in, close-up insert with depth of field, low-angle medium, rising orbit. |

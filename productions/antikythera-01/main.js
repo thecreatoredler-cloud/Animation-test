@@ -345,7 +345,7 @@ function buildSound() {
 
 /* ---------- boot ---------- */
 (async () => {
-  await Promise.all([loadFont('Fredoka', '../../assets/fonts/fredoka-700.woff2'), Sound.load('./vo-full-tight.mp3', { t: 0, gain: 1.05 })]);
+  await Promise.all([loadFont('Fredoka', '../../assets/fonts/fredoka-700.woff2'), Sound.load('./vo-full-tight.mp3', { t: 0, gain: 1.0 })]);
   const captions = new Captions(CARDS.map(([t, text]) => ({ t, text })), { end: VO_END + .12 }); stage.overlay = captions;
   Sound.events = buildSound();
   await stage.boot({ warmTimes: shots.shots.map(s => Math.min(DURATION, (s.t0 + Math.min(s.t1, DURATION)) / 2)) });

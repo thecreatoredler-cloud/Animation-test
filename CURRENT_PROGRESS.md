@@ -31,7 +31,8 @@ _Last verified: 2026-11-10. All four pages loaded and rendered with no console e
    - The script was force-aligned to `vo-full-tight.mp3` (all 177 words); `words.js` holds the caption cards. Part-1 captions were corrected to the script.
    - 33 set-ups. New in `world2.js`: statue field, ancient ship, lump and restored machine, a room dressed as museum / workshop / lab, a dark stage (gear burst, Sun-Moon-planets, eclipse, X-ray letters), Greek exteriors (sundial court, Olympia, Athens 2005 with truck, hill of passing eras).
    - Six new characters in `cast.js` (diver in helmet, archaeologist, ancient craftsman, two scientists, runners).
-   - QA capture clean (242 frames). MP4 rendered at 1080×1920. **Owner feedback and phone numbers: not yet received.**
+   - QA capture clean (242 frames). MP4 rendered at 1080×1920, 54.5 MB. Measured: brightness 120, saturation 26, warmth 128, darkest 10% 69, brightest 10% 170, loudness −13.6 LUFS (all inside the reference ranges). The voice file is loudness-normalised to −14.5 LUFS.
+   - **Owner feedback and phone numbers: not yet received.**
 
 ## Verified working (tested here)
 - **All pages load and render deterministically** through `__seek`, with no errors (capture.js, 2026-11-10).

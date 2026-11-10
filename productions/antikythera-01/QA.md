@@ -16,8 +16,17 @@ Capture: `node qa/capture.js productions/antikythera-01/index.html --step 0.25` 
 | 9 | Process | PASS | PLAN.md part 2 written before the build; the owner asked for the rest of the video directly. |
 | 10 | Quality control | PASS | Every set-up checked on contact sheets and single frames. Fixed during QA: characters hidden behind tables (too short), orange room lighting, gear burst out of frame, eclipse white-out, runners and scientists out of frame, bright water surface in the dark seabed shot, finale caption covering the lump. |
 
-## Measured on the MP4
-See CURRENT_PROGRESS.md for the numbers of the final render.
+## Measured on the MP4 (1080×1920, 60.4 s)
+| Measure | This video | Reference range (typical) |
+|---|---|---|
+| Brightness (YAVG) | 120 | 96–131 (110) |
+| Saturation (SATAVG) | 26 | 23–29 (26) |
+| Warmth (VAVG) | 128 | 119–135 (129) |
+| Darkest 10% | 69 | 47–78 |
+| Brightest 10% | 170 | 160–186 |
+| Loudness | −13.6 LUFS | about −14 LUFS |
+
+Section 7 (Rendering): **PASS** on these numbers.
 
 ## Known weaknesses (not fixed)
 - Characters do not walk or move between poses.

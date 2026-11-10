@@ -2,6 +2,8 @@
 
 This repository makes vertical (9:16) 2.5D animated story videos that run in Three.js in a mobile browser and are published with GitHub Pages. The owner's phone (Motorola Edge 50 Fusion, Adreno 710, Android Chrome) is the render device. Their computer is too weak to render, so never assume Blender, Remotion, Node.js or a render server on their side.
 
+**Start of every session:** read `PROJECT_CONTEXT.md`, `DESIGN_RULES.md`, `CURRENT_PROGRESS.md` and `TODO.md` before changing anything, and keep them updated (maintenance rule in PROJECT_CONTEXT.md).
+
 ## The quality standard is mandatory
 
 @ANIMATION_STANDARD.md
@@ -18,7 +20,7 @@ Read the standard above before every task in this repository. A scene that doesn
    - the animation beats: character actions, facial expressions, object interactions, secondary motion.
 
    Show the plan to the owner and get approval before building.
-2. **Build** in `productions/<name>/index.html`, as a single file that loads Three.js from the jsDelivr CDN (pin the version), plus any assets in that folder. Every page must set:
+2. **Build** in `productions/<name>/index.html`, loading Three.js from the jsDelivr CDN (pin the version). New productions should import the shared modules in `lib/` (see `productions/showcase-01-watchmaker/`) and may use models from `assets/`. Every page must set:
    - `window.__duration`: total length in seconds;
    - `window.__seek(t)`: pause, jump to time `t`, render that exact frame;
    - `window.__ready = true` once loaded.

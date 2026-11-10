@@ -24,7 +24,7 @@ const opt = (name, def) => flags[name] ?? def;
 if (!page && require.main === module) { console.error('usage: node qa/capture.js <page.html> [--step 0.25] [--out dir]'); process.exit(1); }
 
 const step = parseFloat(opt('step', '0.25'));
-const out = page ? path.resolve(opt('out', path.join('qa', 'out', path.basename(page, '.html')))) : null;
+const out = (page && require.main === module) ? path.resolve(opt('out', path.join('qa', 'out', path.basename(page, '.html')))) : null;  // only when run directly
 if (out) { fs.mkdirSync(out, { recursive: true }); for (const f of fs.readdirSync(out)) if (/^f\d+\.png$/.test(f)) fs.unlinkSync(path.join(out, f)); }
 
 // Serve Three.js from qa/node_modules when the CDN is unreachable from the container.

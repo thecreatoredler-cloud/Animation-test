@@ -22,3 +22,6 @@ All 3D models and texture sets below are **CC0 (public domain)** from [Poly Have
 | model | `hanging_picture_frame_01` | Hanging Picture Frame 01 | https://polyhaven.com/a/hanging_picture_frame_01 | James Ray Cock |
 
 Total size on disk: about 6.3M (the stool model was fetched but is not used, so it was removed).
+
+## Fonts
+- **Fredoka Bold** (`assets/fonts/fredoka-700.woff2`): SIL Open Font License 1.1, from the `@fontsource/fredoka` npm package. Licence text in `assets/fonts/OFL-fredoka.txt`. Used for captions.

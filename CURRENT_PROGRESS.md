@@ -21,6 +21,12 @@ _Last verified: 2026-11-10. All four pages loaded and rendered with no console e
 
 7. **Second reference study (2026-11-10).** Six reference shorts re-uploaded and analysed frame by frame; results in STYLE_GUIDE.md section 8, and DESIGN_RULES.md updated. Main findings: the references use many separate set-ups joined by short cross-dissolves, a toon-outlined world, simpler pose-to-pose characters, captions without pop, continuous voice-over. **No code has been changed for these findings yet.**
 
+8. **`productions/antikythera-01/` — "The Ancient Computer Found Underwater", part 1, 10.4 s (2026-11-10).**
+   - First production in the reference-study style: owner's voice-over (silences removed), six set-ups in three locations joined by dissolves, toon world with ink lines, simple pose-to-pose characters (Captain Stavros, Nikos the diver, a fish), captions without pop.
+   - New shared modules: `lib/shots.js` (shot sequencer + dissolves), `lib/captions.js` (WebGL captions), `lib/toon.js` (toon materials, `drawToon`, `ToonActor`). `lib/post.js` gained ink outlines, dissolve buffers and flash; `lib/stage.js` gained audio-file tracks (`Sound.load`), `onRender` and `overlay`.
+   - QA capture clean; MP4 rendered (1080×1920, 14 MB). **Owner feedback and phone numbers: not yet received.**
+   - `vo-full-tight.mp3` holds the whole 60.3 s narration for the remaining parts.
+
 ## Verified working (tested here)
 - **All pages load and render deterministically** through `__seek`, with no errors (capture.js, 2026-11-10).
 - **Showcase 01:**
@@ -64,6 +70,9 @@ lib/character.js  rasterSVG(), Character (cards, face rig, hands, IK, key/rim li
 lib/assets.js     prop() GLB loader/cloner, node(), pbr() texture-set material
 productions/test-01-mailbox/       index.html, PLAN.md, QA.md, contact-sheet.png
 productions/test-02-mailbox/       same
+productions/antikythera-01/        index.html, main.js (shots, sound), world.js (sets), cast.js (characters), vo.mp3, vo-full-tight.mp3, PLAN.md, QA.md, contact-sheet.png
+lib/shots.js, lib/captions.js, lib/toon.js   shot dissolves, captions, toon characters (2026-11-10)
+assets/fonts/fredoka-700.woff2     caption font (SIL OFL)
 productions/showcase-01-watchmaker/ index.html (scene), augusta.js (SVG character art + dims), PLAN.md, QA.md, contact-sheet.png
 assets/ASSETS.md                   credits (all CC0, Poly Haven)
 assets/polyhaven/*.glb             13 models: WoodenTable_03, desk_lamp_arm_01, vintage_grandfather_clock_01, mantel_clock_01,
@@ -96,6 +105,12 @@ Git-ignored: `qa/node_modules`, `qa/out`, `exports/` (MP4s), `tools/node_modules
 | MP4 render screenshots timed out at 1080×1920 | 600 s timeouts in `render-mp4.cjs`. |
 | `qa/capture.js` created a folder named after an importer's `--out` | Output folder only when run directly. |
 | GitHub push 403 | The owner reconnected the Claude GitHub App. |
+
+## Notes from the Antikythera build
+- **Speech-to-text:** model hosts (Hugging Face etc.) are blocked in the container. `pocketsphinx` from PyPI works offline and gave usable word timings; small words can be wrong, so ask the owner for the script text.
+- **Silence removal:** `ffmpeg silenceremove=stop_periods=-1:stop_duration=0.07:stop_threshold=-38dB`.
+- **`#include` in a shader string must start its own line.**
+- **MP4 render speed:** about 1.4 s per frame for this scene.
 
 ## Important decisions
 - **Browser + Three.js only;** the phone is the renderer. No Blender, Remotion or Node on the owner's side.

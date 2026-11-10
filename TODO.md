@@ -1,16 +1,13 @@
 # TODO (ordered by priority)
 
-**Next up (owner's instruction, 2026-11-10):** the owner will give a topic for the first project. Write `productions/<name>/PLAN.md` and get approval before building.
+**Next up:**
+1. **Get the owner's verdict on `productions/antikythera-01/`** (MP4 sent 2026-11-10) and the phone results card. Confirm the script wording ("the" / "near a").
+2. **Continue the video** with `vo-full-tight.mp3` (10.4–60.3 s: the diver's report, the statues, the bronze lump, the gears, what it computed, the X-ray scans, the ending). Write the plan for the next part first.
+3. **Improve from QA:** in-between motion for characters (anticipation, arm follow-through), stronger seabed light shafts, better storm clouds, 2D effects helper (dust, sparkles, speed lines), performance check of dissolve frames on the phone.
 
-**System gaps found by the 2026-11-10 frame study** (STYLE_GUIDE.md section 8), needed for the first project:
-- A. Shot system with **cross-dissolve transitions** between separate set-ups in `lib/post.js` / `lib/stage.js` (render outgoing and incoming shot, blend 4–8 frames).
-- B. **Ink outline pass and flatter toon materials** for the 3D world.
-- C. **Simpler pose-to-pose character** (flat art, sliding face, instant expression swaps, scene tint and glow) plus a **2D effects** helper (sweat, sparkles, dust, speed lines).
-- D. **Captions module**: hard word swap, no pop, 70% height, driven by a word-timing list.
-- E. **Voice-over**: decide the source of narration audio (the references are narration-driven).
-- F. **Vignette set workflow**: 8–12 small locations per 60 s within the phone's budget (load/unload or keep all hidden and pre-compiled).
+Done on 2026-11-10 (see CURRENT_PROGRESS.md): shot dissolves, ink outline pass, simple pose-to-pose characters, captions module, voice-over playback.
 
-The older list follows; items 3, 5 and 7 are partly superseded by A–D.
+The older list follows; items 3, 5 and 7 are partly superseded by the 2026-11-10 work.
 
 1. **Get the owner's verdict on Showcase 01.** What still doesn't match the reference look? Ask for the phone results card (FPS, 1% low, slow frames, quality level chosen).
 2. **Performance pass on the showcase** if the phone results are weak.

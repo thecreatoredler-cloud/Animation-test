@@ -15,7 +15,8 @@ Everything renders **in a mobile browser with Three.js**. The owner's computer i
 | `productions/test-01-mailbox/` | 15 s style test, single file |
 | `productions/test-02-mailbox/` | 15 s improved style test, single file |
 | `productions/showcase-01-watchmaker/` | 10 s quality showcase; **the first page built on the shared `lib/` modules** and real 3D models. This is the current reference implementation. |
-| `lib/` | Reusable system: stage, post, camera, character, assets |
+| `productions/antikythera-01/` | 10.4 s first part of "The Ancient Computer Found Underwater"; **current reference implementation of the reference-study style** (voice-over, shot dissolves, toon world, simple characters, captions) |
+| `lib/` | Reusable system: stage, post, camera, character, assets, shots, captions, toon |
 | `assets/polyhaven/` | CC0 models (GLB) and texture sets (WebP), credits in `assets/ASSETS.md` |
 | `qa/` | Frame-capture QA tool |
 | `tools/` | Asset fetch/optimize pipeline, model bounds helper, MP4 renderer |

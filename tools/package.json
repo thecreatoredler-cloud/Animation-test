@@ -1,0 +1,12 @@
+{
+  "name": "animation-tools",
+  "private": true,
+  "type": "module",
+  "description": "Asset pipeline: fetch CC0 models from Poly Haven and optimise them for phones.",
+  "dependencies": {
+    "@gltf-transform/cli": "4.2.1",
+    "@gltf-transform/core": "4.2.1",
+    "@gltf-transform/functions": "4.2.1",
+    "sharp": "0.33.5"
+  }
+}

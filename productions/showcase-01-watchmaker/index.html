@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#08070d">
+<title>The Watchmaker — Showcase 01</title>
+<style>
+  :root { --bg:#08070d; --ink:#f6f1e7; --accent:#ffb347; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { height:100%; background:var(--bg); color:var(--ink); overflow:hidden; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    -webkit-tap-highlight-color:transparent; touch-action:manipulation; user-select:none; }
+  #stage { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); overflow:hidden; background:#0d0c14; }
+  #stage canvas { display:block; }
+  #vignette { position:absolute; inset:0; pointer-events:none; display:none; background:radial-gradient(ellipse 85% 70% at 50% 48%, rgba(0,0,0,0) 55%, rgba(5,4,15,.45) 100%); }
+  #cap { display:none; }
+  #hud { position:absolute; top:10px; left:10px; padding:6px 8px; border-radius:6px; display:none; font:11px/1.45 ui-monospace,Menlo,Consolas,monospace; white-space:pre; background:rgba(0,0,0,.55); pointer-events:none; }
+  #title { position:absolute; top:15%; left:0; right:0; text-align:center; pointer-events:none; transition:opacity .4s; text-shadow:0 2px 12px rgba(0,0,0,.7); }
+  #title h1 { font-size:30px; font-weight:900; letter-spacing:.05em; }
+  #title p { font-size:14px; margin-top:6px; opacity:.9; }
+  #prep { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; background:#08070d; font-size:15px; line-height:1.6; padding:24px; transition:opacity .35s; }
+  #summary { position:absolute; left:14px; right:14px; bottom:84px; display:none; padding:10px 14px; background:rgba(12,9,20,.92); border:1px solid rgba(255,255,255,.16); border-radius:12px; font:12.5px/1.55 ui-monospace,Menlo,Consolas,monospace; white-space:pre-wrap; }
+  #summary b { color:var(--accent); font-family:system-ui,sans-serif; font-size:15px; }
+  #controls { position:absolute; left:0; right:0; bottom:calc(16px + env(safe-area-inset-bottom)); display:flex; justify-content:center; gap:8px; flex-wrap:wrap; }
+  button { font:700 16px system-ui,sans-serif; border:0; border-radius:999px; min-height:48px; padding:0 22px; background:var(--accent); color:#1a1208; box-shadow:0 4px 16px rgba(0,0,0,.4); }
+  button.ghost { background:rgba(20,20,30,.5); color:var(--ink); padding:0 14px; font-size:14px; }
+  #quality { display:none; }
+  #msg { position:absolute; inset:0; display:none; align-items:center; justify-content:center; padding:24px; text-align:center; background:rgba(0,0,0,.85); font-size:15px; line-height:1.5; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="vignette"></div><div id="cap"></div><div id="hud"></div>
+  <div id="title"><h1>THE WATCHMAKER</h1><p>Showcase 01 · tap Start (sound on)</p></div>
+  <div id="summary"></div>
+  <div id="controls">
+    <button id="play" disabled>▶ Start</button>
+    <button id="restart" class="ghost">↺</button>
+    <button id="sound" class="ghost">🔊</button>
+    <button id="hudBtn" class="ghost">HUD</button>
+    <button id="quality" class="ghost">Q</button>
+  </div>
+  <div id="prep">Preparing the workshop…<br><small>loading models · checking what your phone can handle</small></div>
+  <div id="msg"></div>
+</div>
+<script>
+  function showMsg(t){ var m=document.getElementById('msg'); m.textContent=t; m.style.display='flex'; }
+  window.addEventListener('error', function(e){ showMsg('Error: ' + (e.message || 'a script failed to load')); });
+  window.addEventListener('unhandledrejection', function(e){ showMsg('Error: ' + (e.reason && e.reason.message || e.reason)); });
+</script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { Stage, installGrade, Sound, synth } from '../../lib/stage.js';
+import { CameraPath, motionBlur } from '../../lib/camera.js';
+import { Character, PoseTrack, POSE_DEFAULTS, ease } from '../../lib/character.js';
+import { prop, node, pbr } from '../../lib/assets.js';
+import { buildAugustaArt, AUGUSTA_DIMS } from './augusta.js';
+
+const A = '../../assets/polyhaven';
+const DURATION = 10;
+installGrade({ warm: [.97, 1.0, 1.12], saturation: 1.55, lift: [.004, .008, .03], contrast: 1.04 });
+const stage = new Stage({ duration: DURATION, near: .03, far: 40 });
+const { scene, camera, renderer } = stage;
+scene.background = new THREE.Color('#07060c');
+{ const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture; }
+
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const clamp01 = v => Math.min(1, Math.max(0, v));
+const smooth = v => { v = clamp01(v); return v * v * (3 - 2 * v); };
+const lerp = (a, b, k) => a + (b - a) * k;
+const win = (t, a, b, fa = .25, fb = .25) => smooth((t - a) / fa) * (1 - smooth((t - b) / fb));
+function canvasTex(w, h, draw) { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t; }
+const std = (o) => new THREE.MeshStandardMaterial(o);
+
+/* =====================================================================
+   1. Room: plaster walls, dark wood wainscot, worn wood floor, beams
+   ===================================================================== */
+const ROOM = { x0: -2.6, x1: 2.6, z0: -4.0, z1: 1.6, h: 3.0 };
+const floorMat = pbr(A + '/tex', 'old_wood_floor', { repeat: [3, 3] });
+const plaster = pbr(A + '/tex', 'plastered_wall_04', { repeat: [2.5, 1.5], color: 0xe9dcc8 });
+const planks = pbr(A + '/tex', 'dark_wooden_planks', { repeat: [3, 1] });
+const planksV = pbr(A + '/tex', 'dark_wooden_planks', { repeat: [1, 2] });
+function quad(w, h, mat) { const g = new THREE.PlaneGeometry(w, h); g.setAttribute('uv1', g.attributes.uv); const m = new THREE.Mesh(g, mat); m.receiveShadow = true; return m; }
+{
+  const W = ROOM.x1 - ROOM.x0, D = ROOM.z1 - ROOM.z0;
+  const fl = quad(W, D, floorMat); fl.rotation.x = -Math.PI / 2; fl.position.set(0, 0, (ROOM.z0 + ROOM.z1) / 2); scene.add(fl);
+  const ce = quad(W, D, planks); ce.rotation.x = Math.PI / 2; ce.position.set(0, ROOM.h, (ROOM.z0 + ROOM.z1) / 2); scene.add(ce);
+  const walls = [[W, 0, ROOM.z0, 0, (ROOM.x0 + ROOM.x1) / 2], [D, Math.PI / 2, (ROOM.z0 + ROOM.z1) / 2, ROOM.x0, null], [D, -Math.PI / 2, (ROOM.z0 + ROOM.z1) / 2, ROOM.x1, null]];
+  for (const [len, ry, c, x, xc] of walls) {
+    const up = quad(len, ROOM.h - 1.1, plaster), lo = quad(len, 1.1, planks), rail = new THREE.Mesh(new THREE.BoxGeometry(len, .07, .05), planksV);
+    for (const [m, y] of [[up, 1.1 + (ROOM.h - 1.1) / 2], [lo, .55], [rail, 1.12]]) {
+      m.rotation.y = ry; if (xc !== null) m.position.set(xc, y, c); else m.position.set(x, y, c);
+      m.receiveShadow = true; scene.add(m);
+    }
+  }
+  // ceiling beams
+  for (let i = 0; i < 5; i++) { const b = new THREE.Mesh(new THREE.BoxGeometry(W, .16, .14), planksV); b.position.set(0, ROOM.h - .08, ROOM.z0 + .6 + i * 1.15); b.castShadow = true; scene.add(b); }
+  // doorway frame at the front (foreground in the opening shot)
+  for (const x of [-1.15, 1.15]) { const p = new THREE.Mesh(new THREE.BoxGeometry(.16, ROOM.h, .2), planksV); p.position.set(x, ROOM.h / 2, ROOM.z1 - .1); scene.add(p); }
+  const lintel = new THREE.Mesh(new THREE.BoxGeometry(2.46, .3, .2), planksV); lintel.position.set(0, 2.35, ROOM.z1 - .1); scene.add(lintel);
+}
+
+/* ---------- window with the night street outside (left wall) ---------- */
+const WIN = { z: -2.35, y: 1.75, w: 1.15, h: 1.15 };
+{
+  const night = canvasTex(512, 512, (g, w, h) => {
+    const sky = g.createLinearGradient(0, 0, 0, h); sky.addColorStop(0, '#0b1433'); sky.addColorStop(.6, '#1d2f63'); sky.addColorStop(1, '#3a3f6e');
+    g.fillStyle = sky; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 70; i++) { g.fillStyle = `rgba(255,255,255,${.3 + Math.random() * .6})`; g.fillRect(Math.random() * w, Math.random() * h * .55, 2, 2); }
+    const moon = g.createRadialGradient(140, 110, 10, 140, 110, 90); moon.addColorStop(0, 'rgba(235,240,255,1)'); moon.addColorStop(.35, 'rgba(200,215,255,.5)'); moon.addColorStop(1, 'rgba(120,140,220,0)');
+    g.fillStyle = moon; g.fillRect(0, 0, w, h); g.fillStyle = '#f2f4ff'; g.beginPath(); g.arc(140, 110, 30, 0, 7); g.fill();
+    g.fillStyle = '#0d0f1f'; let x = -10; while (x < w) { const bw = 60 + Math.random() * 70, bh = 120 + Math.random() * 140; g.fillRect(x, h - bh, bw, bh);
+      g.beginPath(); g.moveTo(x - 6, h - bh); g.lineTo(x + bw / 2, h - bh - 40); g.lineTo(x + bw + 6, h - bh); g.fill();
+      for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++) if (Math.random() < .35) { g.fillStyle = '#ffcf7a'; g.fillRect(x + 10 + c * 20, h - bh + 20 + r * 26, 10, 14); g.fillStyle = '#0d0f1f'; }
+      x += bw + 8; }
+    const lamp = g.createRadialGradient(380, 330, 4, 380, 330, 120); lamp.addColorStop(0, 'rgba(255,214,140,1)'); lamp.addColorStop(.2, 'rgba(255,180,90,.45)'); lamp.addColorStop(1, 'rgba(255,160,80,0)');
+    g.fillStyle = lamp; g.fillRect(0, 0, w, h); g.fillStyle = '#121320'; g.fillRect(376, 330, 8, 190);
+  });
+  const glass = new THREE.Mesh(new THREE.PlaneGeometry(WIN.w, WIN.h), new THREE.MeshBasicMaterial({ map: night, color: new THREE.Color(1.6, 1.6, 1.8) }));
+  glass.rotation.y = Math.PI / 2; glass.position.set(ROOM.x0 + .015, WIN.y, WIN.z); scene.add(glass);
+  const frameM = planksV;
+  const parts = [[WIN.w + .16, .1, 0, WIN.h / 2 + .03], [WIN.w + .3, .12, 0, -WIN.h / 2 - .04], [.08, WIN.h, -WIN.w / 2 - .04, 0], [.08, WIN.h, WIN.w / 2 + .04, 0], [.05, WIN.h, 0, 0], [WIN.w, .05, 0, 0]];
+  for (const [w, h, x, y] of parts) { const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, .09), frameM); b.rotation.y = Math.PI / 2; b.position.set(ROOM.x0 + .045, WIN.y + y, WIN.z + x); b.castShadow = true; scene.add(b); }
+  const sill = new THREE.Mesh(new THREE.BoxGeometry(.24, .05, WIN.w + .3), frameM); sill.position.set(ROOM.x0 + .12, WIN.y - WIN.h / 2 - .06, WIN.z); sill.castShadow = true; scene.add(sill);
+}
+
+/* =====================================================================
+   2. Props (Poly Haven, CC0) — placed in metres
+   ===================================================================== */
+const BENCH = V(0, 0, -1.55), BENCH_TOP = .83;
+const MAT_Y = BENCH_TOP + .004;
+async function place(name, pos, ry = 0, s = 1) { const o = await prop(`${A}/${name}.glb`); o.position.copy(pos); o.rotation.y = ry; o.scale.setScalar(s); scene.add(o); return o; }
+const props = {};
+async function buildProps() {
+  props.bench = await place('WoodenTable_03', BENCH, 0);
+  props.lamp = await place('desk_lamp_arm_01', V(-.64, BENCH_TOP, -1.5), Math.PI / 2);
+  props.shelf = await place('wooden_bookshelf_worn', V(-1.4, 0, -3.68), 0);
+  props.grand = await place('vintage_grandfather_clock_01', V(1.55, 0, -3.62), 0);
+  props.cab = await place('vintage_wooden_drawer_01', V(2.12, 0, -2.0), -Math.PI / 2);
+  props.oil = await place('vintage_oil_lamp', V(2.0, 1.01, -2.55), 0);
+  props.vase = await place('brass_vase_01', V(2.05, 1.01, -1.6), 0);
+  props.mantel = await place('mantel_clock_01', V(2.1, 1.01, -2.05), -Math.PI / 2);
+  props.alarm1 = await place('alarm_clock_01', V(.52, BENCH_TOP, -1.36), -.35);
+  props.alarm2 = await place('alarm_clock_01', V(-1.35, 1.3, -3.62), .2, .9);
+  props.alarm3 = await place('alarm_clock_01', V(-1.65, .82, -3.6), -.3, .9);
+  props.wall1 = await place('wall_clock', V(-.45, 2.2, ROOM.z0 + .03), 0, 1.0);
+  props.wall2 = await place('wall_clock', V(ROOM.x1 - .03, 2.15, -2.9), -Math.PI / 2, 1.2);
+  props.frame = await place('hanging_picture_frame_01', V(ROOM.x1 - .03, 1.8, -1.2), -Math.PI / 2, .9);
+  props.screw = await place('screwdriver', V(.42, MAT_Y, -1.36), 1.2);
+  props.pliers = await place('pliers', V(-.28, MAT_Y, -1.34), -.6);
+  // clocks stand upright facing the room: Poly Haven models are authored Z-up in Blender, glTF is Y-up already.
+}
+
+/* ---------- pendulum wall clocks (built in code: they are the story) ---------- */
+const pendulums = [];
+function pendulumClock(pos, scale, numeralColor) {
+  const G = new THREE.Group();
+  const wood = planksV, brass = std({ color: '#d1a44a', metalness: 1, roughness: .28 });
+  const body = new THREE.Mesh(new THREE.BoxGeometry(.36, .95, .1), wood); body.position.y = -.2; body.castShadow = true; G.add(body);
+  const crown = new THREE.Mesh(new THREE.CylinderGeometry(.2, .2, .1, 32, 1, false, 0, Math.PI), wood); crown.rotation.z = Math.PI / 2; crown.rotation.y = Math.PI / 2; crown.position.set(0, .27, 0); G.add(crown);
+  const dial = new THREE.Mesh(new THREE.CircleGeometry(.14, 40), new THREE.MeshStandardMaterial({ map: canvasTex(256, 256, (g) => {
+    g.fillStyle = '#f4ead2'; g.beginPath(); g.arc(128, 128, 126, 0, 7); g.fill(); g.strokeStyle = '#2a1d14'; g.lineWidth = 6; g.stroke();
+    g.fillStyle = numeralColor; g.font = 'bold 30px serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    ['XII', 'III', 'VI', 'IX'].forEach((n, i) => { const a = i * Math.PI / 2; g.fillText(n, 128 + Math.sin(a) * 92, 128 - Math.cos(a) * 92); });
+    for (let i = 0; i < 60; i++) { const a = i / 60 * Math.PI * 2, r1 = i % 5 ? 112 : 104; g.fillRect(128 + Math.sin(a) * r1 - 1.5, 128 - Math.cos(a) * r1 - 1.5, 3, 3); }
+  }), roughness: .6 }));
+  dial.position.set(0, .12, .052); G.add(dial);
+  const handM = std({ color: '#1a1410', roughness: .5 });
+  const hh = new THREE.Mesh(new THREE.BoxGeometry(.012, .07, .004), handM); hh.geometry.translate(0, .035, 0); hh.position.set(0, .12, .056); hh.rotation.z = -1.1; G.add(hh);
+  const mh = new THREE.Mesh(new THREE.BoxGeometry(.008, .11, .004), handM); mh.geometry.translate(0, .055, 0); mh.position.set(0, .12, .058); mh.rotation.z = .5; G.add(mh);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(.142, .012, 10, 48), brass); ring.position.set(0, .12, .052); G.add(ring);
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(.26, .5), std({ color: '#2a1a12', roughness: .9 })); back.position.set(0, -.33, .051); G.add(back);
+  const piv = new THREE.Group(); piv.position.set(0, -.08, .06); G.add(piv);
+  const rod = new THREE.Mesh(new THREE.BoxGeometry(.008, .42, .004), brass); rod.position.y = -.21; piv.add(rod);
+  const bob = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, .012, 32), brass); bob.rotation.x = Math.PI / 2; bob.position.y = -.42; piv.add(bob);
+  const glassFrame = new THREE.Mesh(new THREE.TorusGeometry(.16, .01, 6, 4, Math.PI * 2), wood); glassFrame.rotation.z = Math.PI / 4; glassFrame.scale.set(.9, 1.7, 1); glassFrame.position.set(0, -.33, .06); G.add(glassFrame);
+  G.position.copy(pos); G.scale.setScalar(scale); scene.add(G);
+  return { G, piv, mh, hh };
+}
+pendulums.push({ ...pendulumClock(V(.25, 2.05, ROOM.z0 + .06), 1.0, '#2a1d14'), start: 6.9, period: 1.0, amp: .2 });
+pendulums.push({ ...pendulumClock(V(.85, 1.8, ROOM.z0 + .06), .78, '#7a2a1a'), start: 7.2, period: .78, amp: .24 });
+pendulums.push({ ...pendulumClock(V(-2.53, 1.9, -1.05), .85, '#2a1d14'), start: 7.45, period: .9, amp: .22 });
+pendulums[2].G.rotation.y = Math.PI / 2;
+
+/* ---------- books on the shelf (instanced) ---------- */
+{
+  const g = new THREE.BoxGeometry(1, 1, 1); g.translate(0, .5, 0);
+  const N = 54, books = new THREE.InstancedMesh(g, std({ roughness: .75 }), N);
+  const m = new THREE.Matrix4(), q = new THREE.Quaternion(), c = new THREE.Color();
+  const cols = ['#7a2a26', '#2f4f6e', '#c9a24a', '#3f6b46', '#5a3a6e', '#a8653a', '#ddd2b8', '#22323f'];
+  let i = 0;
+  for (const [y, x0, x1] of [[.46, -1.98, -.85], [.96, -1.98, -1.55], [1.46, -1.98, -1.1], [1.46, -1.0, -.82]]) {
+    let x = x0;
+    while (x < x1 && i < N) { const w = .03 + Math.random() * .03, h = .2 + Math.random() * .1, tilt = Math.random() < .12 ? .25 : 0;
+      q.setFromAxisAngle(V(0, 0, 1), -tilt); m.compose(V(x + w / 2, y, -3.72 + Math.random() * .03), q, V(w, h, .17 + Math.random() * .04)); books.setMatrixAt(i, m); books.setColorAt(i, c.set(cols[i % cols.length])); i++; x += w + .004; }
+  }
+  books.count = i; books.castShadow = true; books.receiveShadow = true; scene.add(books);
+}
+
+/* ---------- foreground: pocket watches hanging on strings near the doorway ---------- */
+const hanging = [];
+function pocketWatchMesh(r = .045, gold = '#d4a64a') {
+  const G = new THREE.Group();
+  const goldM = std({ color: gold, metalness: 1, roughness: .26 });
+  const prof = [V(0, -.006, 0), V(r * .96, -.006, 0), V(r, 0, 0), V(r * .96, .006, 0), V(0, .006, 0)].map(v => new THREE.Vector2(v.x, v.y));
+  const caseM = new THREE.Mesh(new THREE.LatheGeometry(prof, 48), goldM); caseM.rotation.x = Math.PI / 2; G.add(caseM);
+  const bow = new THREE.Mesh(new THREE.TorusGeometry(r * .3, r * .06, 8, 24), goldM); bow.position.y = r * 1.25; G.add(bow);
+  const crown = new THREE.Mesh(new THREE.CylinderGeometry(r * .12, r * .12, r * .14, 16), goldM); crown.position.y = r * 1.03; G.add(crown);
+  return { G, goldM };
+}
+for (const [x, y, z, len, ph] of [[-.62, 2.2, 1.1, .5, 0], [.55, 2.35, 1.0, .38, 1.4], [-.15, 2.42, 1.25, .3, 2.6]]) {
+  const piv = new THREE.Group(); piv.position.set(x, y, z); scene.add(piv);
+  const str = new THREE.Mesh(new THREE.CylinderGeometry(.0025, .0025, len, 4), std({ color: '#3a2a1a' })); str.position.y = -len / 2; piv.add(str);
+  const w = pocketWatchMesh(.05); w.G.position.y = -len - .06; w.G.rotation.y = ph; piv.add(w.G);
+  hanging.push({ piv, ph, len });
+}
+
+/* =====================================================================
+   3. Hero props: the open pocket watch with its gear train, the loose gear, tweezers, work mat
+   ===================================================================== */
+const WATCH0 = V(.08, MAT_Y + .006, -1.5);         // where the watch lies on the mat
+const watch = new THREE.Group(); scene.add(watch);
+const brassM = std({ color: '#d9b25a', metalness: 1, roughness: .32 }), steelM = std({ color: '#c9ced6', metalness: 1, roughness: .25 }), rubyM = std({ color: '#c0182a', roughness: .2, emissive: '#400008' });
+function gearGeo(r, teeth, hole = .25, depth = .0016) {
+  const s = new THREE.Shape(), ri = r * .82;
+  for (let i = 0; i < teeth * 2; i++) { const a0 = i / (teeth * 2) * Math.PI * 2, a1 = (i + 1) / (teeth * 2) * Math.PI * 2, rr = i % 2 ? ri : r;
+    if (i === 0) s.moveTo(Math.cos(a0) * rr, Math.sin(a0) * rr); s.lineTo(Math.cos(a0) * rr, Math.sin(a0) * rr); s.lineTo(Math.cos(a1) * rr, Math.sin(a1) * rr); }
+  const h = new THREE.Path(); h.absarc(0, 0, r * hole, 0, Math.PI * 2, true); s.holes.push(h);
+  for (let k = 0; k < 4; k++) { const p = new THREE.Path(), a = k * Math.PI / 2 + .4; p.absarc(Math.cos(a) * r * .55, Math.sin(a) * r * .55, r * .16, 0, Math.PI * 2, true); s.holes.push(p); }
+  const g = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: false, curveSegments: 6 }); g.rotateX(-Math.PI / 2); return g;
+}
+const watchGears = [];
+let SLOT;      // local position where the hero gear seats
+{
+  const { G, goldM } = pocketWatchMesh(.05); G.rotation.x = -Math.PI / 2; G.rotation.z = Math.PI; watch.add(G);  // lying flat, crown toward the camera
+  const plate = new THREE.Mesh(new THREE.CylinderGeometry(.046, .046, .002, 48), brassM); plate.position.y = .0062; watch.add(plate);
+  for (const [x, z, r, teeth, speed, m] of [[-.015, .01, .016, 20, .8, brassM], [.018, -.012, .011, 14, -1.3, steelM], [-.006, -.024, .008, 10, 2.1, brassM], [.02, .016, .009, 12, 0, brassM]]) {
+    const g = new THREE.Mesh(gearGeo(r, teeth), m); g.position.set(x, .0075, z); watch.add(g); watchGears.push({ g, speed, r });
+  }
+  SLOT = watchGears[3].g.position.clone(); watchGears[3].g.visible = false;                      // the empty slot
+  const balance = new THREE.Group(); balance.position.set(-.022, .0085, -.02); watch.add(balance);
+  balance.add(new THREE.Mesh(new THREE.TorusGeometry(.009, .0011, 6, 24).rotateX(Math.PI / 2), goldM));
+  for (let i = 0; i < 2; i++) { const sp = new THREE.Mesh(new THREE.BoxGeometry(.018, .0008, .0012), goldM); sp.rotation.y = i * Math.PI / 2; balance.add(sp); }
+  watchGears.push({ g: balance, speed: 0, balance: true });
+  for (const [x, z] of [[-.015, .01], [.018, -.012], [-.006, -.024], [.03, -.002]]) { const j = new THREE.Mesh(new THREE.SphereGeometry(.0016, 8, 6), rubyM); j.position.set(x, .009, z); watch.add(j); }
+  const lid = new THREE.Group(); lid.position.set(0, .006, -.05); watch.add(lid);           // open lid, hinged at the back
+  const lidM = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, .003, 48), goldM); lidM.position.z = -.05; lid.add(lidM); lid.rotation.x = -1.9;
+  const inner = new THREE.Mesh(new THREE.CircleGeometry(.044, 48), new THREE.MeshStandardMaterial({ map: canvasTex(256, 256, (g) => {
+    g.fillStyle = '#e7d3a0'; g.fillRect(0, 0, 256, 256); g.strokeStyle = '#8a6a2a'; g.lineWidth = 3; for (let r = 30; r < 128; r += 14) { g.beginPath(); g.arc(128, 128, r, 0, 7); g.stroke(); }
+    g.fillStyle = '#6a4a1a'; g.font = 'italic 26px serif'; g.textAlign = 'center'; g.fillText('A. Penn', 128, 120); g.font = 'italic 18px serif'; g.fillText('1923', 128, 150);
+  }), metalness: .6, roughness: .35 })); inner.rotation.x = Math.PI / 2; inner.position.set(0, -.0018, -.05); lid.add(inner);
+  watch.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+}
+watch.position.copy(WATCH0);
+const heroGear = new THREE.Mesh(gearGeo(.009, 12), brassM); heroGear.castShadow = true; scene.add(heroGear);
+const GEAR0 = V(.3, MAT_Y + .001, -1.42);
+// work mat + chain
+{
+  const mat = new THREE.Mesh(new THREE.BoxGeometry(.55, .006, .34), std({ color: '#22402f', roughness: .9 })); mat.position.set(.1, BENCH_TOP + .003, -1.47); mat.receiveShadow = true; scene.add(mat);
+  const pts = []; for (let i = 0; i <= 20; i++) { const k = i / 20; pts.push(V(.13 + k * .18, MAT_Y + .003, -1.5 + Math.sin(k * 7) * .03 + k * .06)); }
+  const chain = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, .0022, 5), brassM); chain.castShadow = true; scene.add(chain);
+  for (const [x, z] of [[.36, -1.52], [.33, -1.36], [-.1, -1.38]]) { const sc = new THREE.Mesh(new THREE.CylinderGeometry(.0025, .0025, .006, 8), steelM); sc.position.set(x, MAT_Y + .003, z); scene.add(sc); }
+}
+// tweezers (3D): drawn in the character's plane while held, lying on the bench afterwards
+const tweezers = new THREE.Group(); scene.add(tweezers);
+{
+  for (const s of [-1, 1]) { const arm = new THREE.Mesh(new THREE.BoxGeometry(.004, .11, .0025), steelM); arm.geometry.translate(0, -.055, 0); arm.position.x = s * .004; arm.rotation.z = -s * .035; tweezers.add(arm); }
+  tweezers.traverse(o => { if (o.isMesh) o.castShadow = true; });
+}
+
+/* =====================================================================
+   4. Light rig: warm desk lamp (key) vs cool moonlight (rim/fill)
+   ===================================================================== */
+const LAMP_HEAD = V(-.36, 1.19, -1.5), LAMP_AIM = V(.1, BENCH_TOP, -1.46);
+const key = new THREE.SpotLight('#ffc27a', 9, 0, .7, .55, 2);
+key.position.copy(LAMP_HEAD); key.target.position.copy(LAMP_AIM); key.castShadow = true; key.shadow.mapSize.set(1024, 1024); key.shadow.bias = -.0003; key.shadow.normalBias = .01; key.shadow.camera.near = .1; key.shadow.camera.far = 6;
+scene.add(key, key.target);
+const MOON_DIR = V(-1, .62, -.18).normalize();
+const moon = new THREE.DirectionalLight('#86a8ff', 1.7);
+moon.position.copy(V(0, .9, -1.9)).addScaledVector(MOON_DIR, 6); moon.target.position.set(0, .9, -1.9);
+moon.castShadow = true; moon.shadow.mapSize.set(1024, 1024); Object.assign(moon.shadow.camera, { left: -3, right: 3, top: 3, bottom: -3, near: .5, far: 14 }); moon.shadow.bias = -.0005; moon.shadow.normalBias = .02;
+scene.add(moon, moon.target);
+const hemi = new THREE.HemisphereLight('#4a62b0', '#2a1c12', .75); scene.add(hemi);
+const oilLight = new THREE.PointLight('#ffa654', .8, 3.2, 2); oilLight.position.set(2.0, 1.3, -2.55); scene.add(oilLight);
+const fill = new THREE.PointLight('#ff9a5a', .35, 4, 2); fill.position.set(.3, .95, -.6); scene.add(fill);   // bounce off the bench toward her face
+// glowing bulb (blooms) and the lamp cone
+const bulb = new THREE.Mesh(new THREE.SphereGeometry(.028, 16, 12), new THREE.MeshBasicMaterial({ color: new THREE.Color(6, 4.4, 2.6) })); bulb.position.copy(LAMP_HEAD).add(V(0, .02, 0)); scene.add(bulb);
+const coneMat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+  uniforms: { col: { value: new THREE.Color(1, .72, .4) }, k: { value: .12 } },
+  vertexShader: `varying float vH; varying vec3 vN; varying vec3 vV; void main(){ vH = uv.y; vec4 mv = modelViewMatrix * vec4(position,1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }`,
+  fragmentShader: `uniform vec3 col; uniform float k; varying float vH; varying vec3 vN; varying vec3 vV;
+    void main(){ float f = pow(abs(dot(vN, vV)), 1.6); float a = f * pow(vH, 1.4) * k; gl_FragColor = vec4(col * a, 1.0); }` });
+{
+  const len = LAMP_HEAD.distanceTo(LAMP_AIM) * 1.02;
+  const cone = new THREE.Mesh(new THREE.CylinderGeometry(.02, len * .62, len, 32, 1, true), coneMat);
+  cone.geometry.translate(0, -len / 2, 0); cone.position.copy(LAMP_HEAD);
+  cone.quaternion.setFromUnitVectors(V(0, -1, 0), LAMP_AIM.clone().sub(LAMP_HEAD).normalize()); scene.add(cone);
+}
+// moonbeam through the window and dust in both beams
+const beamMat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+  uniforms: { col: { value: new THREE.Color(.45, .6, 1) }, k: { value: .07 } },
+  vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+  fragmentShader: `uniform vec3 col; uniform float k; varying vec2 vUv; void main(){ float a = sin(vUv.x * 3.14159) * (1.0 - vUv.y) * k; gl_FragColor = vec4(col * a, 1.0); }` });
+{
+  const g = new THREE.BufferGeometry(), x0 = ROOM.x0 + .02, L = 3.2;
+  const top = [V(x0, WIN.y + WIN.h / 2, WIN.z - WIN.w / 2), V(x0, WIN.y + WIN.h / 2, WIN.z + WIN.w / 2)], bot = [V(x0, WIN.y - WIN.h / 2, WIN.z - WIN.w / 2), V(x0, WIN.y - WIN.h / 2, WIN.z + WIN.w / 2)];
+  const d = MOON_DIR.clone().negate().multiplyScalar(L);
+  const P = [top[0], top[1], top[1].clone().add(d), top[0].clone().add(d), bot[0], bot[1], bot[1].clone().add(d), bot[0].clone().add(d)];
+  g.setAttribute('position', new THREE.Float32BufferAttribute(P.flatMap(p => [p.x, p.y, p.z]), 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1], 2));
+  g.setIndex([0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7, 0, 4, 7, 0, 7, 3, 1, 5, 6, 1, 6, 2]);
+  scene.add(new THREE.Mesh(g, beamMat));
+}
+const DUST = 160, dustPos = new Float32Array(DUST * 3), dustSeed = [];
+for (let i = 0; i < DUST; i++) { const inLamp = i < 110; dustSeed.push(inLamp ? [lerp(-.25, .4, Math.random()), lerp(.9, 1.35, Math.random()), lerp(-1.8, -1.35, Math.random()), Math.random() * 6]
+  : [lerp(-2.4, -1.2, Math.random()), lerp(.8, 2.2, Math.random()), lerp(-2.9, -1.8, Math.random()), Math.random() * 6]); }
+const dustGeo = new THREE.BufferGeometry(); dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+const dotTex = canvasTex(32, 32, (g) => { const gr = g.createRadialGradient(16, 16, 0, 16, 16, 16); gr.addColorStop(0, 'rgba(255,240,215,1)'); gr.addColorStop(1, 'rgba(255,240,215,0)'); g.fillStyle = gr; g.fillRect(0, 0, 32, 32); });
+const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ map: dotTex, size: .012, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, color: new THREE.Color(1.6, 1.3, .9) }));
+dust.frustumCulled = false; scene.add(dust);
+
+/* =====================================================================
+   5. Augusta — character, pose track, interaction targets
+   ===================================================================== */
+const SEAT = V(.02, .86, -1.56);
+const CS = .72;   // character scale
+let aug = null;
+const P = POSE_DEFAULTS;
+const track = new PoseTrack({ ...P, x: SEAT.x, y: SEAT.y, z: SEAT.z, handR: 'pinch', handL: 'grip', mouth: 'tongue', lidL: .45, lidR: .2, browL: -.4, browR: -.25,
+    browTiltL: -.12, browTiltR: -.12, lookY: -.55, lookX: .1, headUp: -.03, sy: .97, ikWR: 1, ikWL: 1, upL: -.5, foreL: 1.2 }, [
+  { t: 1.62, dur: .06, p: { blink: 1 } }, { t: 1.76, dur: .1, p: { blink: 0 } },
+  { t: 3.25, dur: .3, ease: 'out', p: { lookX: .55, lookY: -.7 } },
+  { t: 4.0, dur: .3, p: { lookX: 0, lookY: -.75, lidL: .55 } },
+  { t: 4.55, p: { mouth: 'bite' } }, { t: 4.62, dur: .12, ease: 'snap', p: { browL: .45, browR: .55, lidL: .25 } },
+  { t: 4.95, p: { mouth: 'smile' } }, { t: 5.1, dur: .3, p: { browL: 0, browR: .1 } },
+  { t: 5.75, dur: .3, p: { ikWL: 0, upL: -.35, foreL: .9, handL: 'open', headUp: 0, sy: 1, lookY: -.3, lookX: 0, lidL: .15, lidR: .15 } },
+  { t: 5.75, p: { handR: 'open' } }, { t: 6.02, p: { handR: 'grip' } },
+  { t: 6.55, dur: .3, p: { headTilt: -.2, lookX: .75, lookY: .3, browL: .35, browR: .05, mouth: 'bite' } },
+  { t: 7.05, dur: .12, p: { blink: 1 } }, { t: 7.2, dur: .12, p: { blink: 0 } },
+  { t: 7.5, p: { mouth: 'o' } }, { t: 7.55, dur: .18, ease: 'back', p: { lidL: .02, lidR: .02, browL: .95, browR: .95, headUp: .035, sy: 1.04, lookX: -.2, lookY: .2 } },
+  { t: 7.75, dur: .3, ease: 'back', p: { loupe: 1 } },
+  { t: 8.0, p: { mouth: 'grin' } }, { t: 8.3, dur: .32, ease: 'back', p: { ikWR: 0, upR: 2.35, foreR: -.45, upL: -2.1, foreL: .5, headTilt: .1, browL: .6, browR: .6, lidL: .05, lidR: .05, lookX: 0, lookY: .1, sy: 1.05 } },
+  { t: 9.15, dur: .06, p: { blink: 1 } }, { t: 9.27, dur: .1, p: { blink: 0 } },
+]);
+// right-hand tweezer-tip / grip path (world points); the IK puts the hand on the camera ray through them
+const EAR_OFFSET = V(.4 * CS, -.04 * CS, 0);
+function tipTarget(t, out) {
+  const P = WATCH0.clone().add(SLOT).add(V(0, .004, 0));
+  const hover = P.clone().add(V(.03, .05 + .006 * Math.sin(t * 2.2), .01));
+  const G = GEAR0.clone().add(V(0, .004, 0));
+  const keys = [[0, hover], [3.0, hover], [3.25, hover.clone().add(V(0, .035, 0))], [3.55, G.clone().add(V(0, .04, 0))], [3.68, G], [3.8, G],
+    [4.15, P.clone().add(V(0, .06, 0))], [4.5, P], [4.62, P], [4.8, P.clone().add(V(.02, .045, .01))], [5.6, P.clone().add(V(.06, .07, .02))],
+    [5.8, V(.38, MAT_Y + .03, -1.42)], [5.95, WATCH0.clone().add(V(.02, .04, 0))], [6.08, WATCH0.clone().add(V(0, .012, 0))], [6.15, WATCH0.clone().add(V(0, .012, 0))]];
+  if (t >= 6.15) return null;  // after this the watch goes to the ear (computed from the head)
+  let i = 0; while (i < keys.length - 2 && t > keys[i + 1][0]) i++;
+  const [ta, pa] = keys[i], [tb, pb] = keys[i + 1], k = ease.inOut(clamp01((t - ta) / (tb - ta)));
+  return out.copy(pa).lerp(pb, k);
+}
+const _ray = new THREE.Vector3(), _n = new THREE.Vector3(), _tmp = new THREE.Vector3(), _tmp2 = new THREE.Vector3();
+function onCardPlane(world, out) {      // point on the camera ray through `world` that lies in Augusta's card plane
+  const root = aug.rig.root.position;
+  _n.set(camera.position.x - root.x, 0, camera.position.z - root.z).normalize();
+  _ray.copy(world).sub(camera.position);
+  const s = _n.dot(_tmp.copy(root).sub(camera.position)) / _n.dot(_ray);
+  return out.copy(camera.position).addScaledVector(_ray, s);
+}
+
+/* =====================================================================
+   6. Camera: four shots on one continuous path
+   ===================================================================== */
+const path = new CameraPath([
+  { t: 0.0, pos: V(.7, 1.7, 2.5), tgt: V(0, 1.2, -1.7), fov: 40 },                   // 1: doorway dolly-in
+  { t: 2.95, pos: V(.3, 1.42, .2), tgt: V(.03, 1.14, -1.65), fov: 36 },
+  { t: 3.4, pos: V(.25, 1.26, -1.0), tgt: V(.1, .86, -1.5), fov: 34 },               // 2: insert over the bench
+  { t: 5.5, pos: V(.2, 1.21, -1.1), tgt: V(.11, .86, -1.5), fov: 31 },
+  { t: 5.95, pos: V(-.62, 1.0, -.3), tgt: V(.02, 1.38, -1.56), fov: 48 },             // 3: low-angle medium
+  { t: 7.95, pos: V(-.5, .98, -.5), tgt: V(.02, 1.42, -1.56), fov: 46 },
+  { t: 8.45, pos: V(.45, 1.72, -.45), tgt: V(0, 1.28, -1.6), fov: 46 },               // 4: rising orbit pull-back
+  { t: 10.0, pos: V(1.35, 2.4, .5), tgt: V(-.05, 1.12, -1.75), fov: 48 },
+], { handheld: .004 });
+function dofAt(t) {         // [amount, focus point]
+  if (t < 3.0) return [.55, V(0, 1.3, -1.56)];
+  if (t < 5.7) return [smooth((t - 3.0) / .4), V(.1, .86, -1.5)];
+  if (t < 8.2) return [.3, V(0, 1.42, -1.56)];
+  return [.22, V(0, 1.25, -1.56)];
+}
+
+/* =====================================================================
+   7. Per-frame update
+   ===================================================================== */
+const pose = {}, lag = {};
+const _a = new THREE.Vector3(), _hand = new THREE.Vector3(), _q = new THREE.Quaternion();
+const spin = [];                // clock hands found inside the Poly Haven models
+function update(t) {
+  path.apply(camera, t);
+  const fx = stage.post.fx;
+  motionBlur(camera, path, t, fx.mblur);
+  const [dofAmt, focusPt] = dofAt(t); fx.dof = dofAmt; fx.focus = camera.position.distanceTo(focusPt); fx.dofRange = t > 3 && t < 5.7 ? .45 : 1.2;
+  fx.bloom = .55; fx.threshold = 1.5; fx.vignette = .38;
+
+  // --- Augusta ---
+  track.eval(t, pose); track.eval(t - .1, lag);
+  pose.breath = 1 + .012 * Math.sin(t * 2.9);
+  pose.bun = -.9 * (pose.headTilt - lag.headTilt) - 2.2 * ((pose.headUp - lag.headUp) + (pose.sy - lag.sy) * .3) + .02 * Math.sin(t * 1.3);
+  if (t > 8.3) { const k = t - 8.3; pose.sy += .025 * Math.exp(-2.2 * k) * Math.sin(k * 13); pose.bob = .012 * Math.exp(-2 * k) * Math.abs(Math.sin(k * 6.5)); pose.upR += .1 * Math.sin(k * 7); }
+  pose.shadowYaw = Math.atan2(LAMP_HEAD.x - pose.x, LAMP_HEAD.z - pose.z);
+  // IK targets: right hand (tweezers / watch), left hand steadies the watch
+  const tipW = tipTarget(t, _a);
+  aug.apply({ ...pose, ikWR: 0, ikWL: 0 }, camera);        // place the body first (for card plane + head position)
+  if (tipW) {
+    const onPlane = onCardPlane(tipW, _tmp);
+    const held = t < 5.75 ? .1 : 0;                           // tweezers extend 0.1 m below the hand while held
+    pose.ikR = onPlane.clone().add(V(0, held, 0));
+  } else {
+    aug.rig.head.getWorldPosition(_tmp2);
+    // the head group sits at the neck: the ear is ~0.35 head-heights up and to the side of the face
+    const ear = _tmp2.clone().add(_n.set(camera.position.x - pose.x, 0, camera.position.z - pose.z).normalize().cross(V(0, 1, 0)).multiplyScalar(-EAR_OFFSET.x)).add(V(0, AUGUSTA_DIMS.headS * CS * .36, 0));
+    const bench = onCardPlane(WATCH0.clone().add(V(0, .012, 0)), _tmp);
+    const k = ease.inOut(clamp01((t - 6.15) / .55)), dip = (t > 6.15 && t < 6.35) ? -.03 * Math.sin(Math.PI * (t - 6.15) / .2) : 0;
+    pose.ikR = bench.clone().lerp(ear, k).add(V(0, dip + .006 * Math.sin(t * 3), 0));
+  }
+  pose.ikL = onCardPlane(WATCH0.clone().add(V(-.07, .01, .01)), _tmp2).clone();
+  pose.ikBendR = tipW ? -1 : 1; pose.ikBendL = 1;          // at the ear the elbow swings outward, away from the face
+  aug.apply(pose, camera, { faceAge: track.age('mouth', t) });
+
+  // lighting on Augusta: warm lamp key, cool moon rim, low ambient
+  aug.light({ camera, keyPos: LAMP_HEAD, keyColor: new THREE.Color(1.55, 1.2, .82), keyAmt: 1, rimDir: MOON_DIR, rimColor: new THREE.Color(.55, .75, 1.5), rimAmt: 1,
+              ambient: new THREE.Color(.2, .24, .4), baseY: SEAT.y, height: 1.1 * CS });
+
+  // --- tweezers, gear, watch ---
+  aug.handWorld('R', _hand);
+  if (t < 5.75) {
+    tweezers.position.copy(_hand).add(V(0, .006, 0)); tweezers.quaternion.copy(camera.quaternion); tweezers.rotateZ(-.08);
+    tweezers.position.addScaledVector(_n.copy(camera.position).sub(_hand).normalize(), .02);
+  } else { tweezers.position.set(.42, MAT_Y + .003, -1.4); tweezers.rotation.set(-Math.PI / 2, 0, .9); }
+  const slotW = watch.localToWorld(_a.copy(SLOT)).clone();
+  if (t < 3.7) heroGear.position.copy(GEAR0), heroGear.rotation.set(0, .3, 0);
+  else if (t < 4.55) { heroGear.position.copy(tweezers.position).add(V(0, -.105, 0)); heroGear.lookAt(camera.position); heroGear.rotateX(Math.PI / 2 - .5); }
+  else { const k = smooth((t - 4.55) / .06); heroGear.position.copy(slotW); heroGear.rotation.set(0, (t - 4.55) * -4.2, 0); heroGear.position.y += .0005 * (1 - k); }
+  // watch: on the bench, then in her hand, then at her ear
+  if (t < 6.12) { watch.position.copy(WATCH0); watch.rotation.set(0, 0, 0); }
+  else { watch.position.copy(_hand); watch.quaternion.copy(camera.quaternion); watch.rotateX(Math.PI / 2 - .25); watch.rotateZ(.5); }
+  const running = t > 4.55;
+  for (const w of watchGears) {
+    if (w.balance) w.g.rotation.y = running ? 1.4 * Math.sin((t - 4.55) * 18) : 0;
+    else w.g.rotation.y = running ? (t - 4.55) * w.speed * 4 : 0;
+  }
+
+  // --- the shop comes alive ---
+  for (const p of pendulums) {
+    const k = smooth((t - p.start) / .35), ph = (t - p.start) / p.period * Math.PI * 2;
+    p.piv.rotation.z = t > p.start ? p.amp * Math.sin(ph) * k : 0;
+    p.mh.rotation.z = .5 - (t > p.start ? Math.floor((t - p.start) / p.period) * .02 : 0);
+  }
+  for (const s of spin) s.obj.quaternion.copy(s.base).multiply(_q.setFromAxisAngle(s.axis, t > s.start ? -Math.floor((t - s.start) * s.rate) * s.step : 0));
+  hanging.forEach((h, i) => { h.piv.rotation.z = .05 * Math.sin(t * 1.1 + h.ph); h.piv.rotation.x = .03 * Math.sin(t * .8 + i); });
+  for (let i = 0; i < DUST; i++) { const [x, y, z, s] = dustSeed[i]; dustPos[i * 3] = x + .03 * Math.sin(t * .5 + s); dustPos[i * 3 + 1] = y + .025 * Math.sin(t * .4 + s * 1.7) - t * .004; dustPos[i * 3 + 2] = z + .03 * Math.cos(t * .45 + s); }
+  dustGeo.attributes.position.needsUpdate = true;
+  key.intensity = 9 * (1 + .015 * Math.sin(t * 31) * Math.sin(t * 7));   // a tiny filament flicker
+  oilLight.intensity = .8 * (1 + .08 * Math.sin(t * 9) * Math.sin(t * 13.3));
+}
+
+/* =====================================================================
+   8. Sound
+   ===================================================================== */
+function buildSound() {
+  const E = [], add = (t, fn) => E.push({ t, fn });
+  add(0, (c, o, w) => { const s = c.createBufferSource(); s.buffer = Sound.noise; s.loop = true; const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 260; const g = c.createGain(); g.gain.value = .05; s.connect(f); f.connect(g); g.connect(o); s.start(w); s.stop(w + DURATION + .5); });
+  add(2.95, (c, o, w) => synth.noise(c, o, w, 'bandpass', 400, 1, .18, .45, 2200));
+  add(5.5, (c, o, w) => synth.noise(c, o, w, 'bandpass', 500, 1, .14, .4, 2600));
+  add(8.25, (c, o, w) => synth.noise(c, o, w, 'bandpass', 300, .8, .12, .9, 1400));
+  add(3.7, (c, o, w) => synth.osc(c, o, 'sine', 5200, w, .001, .05, .03));
+  add(4.55, (c, o, w) => { synth.osc(c, o, 'square', 2400, w, .001, .08, .03); synth.osc(c, o, 'sine', 3600, w, .001, .1, .08); synth.noise(c, o, w, 'highpass', 5000, 1, .2, .03); });
+  for (let t = 4.65; t < DURATION; t += .2) add(t, (c, o, w) => synth.noise(c, o, w, 'highpass', 6500, 2, t < 6.2 ? .05 : .09, .015));
+  for (const p of pendulums) for (let t = p.start; t < DURATION; t += p.period / 2) { const f = p.period > .9 ? 900 : 1300; add(t, (c, o, w) => { synth.osc(c, o, 'sine', f, w, .001, .07, .05, f * .8); synth.noise(c, o, w, 'bandpass', f * 1.8, 3, .08, .03); }); }
+  add(7.55, (c, o, w) => { for (let i = 0; i < 6; i++) synth.osc(c, o, 'triangle', 880 * Math.pow(2, i / 7), w + i * .03, .003, .03, .3); });
+  add(8.2, (c, o, w) => { for (const f of [261.6, 329.6, 392, 493.9, 587.3]) synth.osc(c, o, 'triangle', f, w, .04, .05, 1.6); synth.osc(c, o, 'sine', 130.8, w, .05, .14, 1.8); });
+  [[659.3, 8.3], [523.3, 8.75], [587.3, 9.2], [392, 9.65]].forEach(([f, t]) => add(t, (c, o, w) => synth.bell(c, o, f, w, .11, 1.8)));
+  E.sort((a, b) => a.t - b.t); return E;
+}
+
+/* =====================================================================
+   9. Boot
+   ===================================================================== */
+(async () => {
+  const [art] = await Promise.all([buildAugustaArt(), buildProps()]);
+  aug = new Character(scene, { art, dims: AUGUSTA_DIMS }, { scale: CS });
+  // find the clock hands inside the Poly Haven models; each turns around its thinnest axis
+  const addSpin = (root, name, start, rate, step) => { const o = node(root, name); if (!o || !o.geometry) return;
+    o.geometry.computeBoundingBox(); const s = o.geometry.boundingBox.getSize(new THREE.Vector3());
+    const axis = s.x < s.y && s.x < s.z ? V(1, 0, 0) : s.y < s.z ? V(0, 1, 0) : V(0, 0, 1);
+    spin.push({ obj: o, base: o.quaternion.clone(), axis, start, rate, step }); };
+  addSpin(props.wall1, 'wall_clock_second_hand', 7.0, 1, Math.PI / 30); addSpin(props.wall2, 'wall_clock_second_hand', 7.3, 1, Math.PI / 30);
+  addSpin(props.alarm1, 'second_hand', 7.4, 1, Math.PI / 30); addSpin(props.alarm2, 'second_hand', 7.6, 1, Math.PI / 30); addSpin(props.alarm3, 'second_hand', 7.8, 1, Math.PI / 30);
+  addSpin(props.grand, 'vintage_grandfather_clock_01_MinuteHand', 8.2, 1, Math.PI / 30);
+  Sound.events = buildSound();
+  stage.onUpdate = update;
+  // performance: the moonlight shadow is a whole extra pass over the room — only on high quality
+  stage.onQuality = (level) => { moon.castShadow = level === 'high'; };
+  stage.onQuality(stage.quality);
+  await stage.boot({ warmTimes: [0, 1.5, 3.2, 4.4, 5.8, 6.8, 7.6, 8.6, 9.6],
+    beforeCompile: () => { tweezers.visible = heroGear.visible = watch.visible = true; } });
+  window.__cam = (time) => { const s = path.at(time); return [s.pos.x, s.pos.y, s.pos.z]; };
+  window.__roughness = () => path.roughness(30);
+})();
+</script>
+</body>
+</html>

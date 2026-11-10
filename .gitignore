@@ -1,3 +1,4 @@
 qa/node_modules/
 qa/out/
 qa/package-lock.json
+exports/

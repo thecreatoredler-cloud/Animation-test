@@ -22,6 +22,8 @@ Never copy their characters, scenes or artwork.
 - **Characters must not look like flat stickers.** They get form shading, a rim light on the light side, scene-colored tint, real cast shadows and contact shadows, and they sit at real depth with props in front of and behind them.
 
 ## 2. Environment
+- **Toon look for the world (2026-11-10 study):** flat painted colours with soft gradients and **black ink contour lines** on props and architecture, not bare PBR realism. Real models are fine as a base, but they need the outline pass and flatter materials.
+- **Many small vignette sets** per video, dressed only where the camera looks, each with readable signs or text.
 - **Every shot has several depth layers:** foreground element (often blurred), action midground, detailed background, hazy far background.
 - **Dense, story-supporting dressing:** signs and readable text, posters, lamps, wires, clutter, books, tools, background life (people, animals, birds). **No empty backgrounds.** The owner explicitly criticised Test 01's empty world.
 - **Prefer real CC0 models** (Poly Haven) for furniture and props, optimized with `tools/fetch-polyhaven.mjs`. Hero story props may be built in code at high detail (pocket watch, gears, pendulum clocks). Never build a whole environment from bare boxes.
@@ -44,7 +46,7 @@ Never copy their characters, scenes or artwork.
 
 ## 4. Camera
 - **New framing every 1–2.5 s.** Never one static angle; even holds keep a slow push or drift.
-- **Shots are joined by motivated camera flights,** not hard cuts: crane reveals, whip pans and whip-orbits, pull-backs, following moving objects, short motion blur.
+- **Shots are separate set-ups, each with its own smooth move, joined without hard cuts:** 4–8 frame cross-dissolves while both shots are moving, whip + dissolve, following a moving object, pushing through a shape (photo, porthole, binoculars), and long crane reveals. A video uses **8–12 locations** and 28–35 set-ups per 60 s (STYLE_GUIDE.md section 8).
 - **The vocabulary:**
   - crane from top-down into the scene;
   - low hero angle with sky behind;
@@ -57,6 +59,8 @@ Never copy their characters, scenes or artwork.
 - **Movement must be smooth.** Use one continuous keyframe path with monotone tangents (`lib/camera.js`). Check the speed-change metric: showcase 28 m/s² is good; above about 80 m/s² outside a deliberate whip is a problem. The owner called Test 01's stop-and-go transitions abrupt.
 
 ## 5. Character animation
+- **Pose-to-pose with holds (2026-11-10 study):** strong poses changed in 2–4 frames and held 8–20 frames with a small bob, timed to the narration. Expression swaps are instant, often with a 2D effect (sweat drop, sparkle, shock lines). The face slides inside the head circle for look direction. Simple, flat character art; integration comes from scene tint and glow.
+- **Hand-drawn 2D effects over the 3D scene:** flames, dust puffs, speed lines, impact bursts.
 - **Ease-in/out, anticipation** (dip or lean before a move), **follow-through** (forearms, hat, bag, hair bun trail the main motion, done by lag-sampling the pose at `t − δ`), **secondary motion**, idle breathing and weight shift.
 - **No sliding feet:** stride is tied to distance travelled.
 - **Expressive faces:** separate eyes, lids, pupils (look-at), brows, mouth shapes; blinks; a small "pop" when an expression changes; story-timed expression beats (concentration → surprise → delight).
@@ -66,7 +70,7 @@ Never copy their characters, scenes or artwork.
 ## 6. Composition, pacing, storytelling
 - **Subject in the middle band of the 9:16 frame;** captions (when used) in the centre-lower third.
 - **Every camera move and animation must serve the story beat.** Reveal, emphasize, guide attention.
-- **Captions:** one or two words at a time, white heavy rounded font, thick black outline, a small pop scale.
+- **Captions:** one or two words at a time (about 3 words per second), white heavy rounded font, thick black outline, soft drop shadow, centred at about 70% of frame height. Words are hard-swapped at full size: **no pop scale** (corrected by the 2026-11-10 frame study).
 - **Sound:** music, foley and effects synced to actions (footsteps from the walk cycle, clicks, chimes).
 
 ## 7. Rendering

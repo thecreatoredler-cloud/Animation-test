@@ -19,6 +19,8 @@ _Last verified: 2026-11-10. All four pages loaded and rendered with no console e
    - Real Poly Haven models and PBR textures, original character Augusta Penn (SVG art, face rig, IK), lamp key vs moon rim, four shots.
    - The owner watched it as an MP4. **No detailed feedback on it has been given yet.**
 
+7. **Second reference study (2026-11-10).** Six reference shorts re-uploaded and analysed frame by frame; results in STYLE_GUIDE.md section 8, and DESIGN_RULES.md updated. Main findings: the references use many separate set-ups joined by short cross-dissolves, a toon-outlined world, simpler pose-to-pose characters, captions without pop, continuous voice-over. **No code has been changed for these findings yet.**
+
 ## Verified working (tested here)
 - **All pages load and render deterministically** through `__seek`, with no errors (capture.js, 2026-11-10).
 - **Showcase 01:**
@@ -102,4 +104,4 @@ Git-ignored: `qa/node_modules`, `qa/out`, `exports/` (MP4s), `tools/node_modules
 - **Real CC0 models from Poly Haven** are allowed (cloud environment "animation-test" allows those hosts).
 - **No more full 60 s videos until the quality showcase is approved** (owner's instruction). The showcase is the quality proof.
 - MP4s are delivered as files in chat, **not committed**. The owner said the showcase MP4 export wasn't needed (it was stopped at 184/300 frames).
-- Work happens on `claude/quality-standard`; the owner merges to `main`.
+- Work happened on `claude/quality-standard` until 2026-11-10; the current session works on `ccr-4aca1a75-voyg75` (which includes it). The owner merges to `main`.

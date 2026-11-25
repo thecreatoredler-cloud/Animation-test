@@ -7,3 +7,13 @@ date,host,cpus,blend,config,frame,seconds,peak_rss_mb,resolution,samples,status,
 2026-11-25,vm,4,s01_padlock.blend,cycles_final_s32,1,71.96,2172,1440x2560,32,ok,pilot v2 materials tuned in EEVEE; CPU 4 vCPU
 2026-11-25,vm,4,s01_padlock.blend,cycles_final_s32,110,92.63,2221,1440x2560,32,ok,pilot v2 materials tuned in EEVEE; CPU 4 vCPU
 2026-11-25,vm,4,s01_padlock.blend,cycles_final_s32,240,70.89,2227,1440x2560,32,ok,pilot v2 materials tuned in EEVEE; CPU 4 vCPU
+2026-11-25,vm,4,s01_padlock_v2.blend,cycles_final_s16,12,68.96,3596,1440x2560,16,ok,pilot-02 v2 baseline; persistent data ON; static cut
+2026-11-25,vm,4,s01_padlock_v2.blend,cycles_final_s16,100,73.89,3637,1440x2560,16,ok,pilot-02 v2 baseline; persistent data ON; static cut
+2026-11-25,vm,4,s01_padlock_v2.blend,cycles_final_s16,165,85.4,3640,1440x2560,16,ok,pilot-02 v2 baseline; persistent data ON; static cut
+2026-11-25,vm,4,s01_padlock_v2.blend,cycles_final_s16,190,85.55,3642,1440x2560,16,ok,pilot-02 v2 baseline; persistent data ON; static cut
+2026-11-25,vm,4,s01_padlock_v2.blend,cycles_final_s16,230,65.68,3643,1440x2560,16,ok,pilot-02 v2 baseline; persistent data ON; static cut
+2026-11-25,vm,4,s01_padlock_v2.blend,cycles_final,12,43.38,3597,1440x2560,8,ok,pilot-02 v2 baseline; persistent data ON; static cut
+2026-11-25,vm,4,s01_padlock_v2.blend,cycles_final,100,45.05,3641,1440x2560,8,ok,pilot-02 v2 baseline; persistent data ON; static cut
+2026-11-25,vm,4,s01_padlock_v2.blend,cycles_final,165,50.56,3646,1440x2560,8,ok,pilot-02 v2 baseline; persistent data ON; static cut
+2026-11-25,vm,4,s01_padlock_v2.blend,cycles_final,190,50.23,3646,1440x2560,8,ok,pilot-02 v2 baseline; persistent data ON; static cut
+2026-11-25,vm,4,s01_padlock_v2.blend,cycles_final,230,41.06,3650,1440x2560,8,ok,pilot-02 v2 baseline; persistent data ON; static cut

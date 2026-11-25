@@ -1,0 +1,2 @@
+frame,seconds,peak_rss_mb,engine,resolution,samples,status,timestamp
+110,49.46,2181,CYCLES,1440x2560,16,ok,1795622618

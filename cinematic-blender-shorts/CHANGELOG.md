@@ -24,3 +24,5 @@
 - v1 (EEVEE preview): shackle not cut (blocked the pins), gold-looking brass, orange wood, table ending in front of the lens. All fixed in v2.
 - v2 → Cycles: radial streaks on cut faces from smooth-shaded boolean fans, fixed by flat-shading the cutter.
 - Camera segment jumps fixed by `center1` continuity.
+- Review pass v1 manual QC: frames 162–200 had black chamber interiors. Root cause (tested): Cycles persistent data plus animated booleans. Fix: persistent data off by default (+17 % time). Added a QC temporal-spike check, which detects the defect automatically.
+- Light objects renamed KeyLight/FillLight/RimLight (avoids name clashes with scene objects).

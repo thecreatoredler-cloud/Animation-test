@@ -46,4 +46,5 @@ These are **projections for this pilot's complexity on this 4-vCPU container.** 
 3. Before lowering resolution, try samples 8 + OIDN, then adaptive threshold 0.05. Use `final_fast` when the projection is still over budget.
 4. Render one shot at a time. `render_manager.py` skips finished frames, so a crash or a fix costs only the frames that changed.
 5. Watch for per-frame fixed cost: animated exact booleans re-evaluate every frame. Keep cutters to the few objects that need them, and apply static booleans at build time (the pilot does this).
-6. Volumes, emission-heavy "fake light" and transparency haven't been measured yet. Benchmark them before using them, as the tutorial did.
+6. **Persistent data is OFF by default.** With it on, a sequential render of the pilot reused stale geometry from the animated booleans. Frames 162–200 lost their chamber walls (they rendered black), yet each one rendered fine on its own. Off costs about 17 % (7.6 vs 6.5 s per review frame) but makes every frame equal to a fresh render. QC's temporal-spike check now catches this class of bug (it flagged exactly frame 162).
+7. Volumes, emission-heavy "fake light" and transparency haven't been measured yet. Benchmark them before using them, as the tutorial did.

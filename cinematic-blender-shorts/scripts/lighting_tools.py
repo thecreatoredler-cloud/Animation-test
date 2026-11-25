@@ -140,20 +140,20 @@ def daylight_studio(target=(0, 0, 0), scale=1.0, key_power=4.0, warm="#FFE9CF", 
     t = Vector(target)
     az, el = math.radians(key_azimuth), math.radians(key_elevation)
     key_dir = Vector((math.sin(az) * math.cos(el), -math.cos(az) * math.cos(el), math.sin(el)))
-    key = sun_light("Key", t, power=key_power, color=warm, angle_deg=3.0, loc=t + key_dir * 10 * scale)
+    key = sun_light("KeyLight", t, power=key_power, color=warm, angle_deg=3.0, loc=t + key_dir * 10 * scale)
     fill_loc = t + Vector((-key_dir.x, key_dir.y, 0.4)).normalized() * 4 * scale
-    fill = area_light("Fill", fill_loc, t, power=150 * scale * scale, size=3 * scale, color=cool)
+    fill = area_light("FillLight", fill_loc, t, power=150 * scale * scale, size=3 * scale, color=cool)
     rim_loc = t + Vector((-key_dir.x * 0.6, 2.5, 1.6)).normalized() * 3.5 * scale
-    rim = area_light("Rim", rim_loc, t, power=400 * scale * scale, size=1.2 * scale, color="#FFFFFF")
+    rim = area_light("RimLight", rim_loc, t, power=400 * scale * scale, size=1.2 * scale, color="#FFFFFF")
     return dict(key=key, fill=fill, rim=rim)
 
 
 def low_key_practical(target=(0, 0, 0), scale=1.0, tint="#3C7BFF"):
     """Night/interior rig (trunk-style): one cool motivated source, faint fill, bright rim."""
     t = Vector(target)
-    key = area_light("Key", t + Vector((0.6, -0.8, 1.2)) * scale, t, 120 * scale * scale, 0.4 * scale, color=tint)
-    fill = area_light("Fill", t + Vector((-1.5, -1.0, 0.3)) * scale, t, 10 * scale * scale, 2 * scale, color="#7FA8FF")
-    rim = area_light("Rim", t + Vector((-0.5, 1.5, 1.0)) * scale, t, 200 * scale * scale, 0.5 * scale, color="#BFD4FF")
+    key = area_light("KeyLight", t + Vector((0.6, -0.8, 1.2)) * scale, t, 120 * scale * scale, 0.4 * scale, color=tint)
+    fill = area_light("FillLight", t + Vector((-1.5, -1.0, 0.3)) * scale, t, 10 * scale * scale, 2 * scale, color="#7FA8FF")
+    rim = area_light("RimLight", t + Vector((-0.5, 1.5, 1.0)) * scale, t, 200 * scale * scale, 0.5 * scale, color="#BFD4FF")
     return dict(key=key, fill=fill, rim=rim)
 
 

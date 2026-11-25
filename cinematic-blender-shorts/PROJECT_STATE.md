@@ -31,6 +31,8 @@ _Last updated: 2026-11-25._
 - EEVEE on CPU-only hosts: 248 s for the first frame, over 300 s for the second.
 - download.blender.org, Hugging Face, OpenAI model host, github.com web, freesound, fonts.google.com, blenderkit: blocked here.
 - Applying a boolean to a mesh that still has a Bevel modifier: "modifier not first" warning. Apply the bevel first (`apply_modifiers`).
+- `use_persistent_data=True` with animated booleans: stale geometry in sequential renders (black interiors from frame 162 on). Keep it off.
+- Naming a light "Key" in a scene that also has a key object: Blender renames one to "Key.001". Lights are now KeyLight/FillLight/RimLight.
 - Smooth-shaded boolean cut faces: radial streaks. Flat-shade the cutter.
 - Brushed noise on large flat faces: radial streak pattern.
 

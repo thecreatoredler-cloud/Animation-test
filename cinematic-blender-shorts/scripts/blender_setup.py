@@ -43,7 +43,10 @@ def new_scene(fps=30, seconds=8.0, engine="BLENDER_EEVEE", name="Shot"):
     scene.render.engine = engine
     scene.render.resolution_x, scene.render.resolution_y = PROFILES["review"]["res"]
     scene.render.resolution_percentage = 100
-    scene.render.use_persistent_data = True  # Cycles: keep BVH between frames
+    # Persistent data OFF: with animated modifiers (booleans) Cycles reused stale geometry in a
+    # sequential render (pilot-01 frames 162-200 went black). ~17 % slower, but every frame is
+    # then identical to a fresh single-frame render. Opt in only for scenes without modifiers.
+    scene.render.use_persistent_data = False
     set_color_management(scene)
     world = bpy.data.worlds.new("World")
     scene.world = world

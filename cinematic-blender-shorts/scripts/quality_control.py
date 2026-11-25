@@ -43,6 +43,7 @@ def check_frames(project_dir, profile, shots, fps):
                 issues.append(f"{shot}: render_log non-ok frames {bad[:10]}")
         prev = None
         size0 = None
+        diffs = []
         for f in files:
             im = cv2.imread(f)
             if im is None:
@@ -58,12 +59,19 @@ def check_frames(project_dir, profile, shots, fps):
             if prev is not None:
                 diff = float(np.abs(g - prev).mean())
                 dmean = abs(m - float(prev.mean()))
+                diffs.append((os.path.basename(f), diff))
                 if diff == 0:
                     issues.append(f"{shot}: duplicate frame {os.path.basename(f)} (frozen)")
                 if dmean > 12 and diff < 25:  # brightness jump without content change = flicker
                     issues.append(f"{shot}: possible flicker at {os.path.basename(f)} (luma jump {dmean:.1f})")
             stats.append((shot, os.path.basename(f), m, s))
             prev = g
+        # temporal spike: a frame-to-frame change far above its neighbours' (pops, stale geometry)
+        vals = np.array([d for _, d in diffs])
+        for i, (name, d) in enumerate(diffs):
+            nb = np.concatenate([vals[max(0, i - 8):i], vals[i + 1:i + 9]])
+            if len(nb) >= 4 and d > 6 and d > 4 * float(np.median(nb)):
+                issues.append(f"{shot}: temporal spike at {name} (change {d:.1f} vs typical {np.median(nb):.1f})")
         if size0 and abs(size0[1] / size0[0] - 9 / 16) > 0.01:
             issues.append(f"{shot}: aspect {size0[1]}x{size0[0]} is not 9:16")
     return issues, stats

@@ -23,17 +23,17 @@
   [
    "Motion: camera never parked (still fraction <= 0.33)",
    "PASS",
-   "still 0.06"
+   "still 0.05"
   ],
   [
    "Motion: zoom rate in reference range 0.25-2.00 %/frame",
    "PASS",
-   "mean |zoom| 0.829 %/frame, in 0.62 / out 0.31"
+   "mean |zoom| 0.822 %/frame, in 0.62 / out 0.31"
   ],
   [
    "Motion: subject animates, not only the camera (residual >= 4 px/s)",
    "PASS",
-   "residual 16.3 px/s"
+   "residual 17.2 px/s"
   ]
  ],
  "motion": {
@@ -51,15 +51,15 @@
   "camera_moves": {
    "push-in": 1
   },
-  "zoom_abs_median": 0.0581,
-  "pan_median": 91.1,
-  "resid_median": 16.3,
-  "zoom_pct_per_frame_mean_abs": 0.829,
+  "zoom_abs_median": 0.0559,
+  "pan_median": 87.6,
+  "resid_median": 17.2,
+  "zoom_pct_per_frame_mean_abs": 0.822,
   "zoom_pct_per_frame_max": 4.294,
   "frac_zooming_in": 0.62,
   "frac_zooming_out": 0.31,
   "pan_px_per_frame_mean": 5.82,
-  "frac_camera_still": 0.06
+  "frac_camera_still": 0.05
  },
  "issues": []
 }

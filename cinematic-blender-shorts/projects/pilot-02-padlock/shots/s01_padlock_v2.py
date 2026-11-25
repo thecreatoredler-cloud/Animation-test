@@ -60,7 +60,7 @@ Z_TOP_IN = 0.0625 - R_S                           # shackle inner top (rests on 
 
 # ------------------------------------------------------------------ timeline (frames)
 F_KEY_ENTER, F_KEY_HOME = 21, 150
-F_SHELL_OUT0, F_SHELL_OUT1 = 30, 66
+F_SHELL_OUT0, F_SHELL_OUT1 = 30, 52            # iter 7: was 66 - the piece filled the frame at 1.6 s
 F_TURN0, F_TURN1 = 162, 186
 F_SHELL_IN0, F_SHELL_IN1 = 204, 232
 EVENTS = []                                       # sound events (written to build/events_*.json)
@@ -398,7 +398,7 @@ def build(scene, ctx):
     ev(t_free + 0.18, "swing_creak", strength=0.4, until=t_free + 1.4, speed=[1.0, 0.7, 0.45, 0.25, 0.1, 0.0])
 
     # front half: anticipation (crack open), slide forward, lift away; returns at the end
-    out_path = [(0, 0, 0), (0, -0.0008, 0), (0, -0.007, 0.001), (-0.075, -0.03, 0.07)]   # exits up-left, away from the lens
+    out_path = [(0, 0, 0), (0, -0.0008, 0), (0, -0.007, 0.001), (-0.06, 0.0, 0.10)]   # iter 7: exits UP and left (was toward the lens)
 
     def shell_fn(f):
         if f <= F_SHELL_OUT0:
@@ -444,10 +444,10 @@ def build(scene, ctx):
         ct.Seg(150, 164, pos=((0.020, -0.062, 0.011), (0.017, -0.050, 0.012)), tgt=(P, (0.0055, 0, 0.0118)),
                lens=(75, 85), fstop=(8.0, 9.0), ease="inout"),
         # 5 rise for the turn: see the plug/cam rotate and the balls retract (higher 3/4)
-        ct.Seg(164, 196, pos=((0.017, -0.050, 0.012), (-0.004, -0.078, 0.040)), tgt=((0.0055, 0, 0.0118), T),
+        ct.Seg(164, 184, pos=((0.017, -0.050, 0.012), (-0.004, -0.078, 0.040)), tgt=((0.0055, 0, 0.0118), T),
                lens=(85, 60), fstop=(9.0, 11.0), ease="inout"),
         # 6 pull out: the complete lock hanging open on the door
-        ct.Seg(196, 240, pos=((-0.004, -0.078, 0.040), (0.060, -0.185, 0.045)), tgt=(T, (0.004, 0, 0.026)),
+        ct.Seg(184, 240, pos=((-0.004, -0.078, 0.040), (0.060, -0.185, 0.045)), tgt=(T, (0.004, 0, 0.026)),
                lens=(60, 45), fstop=(11.0, 6.3), ease="push"),
     ]
     ct.animate(cam_obj, scene, segs, drift=0.00025, seed=2.0)

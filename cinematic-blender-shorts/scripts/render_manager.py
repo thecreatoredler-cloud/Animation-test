@@ -60,8 +60,50 @@ def apply_sets(scene, sets):
         print(f"[render_manager] set {path} = {val!r}")
 
 
+def frame_state_hash(bpy, scene, static_sig):
+    """Hash of everything that changes between frames: object transforms + visibility, camera
+    lens/focus/aperture, light energy/colour, plus a static signature of render settings and
+    material node values. Same hash => the frame would render identically => skip it."""
+    import hashlib
+    h = hashlib.sha1(static_sig.encode())
+    for o in sorted(scene.objects, key=lambda o: o.name):
+        if o.hide_render:
+            continue
+        m = o.matrix_world
+        h.update(o.name.encode())
+        h.update(("%.6f," * 16 % tuple(v for row in m for v in row)).encode())
+        if o.type == "CAMERA":
+            d = o.data
+            h.update(f"{d.lens:.4f}{d.dof.focus_distance:.5f}{d.dof.aperture_fstop:.3f}".encode())
+        elif o.type == "LIGHT":
+            h.update(f"{o.data.energy:.4f}{tuple(round(c, 4) for c in o.data.color)}".encode())
+    return h.hexdigest()
+
+
+def static_signature(bpy, scene):
+    """Render settings + material/world node values (not animated per frame here)."""
+    parts = [scene.render.engine, str(scene.render.resolution_x), str(scene.render.resolution_y),
+             str(getattr(scene.cycles, "samples", "")), str(scene.render.use_motion_blur),
+             str(getattr(scene.cycles, "denoising_prefilter", ""))]
+    for m in list(bpy.data.materials) + list(bpy.data.worlds):
+        if m.node_tree:
+            for n in m.node_tree.nodes:
+                for i in n.inputs:
+                    v = getattr(i, "default_value", None)
+                    try:
+                        parts.append(f"{m.name}.{n.name}.{i.name}={tuple(v) if hasattr(v, '__len__') else v}")
+                    except TypeError:
+                        pass
+                img = getattr(n, "image", None)
+                if img:
+                    parts.append(img.filepath)
+    for me in bpy.data.meshes:
+        parts.append(f"{me.name}:{len(me.vertices)}:{len(me.polygons)}")
+    return "|".join(parts)
+
+
 def render(blend, profile="preview", frames=None, step=1, engine=None, force=False, out_root=None,
-           samples=None, res=None, sets=None):
+           samples=None, res=None, sets=None, changed_only=False):
     import bpy
     import blender_setup as bs
     bpy.ops.wm.open_mainfile(filepath=blend)
@@ -85,6 +127,12 @@ def render(blend, profile="preview", frames=None, step=1, engine=None, force=Fal
     new_log = not os.path.exists(log_path)
     eng = scene.render.engine
     wh = f"{scene.render.resolution_x}x{scene.render.resolution_y}"
+    import json
+    hash_path = os.path.join(out_dir, "frame_hashes.json")
+    old_hashes = json.load(open(hash_path)) if os.path.exists(hash_path) else {}
+    sig = static_signature(bpy, scene)
+    new_hashes = dict(old_hashes)
+    unchanged = 0
     done = skipped = failed = 0
     t_all = time.time()
     with open(log_path, "a", newline="") as fh:
@@ -93,10 +141,16 @@ def render(blend, profile="preview", frames=None, step=1, engine=None, force=Fal
             w.writerow(["frame", "seconds", "peak_rss_mb", "engine", "resolution", "samples", "status", "timestamp"])
         for f in todo:
             path = os.path.join(out_dir, f"{f:04d}.{ext}")
-            if not force and os.path.exists(path) and os.path.getsize(path) > 0:
-                skipped += 1
-                continue
             scene.frame_set(f)
+            hsh = frame_state_hash(bpy, scene, sig)
+            exists = os.path.exists(path) and os.path.getsize(path) > 0
+            if changed_only and exists and old_hashes.get(str(f)) == hsh:
+                unchanged += 1
+                continue
+            if not force and not changed_only and exists:
+                skipped += 1
+                new_hashes.setdefault(str(f), hsh)
+                continue
             scene.render.filepath = path
             t = time.time()
             status = "ok"
@@ -113,10 +167,14 @@ def render(blend, profile="preview", frames=None, step=1, engine=None, force=Fal
             fh.flush()
             if status == "ok":
                 done += 1
+                new_hashes[str(f)] = hsh
+                json.dump(new_hashes, open(hash_path, "w"))
             else:
                 failed += 1
             print(f"[render_manager] {shot} frame {f} {status} {dt:.1f}s", flush=True)
+    json.dump(new_hashes, open(hash_path, "w"))
     summary = dict(shot=shot, profile=profile, engine=eng, resolution=wh, rendered=done, skipped=skipped,
+                   unchanged=unchanged,
                    failed=failed, wall_s=round(time.time() - t_all, 1), out_dir=out_dir)
     print("[render_manager] SUMMARY", summary, flush=True)
     return summary
@@ -139,7 +197,9 @@ if __name__ == "__main__":
     ap.add_argument("--res", default=None, help="WxH override, e.g. 1080x1920")
     ap.add_argument("--out", default=None, help="output dir override (benchmarks)")
     ap.add_argument("--force", action="store_true")
+    ap.add_argument("--changed-only", action="store_true",
+                    help="re-render only frames whose scene-state hash differs from the last render")
     ap.add_argument("--set", nargs="*", default=None, help="scene property overrides, e.g. cycles.use_denoising=False")
     a = ap.parse_args(_argv())
     res = tuple(int(x) for x in a.res.split("x")) if a.res else None
-    render(os.path.abspath(a.blend), a.profile, a.frames, a.step, a.engine, a.force, a.out, a.samples, res, a.set)
+    render(os.path.abspath(a.blend), a.profile, a.frames, a.step, a.engine, a.force, a.out, a.samples, res, a.set, a.changed_only)

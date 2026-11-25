@@ -1,0 +1,66 @@
+{
+ "rows": [
+  [
+   "Frames: complete, readable, 9:16, no black/frozen/flicker",
+   "PASS",
+   "240 frames checked"
+  ],
+  [
+   "Video: resolution",
+   "PASS",
+   "1440x2560 (expected 1440x2560)"
+  ],
+  [
+   "Video: 30 fps",
+   "PASS",
+   "30/1"
+  ],
+  [
+   "Video: audio track present",
+   "PASS",
+   "1 audio stream(s)"
+  ],
+  [
+   "Motion: camera never parked (still fraction <= 0.33)",
+   "PASS",
+   "still 0.04"
+  ],
+  [
+   "Motion: zoom rate in reference range 0.25-2.00 %/frame",
+   "PASS",
+   "mean |zoom| 1.116 %/frame, in 0.48 / out 0.48"
+  ],
+  [
+   "Motion: subject animates, not only the camera (residual >= 4 px/s)",
+   "PASS",
+   "residual 28.0 px/s"
+  ]
+ ],
+ "motion": {
+  "video": "pilot-02-padlock_final.mp4",
+  "width": 1440,
+  "height": 2560,
+  "fps": 30.0,
+  "frames": 240,
+  "analysed_seconds": 8.0,
+  "shots": 3,
+  "shot_len_median": 2.07,
+  "shot_len_mean": 2.67,
+  "shot_len_p10": 1.91,
+  "shot_len_p90": 3.67,
+  "camera_moves": {
+   "pull-out": 2,
+   "push-in": 1
+  },
+  "zoom_abs_median": 0.0916,
+  "pan_median": 188.3,
+  "resid_median": 28.0,
+  "zoom_pct_per_frame_mean_abs": 1.116,
+  "zoom_pct_per_frame_max": 6.945,
+  "frac_zooming_in": 0.48,
+  "frac_zooming_out": 0.48,
+  "pan_px_per_frame_mean": 9.36,
+  "frac_camera_still": 0.04
+ },
+ "issues": []
+}

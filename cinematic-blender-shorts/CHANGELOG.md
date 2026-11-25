@@ -26,3 +26,7 @@
 - Camera segment jumps fixed by `center1` continuity.
 - Review pass v1 manual QC: frames 162–200 had black chamber interiors. Root cause (tested): Cycles persistent data plus animated booleans. Fix: persistent data off by default (+17 % time). Added a QC temporal-spike check, which detects the defect automatically.
 - Light objects renamed KeyLight/FillLight/RimLight (avoids name clashes with scene objects).
+
+### Phase 8: skill packaging
+- SKILL.md (frontmatter validated, all referenced paths exist), README, templates/project_template (PLAN.md, project.json, shot skeleton).
+- Fresh-agent test: built and rendered a new shot from SKILL.md alone. Its gaps were fixed: generated `references/api_quickref.md` (`gen_api_ref.py`), explicit template steps, a library gotchas list, a `BLENDER_PY` line from `check_env.py`, `sb.sphere()`, and Cycles as the default engine.

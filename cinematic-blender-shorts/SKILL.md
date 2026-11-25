@@ -18,12 +18,20 @@ python3 scripts/check_env.py          # Blender/bpy, ffmpeg, CPU/GPU, RAM, netwo
 Read `PROJECT_STATE.md` for what works now and what doesn't.
 
 ## 1. Start a video (gates marked ⛔ need the owner's approval)
-1. Copy `templates/project_template/` to `projects/<slug>/`.
+1. `cp -r templates/project_template projects/<slug>`. Rename `shots/s01_example.py` per shot (`s01_<name>.py`, `s02_…`), then put the same names in order in `project.json["shots"]` and set `title`.
 2. Write `projects/<slug>/PLAN.md` from the template: narration script (30–45 s), scene list with **visual mode** M1–M5 (`references/visual_style_guide.md` §1), per-shot camera move, the subject animation and the secondary motion, sound cues, and assets with licences. ⛔ Owner approves the plan.
 3. Compute the render budget before building: frames × measured s/frame (`benchmarks/README.md`). If it doesn't fit 9 h × 0.8, simplify **now**.
 
 ## 2. Build each shot (one file per shot, independent)
 - A shot file is `projects/<slug>/shots/<shot>.py` with `SECONDS`, `ENGINE` and `build(scene, ctx)`. Copy `projects/pilot-01-padlock/shots/s01_padlock.py` as a worked example: geometry, materials, light rig, mechanism animation driven from one function, a single continuous camera move.
+- **Function signatures: `references/api_quickref.md`** (generated from the code; never guess arguments).
+- Gotchas the library assumes:
+  - Units are metres at real scale. Profiles: preview 360×640, review 720×1280, final 1440×2560 (all Cycles, 8 samples).
+  - `drop_settle` needs the object's origin at its bottom (`rounded_box(..., origin="bottom")`).
+  - Multi-part objects: `sb.parent(child, parent)` **before** baking animation on the parent. Children inherit squash and wobble.
+  - Children of an animated parent take *world-space* locations in `at.bake` (the parent inverse is kept).
+  - `ct.push_in(f0, f1, target, start_dist, end_dist, height, azimuth)`: distances are camera-to-target in metres. At under 0.5 m, f/5.6 blurs the background strongly. Raise `fstop` in `make_camera` to keep more of the table sharp.
+  - Glossy varnish on big table planes mirrors the fill light as a white patch. Lower `varnish`, or move the fill.
 - Library (open the guide only when needed):
   | Need | Module | Guide |
   |---|---|---|

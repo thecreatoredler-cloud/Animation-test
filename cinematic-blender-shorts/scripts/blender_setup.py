@@ -31,7 +31,7 @@ PROFILES = {
 }
 
 
-def new_scene(fps=30, seconds=8.0, engine="BLENDER_EEVEE", name="Shot"):
+def new_scene(fps=30, seconds=8.0, engine="CYCLES", name="Shot"):
     """Reset Blender to an empty scene configured for vertical shorts."""
     bpy.ops.wm.read_factory_settings(use_empty=True)
     scene = bpy.context.scene

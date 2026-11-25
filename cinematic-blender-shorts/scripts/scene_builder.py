@@ -74,6 +74,16 @@ def cylinder(name, radius, depth, axis="Z", loc=(0, 0, 0), verts=48, bevel=0.0, 
     return o
 
 
+def sphere(name, radius, loc=(0, 0, 0), segments=32, rings=16):
+    """UV sphere, smooth-shaded (eyes, pips, drops, cells, balls)."""
+    bm = bmesh.new()
+    bmesh.ops.create_uvsphere(bm, u_segments=segments, v_segments=rings, radius=radius)
+    o = mesh_obj(name, bm)
+    o.location = loc
+    shade_smooth(o, 80)
+    return o
+
+
 def lathe(name, profile, loc=(0, 0, 0), steps=64):
     """Revolve a 2D profile [(r, z), ...] around Z (mugs, bottles, pins, vases)."""
     bm = bmesh.new()
@@ -211,7 +221,7 @@ def build_shot(project_dir, shot, profile="preview", engine=None):
     sys.path.insert(0, os.path.join(project_dir, "shots"))
     mod = load_shot_module(project_dir, shot)
     scene = bs.new_scene(fps=getattr(mod, "FPS", 30), seconds=mod.SECONDS,
-                         engine=engine or getattr(mod, "ENGINE", "BLENDER_EEVEE"), name=shot)
+                         engine=engine or getattr(mod, "ENGINE", "CYCLES"), name=shot)
     ctx = dict(project_dir=project_dir, shot=shot)
     mod.build(scene, ctx)
     bs.apply_profile(scene, profile)

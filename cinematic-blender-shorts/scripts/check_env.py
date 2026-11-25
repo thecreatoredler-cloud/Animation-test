@@ -84,6 +84,10 @@ def main():
     ok = bool(rep["blender"] and rep["ffmpeg"] and rep["ffmpeg_libass"] and all(libs.values()))
     rep["ready"] = ok
     rep["advice"] = []
+    if rep["blender"]:
+        b = rep["blender"]
+        rep["advice"].append(f"export BLENDER_PY={b['path']}   # {b['kind']} {b['version']}; run Blender-side scripts as "
+                             + ("$BLENDER_PY script.py args" if b["kind"] == "bpy-module" else "$BLENDER_PY -b -P script.py -- args"))
     if not rep["blender"]:
         rep["advice"].append("Install Blender or: uv venv -p 3.13 /opt/bvenv && uv pip install -p /opt/bvenv/bin/python bpy==5.3.0")
     if rep["nvidia_gpu"] == "none":

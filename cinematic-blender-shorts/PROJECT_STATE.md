@@ -12,6 +12,7 @@ _Last updated: 2026-11-25._
 | Benchmarks plus ablation and feasibility | `references/render_optimization.md`, `benchmarks/performance_logs/benchmarks.csv` |
 | Synthesised layered sound, captions, assembly | `projects/pilot-01-padlock/output/` |
 | Automatic QC plus contact sheet | `projects/pilot-01-padlock/qc/` |
+| Skill usable without this conversation | `projects/skilltest-dice/` (built by a fresh agent from SKILL.md) |
 | CC0 asset download with licence registry | `assets/registry.json` (Poly Haven HDRI, ambientCG wood) |
 
 ## Current technical configuration
@@ -25,7 +26,7 @@ _Last updated: 2026-11-25._
 3. Only mode M3 (object/mechanism) is proven by a pilot. M1 (skin macro), M2 (cross-section) and M5 (vista) are supported by the tools but untested in a real shot.
 4. The 30–45 s pilot has not been made yet (only the 8 s test).
 5. Benchmarks are for this container. The owner's PC and the Cowork environment are unmeasured. Run `check_env.py --render-test` there.
-6. The skill has not yet been run end to end by a fresh Cowork session (the brief's final test).
+6. Skill independence test: a **fresh agent with no conversation context** (smaller model) followed SKILL.md and built and rendered `projects/skilltest-dice` (a die drops, bounces and settles, with a push-in) in 7 tool calls, with no errors. Its friction notes were fixed: api_quickref.md, template rename steps, gotchas, BLENDER_PY advice, sphere builder. **Not yet tested inside Cowork itself.** Cowork must provide Blender (or pip bpy), ffmpeg and Python libraries. Run `check_env.py` there first.
 
 ## Failed / don't retry
 - EEVEE on CPU-only hosts: 248 s for the first frame, over 300 s for the second.

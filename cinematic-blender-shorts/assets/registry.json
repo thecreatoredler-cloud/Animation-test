@@ -33,13 +33,13 @@
    "Dimitrios Savva",
    "Jarod Guest"
   ],
-  "resolution": "2k",
+  "resolution": "1k",
   "format": "HDR",
   "files": [
-   "assets/hdri/polyhaven/garden_nook/garden_nook_2k.hdr"
+   "assets/hdri/polyhaven/garden_nook/garden_nook_1k.hdr"
   ],
   "blender": "import via gltf / image",
-  "intended_use": "pilot-02 outdoor light + blurred garden background",
+  "intended_use": "pilot-02 (render-cost test: 1k vs 2k)",
   "date": "2026-11-25"
  },
  {

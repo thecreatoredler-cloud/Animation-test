@@ -21,7 +21,7 @@
 Palette, backdrop, light rig (key/fill/rim, warm/cool), time of day, mood.
 
 ## 6. Render budget (before building)
-frames = s × 30 = ___ ; measured s/frame (benchmarks/README.md) = ___ ; projected = ___ h (≤ 7.2 h)
+frames = s × 30 = ___ ; measured s/frame (benchmarks/BENCHMARKS.md) = ___ ; projected = ___ h (≤ 7.2 h)
 
 ## 7. Approval
 - [ ] Owner approved this plan (date)

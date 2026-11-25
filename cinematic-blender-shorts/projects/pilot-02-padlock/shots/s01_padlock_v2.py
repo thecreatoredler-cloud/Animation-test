@@ -139,7 +139,7 @@ def build(scene, ctx):
     brass_cut = M.metal("BrassSection", "#A9853F", roughness=0.26, brushed=True, scale=1400, wear=0.05)
     brass_plug = M.metal("BrassPlug", "#A88640", roughness=0.24, wear=0.08, scale=500)
     brass_pin = M.metal("BrassPin", "#B8913F", roughness=0.22, scale=900, wear=0.05)
-    nickel = M.metal("KeyNickel", "#7C8186", roughness=0.34, scale=700, wear=0.08)
+    nickel = M.metal("KeyNickel", "#3B3F43", roughness=0.3, brushed=True, scale=900, wear=0.12)
     steel = M.metal("SteelDriver", "#9097A0", roughness=0.25, scale=900, wear=0.05)
     spring_m = M.metal("SpringSteel", "#7E858C", roughness=0.32, scale=1200)
     chrome = M.metal("BallChrome", "#D9DDE1", roughness=0.06, scale=2000, wear=0.02)
@@ -285,7 +285,7 @@ def build(scene, ctx):
     staple.data.materials.append(galv)
 
     # ============================================================ world + light
-    lt.hdri_world(scene, os.path.join(ASSETS, "hdri", "polyhaven", "garden_nook", "garden_nook_2k.hdr"),
+    lt.hdri_world(scene, os.path.join(ASSETS, "hdri", "polyhaven", "garden_nook", "garden_nook_1k.hdr"),
                   strength=0.38, rotation_deg=200)
     sun = lt.sun_light("SunKey", (0, 0, 0.02), power=3.0, color="#FFE2BC", angle_deg=1.2, loc=(0.35, -0.45, 0.45))
     rim = lt.area_light("RimTop", (-0.06, 0.012, 0.25), (0, 0, 0.04), power=9.0, size=0.08, color="#E6F0FF")

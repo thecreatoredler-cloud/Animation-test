@@ -35,3 +35,14 @@ Anything on a moving or deforming surface must follow that surface:
 
 ## Characters
 Character rigs (body plus face) need a rig source. See `character_guide.md` for status: not yet built, because no rigged CC0 human is available offline in this environment.
+
+## Added in pilot-02 (tested)
+| Function | Use | Notes |
+|---|---|---|
+| `spring_follower(profile, f0, f1, rest, preload, stiffness, damping, restitution)` | Lock pins, cam followers, valves: a part pushed by a spring onto a moving surface | Returns positions and landing events. Real pins (preload about 250 m/s²) stay in contact; the clicks come from **ridge crossings** (local maxima of the follower path) |
+| `pendulum(t, amp_deg, period_s, decay)` | Anything hanging after a jolt | T ≈ 2π√(L/g): about 0.5 s for a 6 cm hang |
+| `split_by_box` (scene_builder) | Cutaways that keep continuity | Animate the removed piece; don't animate a boolean |
+
+**Different weights, different motion** (pilot-02): the key moves on a hand curve with 5 small hesitations (resistance at each pin). Pins follow contact physics. The plug has stiction (eased start) and a detent settle (7 Hz, decays in about 0.15 s). The shackle snaps (spring, about 60 ms, zeta 0.55). The heavy body drops, then swings slowly (0.5 s period). Never give every part the same ease curve.
+
+**Release logic as a function of the driver:** compute dependent motion from the driving angle (`release_state(theta)` → ball position → shackle lift) instead of keyframing each part. A retime of the turn then retimes everything, including the sound events.

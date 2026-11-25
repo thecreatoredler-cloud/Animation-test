@@ -48,3 +48,27 @@ These are **projections for this pilot's complexity on this 4-vCPU container.** 
 5. Watch for per-frame fixed cost: animated exact booleans re-evaluate every frame. Keep cutters to the few objects that need them, and apply static booleans at build time (the pilot does this).
 6. **Persistent data is OFF by default.** With it on, a sequential render of the pilot reused stale geometry from the animated booleans. Frames 162–200 lost their chamber walls (they rendered black), yet each one rendered fine on its own. Off costs about 17 % (7.6 vs 6.5 s per review frame) but makes every frame equal to a fresh render. QC's temporal-spike check now catches this class of bug (it flagged exactly frame 162).
 7. Volumes, emission-heavy "fake light" and transparency haven't been measured yet. Benchmark them before using them, as the tutorial did.
+
+## Pilot-02 (outdoor HDRI, image textures, metal-in-metal cutaway): target under 60 min for 240 frames at 1440×2560
+Full data: `benchmarks/BENCHMARKS.md`. One-variable ablation on frame 165 (8 samples, single frame, so it includes about 5 s of first-frame load):
+| Variant | s | Δ vs 52.4 |
+|---|---|---|
+| no denoise | 35.8 | **−16.6** |
+| denoise prefilter FAST + quality BALANCED | 39.7 | **−12.7** |
+| simple shaders (no procedural noise) | 47.2 | −5.2 |
+| no light tree | 46.8 | −5.6 |
+| no HDRI (flat world) | 47.4 | −5.0 |
+| no area lights | 47.5 | −4.9 |
+| no motion blur | 48.8 | −3.6 |
+| glossy bounces 1 / bounces low / no DOF / adaptive 0.05 | 50.9–52.3 | ≤ −1.5 |
+**Bottleneck: OIDN at 3.7 MP on 4 cores (accurate prefilter), then sampling.** Combined candidates (sequences, steady state) against a 16-sample reference:
+| Candidate | Steady s/frame | Worst | SSIM vs s16 |
+|---|---|---|---|
+| s8, accurate denoise (old final) | 46.7 | 50.6 | 0.987–0.989 |
+| c1 s8, fast/balanced denoise | 34.3 | 38.0 | 0.984–0.986 |
+| c3 s6, fast denoise, no light tree | 23.7 | 26.2 | 0.981–0.984 |
+| c2 s4, fast/balanced, no light tree | 17.3 | 19.1 | 0.978–0.982 |
+| c4 s4, fast/fast, no light tree | 16.2 | 18.0 | 0.977–0.980 |
+| c5 c4 + PNG level 0 + albedo-only denoise | 15.7 | 17.5 | 0.976–0.991 |
+| **c6 c5 + 1k HDRI (chosen `final`)** | **15.3** | **16.8** | **0.976–0.991** |
+| c7 c6 − micro-bump on small parts | 15.1 | 17.3 | 0.967 (rejected: look changed) |

@@ -24,3 +24,7 @@ Tool: `scripts/lighting_tools.py`. Colour management: `blender_setup.set_color_m
 ## Cost notes (see `render_optimization.md` for measurements)
 - A sun light is cheapest in both engines. Area lights cost more in Cycles than in EEVEE.
 - Avoid volumetric light (god rays, fog volumes) unless the shot needs it. The tutorial measured volumes as a top bottleneck. Fake haze with world-colour mist in the compositor or a gradient card.
+
+## Pilot-02 outdoor rig (tested)
+Garden HDRI (Poly Haven `garden_nook`, **1k** is enough for reflections behind DOF; 2k cost +0.4 s/frame) at 0.38, plus a warm sun (3.0, 1.2°) for crisp outdoor shadows, plus a cool top rim area light (edges the lock top and shackle), plus a cool low bounce fill (the ground). At sun 4.2 and HDRI 0.55 the brass read pale cream.
+**Choosing a setting:** the environment must justify the object (a padlock hangs on a door) and give metals something to reflect. Don't default to a dark studio or to the blue backdrop.

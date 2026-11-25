@@ -59,7 +59,9 @@ def _bump(nt, bsdf, height_socket, strength=0.2, distance=0.001):
     return b
 
 
-def metal(name, color="#C9A14A", roughness=0.3, brushed=False, scale=40.0, wear=0.15):
+def metal(name, color="#C9A14A", roughness=0.3, brushed=False, scale=40.0, wear=0.15, micro_bump=True):
+    """micro_bump=False drops the highlight-breakup bump noise: use it for parts smaller than a
+    few pixels of detail at the final framing (pins, springs, balls) - measured ~3 % faster."""
     m, nt, bsdf = _new(name)
     _set(bsdf, base=hex_to_linear(color), metal=1.0, rough=roughness)
     noise, tc = _rough_variation(nt, bsdf, roughness, amount=wear, scale=scale)
@@ -68,11 +70,11 @@ def metal(name, color="#C9A14A", roughness=0.3, brushed=False, scale=40.0, wear=
         mp.inputs["Scale"].default_value = (1.0, 40.0, 40.0)
         nt.links.new(tc.outputs["Object"], mp.inputs["Vector"])
         nt.links.new(mp.outputs[0], noise.inputs["Vector"])
-    # micro bump for highlight break-up
-    n2 = nt.nodes.new("ShaderNodeTexNoise")
-    n2.inputs["Scale"].default_value = scale * 6
-    nt.links.new(tc.outputs["Object"], n2.inputs["Vector"])
-    _bump(nt, bsdf, n2.outputs["Fac"], strength=0.05)
+    if micro_bump:   # micro bump for highlight break-up
+        n2 = nt.nodes.new("ShaderNodeTexNoise")
+        n2.inputs["Scale"].default_value = scale * 6
+        nt.links.new(tc.outputs["Object"], n2.inputs["Vector"])
+        _bump(nt, bsdf, n2.outputs["Fac"], strength=0.05)
     return m
 
 

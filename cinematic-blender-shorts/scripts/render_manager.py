@@ -131,7 +131,7 @@ if __name__ == "__main__":
     import argparse
     ap = argparse.ArgumentParser()
     ap.add_argument("blend")
-    ap.add_argument("--profile", default="preview", choices=["preview", "review", "final", "final_fast"])
+    ap.add_argument("--profile", default="preview", choices=["preview", "review", "final", "final_hq", "final_fast"])
     ap.add_argument("--frames", default=None, help="e.g. 1-240 or 1,60,120")
     ap.add_argument("--step", type=int, default=1)
     ap.add_argument("--engine", default=None, choices=[None, "BLENDER_EEVEE", "CYCLES"])

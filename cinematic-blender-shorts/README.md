@@ -15,6 +15,19 @@ A reusable, tested system for producing original vertical (9:16) 3D explainer Sh
 | `assets/` | CC0 downloads plus `registry.json`, and the caption font (OFL) |
 | `benchmarks/` | Environment report, render tests, `performance_logs/benchmarks.csv` |
 
+## Where the documentation lives (the owner's requested names → files)
+| Requested | File |
+|---|---|
+| PROJECT_STATUS | `PROJECT_STATE.md` |
+| VISUAL_DIRECTION | `references/visual_style_guide.md` + `projects/<slug>/PLAN.md` |
+| ANIMATION_SYSTEM | `references/animation_guide.md` |
+| CAMERA_SYSTEM | `references/camera_guide.md` |
+| SOUND_DESIGN | `references/audio_guide.md` + `projects/<slug>/SOUND_DESIGN.md` |
+| MATERIALS_AND_LIGHTING | `references/material_guide.md` + `references/lighting_guide.md` |
+| RENDER_OPTIMIZATION | `references/render_optimization.md` |
+| BENCHMARKS | `benchmarks/BENCHMARKS.md` |
+| LESSONS_LEARNED | `LESSONS_LEARNED.md` |
+
 ## Scripts
 | Script | Runs in | Purpose |
 |---|---|---|
@@ -28,7 +41,11 @@ A reusable, tested system for producing original vertical (9:16) 3D explainer Sh
 | `animation_tools.py` | bpy | Springs, slides, hinges, drops with squash, wobble, sway, shape and property ramps |
 | `render_manager.py` | bpy | Resumable frame rendering with per-frame time and memory log; `--set` experiments |
 | `render_benchmark.py` | python3 | Benchmark configs on chosen frames, plus feasibility against the 9 h budget |
-| `audio_tools.py` | python3 | Synthesised layered SFX and the mix (room tone, weight/main/detail, reverb by shot size) |
+| `foley.py` | python3 | **Current sound engine.** Modal-synthesis Foley driven by the shot's contact events, plus LUFS master |
+| `audio_analysis.py` | python3 | BS.1770 loudness, true peak, onsets, spectrogram (objective audio QC) |
+| `render_ablation.py` | bpy | One-variable-at-a-time render cost tests |
+| `image_compare.py` | python3 | SSIM/PSNR and 100 % crops against a reference render |
+| `audio_tools.py` | python3 | Legacy v1 cue-based SFX (superseded by foley.py) |
 | `video_assembler.py` | python3 | Concatenate shots, captions (libass), finish, audio, H.264 MP4 |
 | `quality_control.py` | python3 | Automatic checks plus contact sheet plus a QC report with a manual checklist |
 | `asset_manager.py` | python3 | Poly Haven and ambientCG downloads with a licence registry |

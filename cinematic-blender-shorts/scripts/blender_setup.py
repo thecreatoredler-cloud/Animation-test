@@ -21,10 +21,15 @@ PROFILES = {
     # Animation review: full motion, every frame, ~1/4 of final cost.
     "review": dict(res=(720, 1280), eevee_samples=16, cycles_samples=8, denoise=True,
                    motion_blur=True, dof=True, file_format="JPEG"),
-    # Delivery: 1440x2560 (9:16), 30 fps. 8 samples + OIDN: visually = 16 samples at 100 % crop,
-    # ~0.55x the time (pilot macro frame 28 s vs 49 s).
-    "final": dict(res=(1440, 2560), eevee_samples=48, cycles_samples=8, denoise=True,
-                  motion_blur=True, dof=True, file_format="PNG"),
+    # Delivery: 1440x2560 (9:16), 30 fps. Measured on pilot-02 (benchmarks/BENCHMARKS.md):
+    # 4 samples + OIDN (prefilter FAST, quality FAST, albedo-guided), light tree off, PNG level 0
+    # = 15.3 s/frame steady, SSIM >= 0.976 vs a 16-sample reference. Use final_hq if a scene
+    # shows blotchy denoising (fine textures, glossy noise) at 100 % crop.
+    "final": dict(res=(1440, 2560), eevee_samples=48, cycles_samples=4, denoise=True,
+                  motion_blur=True, dof=True, file_format="PNG", fast_denoise=True),
+    # Previous final: 8 samples, accurate denoise (pilot-02: 46.7 s/frame, SSIM ~0.988).
+    "final_hq": dict(res=(1440, 2560), eevee_samples=64, cycles_samples=8, denoise=True,
+                     motion_blur=True, dof=True, file_format="PNG"),
     # Long videos (45 s+): render 1080x1920 and let video_assembler upscale (lanczos) to 1440x2560.
     "final_fast": dict(res=(1080, 1920), eevee_samples=32, cycles_samples=8, denoise=True,
                        motion_blur=True, dof=True, file_format="PNG"),
@@ -102,7 +107,11 @@ def apply_profile(scene, profile="preview", engine=None):
         c.caustics_reflective = False
         c.caustics_refractive = False
         c.blur_glossy = 1.0
-        c.use_light_tree = True
+        c.use_light_tree = not p.get("fast_denoise", False)   # few lights here: tree cost > benefit
+        if p.get("fast_denoise"):
+            c.denoising_prefilter = "FAST"
+            c.denoising_quality = "FAST"
+            c.denoising_input_passes = "RGB_ALBEDO"
         try:
             c.use_auto_tile = True
             c.tile_size = 1024
@@ -125,7 +134,7 @@ def apply_profile(scene, profile="preview", engine=None):
         img.quality = 92
     else:
         img.color_depth = "8"
-        img.compression = 15
+        img.compression = 0 if p.get("fast_denoise") else 15   # PNG write time matters at 3.7 MP
     img.color_mode = "RGB"
     scene.render.film_transparent = False
     for cam in [o for o in scene.objects if o.type == "CAMERA"]:

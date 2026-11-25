@@ -41,3 +41,9 @@ The camera uses `sensor_fit=VERTICAL` with a 36 mm sensor height, so the lens nu
 | `orbit_arc` 32→40° + radius 0.26→0.2 (hero creep) | pilot-01 frames 1–55 | Smooth; product stays centred |
 | Orbit 40→88° while pushing 0.2→0.12 (into cutaway) | pilot-01 frames 55–110 | Reads as one deliberate move into the cut plane |
 | Pull-out with rise, 0.1→0.2 m, lens 75→55 | pilot-01 frames 190–240 | A clear "resolution" ending |
+
+## Added in pilot-02
+- `Seg(..., focus=((x,y,z), (x,y,z)))`: rack focus between two points, eased with the move. It's independent of the look target.
+- **Tested progression for a mechanism explainer (8 s, one move):** low 3/4 macro on the point of contact (45 mm, f/4, rack from tool to target) → rise and arc to front 3/4 as the cutaway opens → slow push in (65→75 mm) during the process → macro hold on the key state (85 mm, f/9) → re-angle off the rotation axis for the turn → pull out to the complete object in its setting (45 mm).
+- Lens and distance: at under 10 cm, a 60 mm lens frames only part of a 4 cm object, so choose the lens from the required frame width (frame height = distance × 36 / lens).
+- Keep big foreground parts out of camera paths (check every 12 frames in preview).

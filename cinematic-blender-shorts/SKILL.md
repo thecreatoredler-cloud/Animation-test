@@ -5,6 +5,8 @@ description: Produce original 9:16 3D explainer Shorts (bright high-key 3D, cont
 
 # Cinematic Blender Shorts
 
+> **Status: DRAFT, not the final Skill.** Validated on two pilots (pilot-01, pilot-02 padlock). The owner asked to assemble the final Skill only after more real productions. Treat anything not marked "tested" in the guides as unproven. Read `LESSONS_LEARNED.md` before planning.
+
 A tested production system: Python tools that build Blender scenes, animate them deterministically, render resumably, and assemble a captioned and scored MP4. Read only what the current step needs.
 
 ## 0. Before anything: check the machine (2 min)
@@ -20,7 +22,7 @@ Read `PROJECT_STATE.md` for what works now and what doesn't.
 ## 1. Start a video (gates marked ⛔ need the owner's approval)
 1. `cp -r templates/project_template projects/<slug>`. Rename `shots/s01_example.py` per shot (`s01_<name>.py`, `s02_…`), then put the same names in order in `project.json["shots"]` and set `title`.
 2. Write `projects/<slug>/PLAN.md` from the template: narration script (30–45 s), scene list with **visual mode** M1–M5 (`references/visual_style_guide.md` §1), per-shot camera move, the subject animation and the secondary motion, sound cues, and assets with licences. ⛔ Owner approves the plan.
-3. Compute the render budget before building: frames × measured s/frame (`benchmarks/README.md`). If it doesn't fit 9 h × 0.8, simplify **now**.
+3. Compute the render budget before building: frames × measured s/frame (`benchmarks/BENCHMARKS.md`). If it doesn't fit 9 h × 0.8, simplify **now**.
 
 ## 2. Build each shot (one file per shot, independent)
 - A shot file is `projects/<slug>/shots/<shot>.py` with `SECONDS`, `ENGINE` and `build(scene, ctx)`. Copy `projects/pilot-01-padlock/shots/s01_padlock.py` as a worked example: geometry, materials, light rig, mechanism animation driven from one function, a single continuous camera move.
@@ -40,7 +42,9 @@ Read `PROJECT_STATE.md` for what works now and what doesn't.
   | Materials (metal, wood, skin, tissue, PBR sets) | `materials.py` | `references/material_guide.md` |
   | Light rigs, sky backdrop, HDRI | `lighting_tools.py` | `references/lighting_guide.md` |
   | Camera moves (push, pull, orbit, drift) | `camera_tools.py` | `references/camera_guide.md` |
-  | Object and secondary animation | `animation_tools.py` | `references/animation_guide.md` |
+  | Object and secondary animation, contact followers, pendulums | `animation_tools.py` | `references/animation_guide.md` |
+  | Sound: event-driven modal Foley (export events in `build()`) | `foley.py`, `audio_analysis.py` | `references/audio_guide.md` |
+  | Render cost: one-variable ablation and quality vs reference | `render_ablation.py`, `image_compare.py` | `references/render_optimization.md` |
   | CC0 assets with licence registry | `asset_manager.py` | `references/asset_licenses.md` |
   | Characters | **not built yet** | `references/character_guide.md` |
 - Build: `$BLENDER_PY scripts/scene_builder.py projects/<slug> <shot>` writes `blend/<shot>.blend`.

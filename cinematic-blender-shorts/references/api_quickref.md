@@ -17,12 +17,14 @@ Import in a shot file: `import scene_builder as sb, materials as M, lighting_too
 - `rounded_box(name, size, bevel=0.1, segments=4, loc=(0, 0, 0), origin='center')`: size (x,y,z) metres; bevel as fraction of the smallest dimension. origin 'center'|'bottom'.
 - `cylinder(name, radius, depth, axis='Z', loc=(0, 0, 0), verts=48, bevel=0.0, cap_bottom_z=False)`
 - `sphere(name, radius, loc=(0, 0, 0), segments=32, rings=16)`: UV sphere, smooth-shaded (eyes, pips, drops, cells, balls).
+- `arc_points(center, radius, a0_deg, a1_deg, n=16, plane='XZ')`: Points on a circular arc (for exact tubes: shackles, hooks, staples).
 - `lathe(name, profile, loc=(0, 0, 0), steps=64)`: Revolve a 2D profile [(r, z), ...] around Z (mugs, bottles, pins, vases).
-- `tube(name, points, radius, loc=(0, 0, 0), resolution=12, bevel_res=6)`: Curve tube through points (shackles, wires, vessels, stitches).
+- `tube(name, points, radius, loc=(0, 0, 0), resolution=12, bevel_res=6, exact=False)`: Curve tube through points (shackles, wires, vessels, stitches).
 - `helix(name, radius, height, turns, wire, loc=(0, 0, 0), pts_per_turn=24)`
 - `extrude_profile(name, profile_xy, depth, axis='X', loc=(0, 0, 0))`: Closed 2D polygon in the (u, v) plane extruded by depth. Used for key blades, brackets.
 - `boolean(target, cutter, op='DIFFERENCE', apply=True, hide_cutter=True, transfer_material=False)`
 - `curve_to_mesh(obj)`: Replace a curve object by a mesh copy (needed before booleans / weight painting).
+- `split_by_box(obj, box_min, box_max, piece_name=None, cut_material=None)`: Cutaway piece tool: split `obj` into (remaining, piece) with STATIC exact booleans.
 - `apply_modifiers(obj)`
 - `shade_smooth(obj, angle_deg=35)`
 - `empty(name, loc=(0, 0, 0))`
@@ -32,7 +34,7 @@ Import in a shot file: `import scene_builder as sb, materials as M, lighting_too
 
 ## materials
 
-- `metal(name, color='#C9A14A', roughness=0.3, brushed=False, scale=40.0, wear=0.15)`
+- `metal(name, color='#C9A14A', roughness=0.3, brushed=False, scale=40.0, wear=0.15, micro_bump=True)`: micro_bump=False drops the highlight-breakup bump noise: use it for parts smaller than a
 - `plastic(name, color='#202020', roughness=0.35, coat=0.0)`
 - `painted(name, color, roughness=0.45)`
 - `glass(name, color='#FFFFFF', roughness=0.02)`
@@ -40,7 +42,7 @@ Import in a shot file: `import scene_builder as sb, materials as M, lighting_too
 - `skin(name, tone='#C68863', roughness=0.5, pores=1.0, pore_scale=900.0, redness=0.15)`: Matte skin: SSS, pore bump, mottled tone. (Tutorial: 'matte not oily, stronger pores,
 - `tissue(name, color='#B3263A', wet=True)`: Wound / stylised anatomy: saturated, glossy if wet.
 - `emission(name, color='#FFFFFF', strength=5.0)`
-- `image_pbr(name, color_path, rough_path=None, normal_path=None, scale=1.0)`: For downloaded CC0 texture sets (ambientCG / Poly Haven). Box-projected, no UVs needed.
+- `image_pbr(name, color_path, rough_path=None, normal_path=None, scale=1.0, arm_path=None, normal_strength=1.0, rough_mult=1.0, tint=None)`: For downloaded CC0 texture sets (ambientCG / Poly Haven). Box-projected, no UVs needed.
 - `assign(obj, mat, slot=None)`
 
 ## lighting_tools
@@ -58,7 +60,7 @@ Import in a shot file: `import scene_builder as sb, materials as M, lighting_too
 
 - `ease(name, x)`
 - `lerp(a, b, t)`
-- `Seg(f0, f1, pos=None, tgt=None, lens=None, ease='inout', orbit=None, fstop=None, roll=0.0)`: One camera move between frames f0..f1.
+- `Seg(f0, f1, pos=None, tgt=None, lens=None, ease='inout', orbit=None, fstop=None, roll=0.0, focus=None)`: One camera move between frames f0..f1.
 - `make_camera(name='Cam', lens=35.0, fstop=4.0, sensor=36.0, clip=(0.01, 500.0))`
 - `animate(cam, scene, segs, creep=0.0, drift=0.0, seed=0.0, focus_offset=0.0)`: Bake segments to per-frame keys on location/rotation/lens/focus.
 - `push_in(f0, f1, target, start_dist, end_dist, height=0.0, azimuth=0.0, lens=None, ease='push')`: Camera on a line toward target. Zoom/frame ~ (start/end)^(1/frames) - 1.
@@ -79,3 +81,5 @@ Import in a shot file: `import scene_builder as sb, materials as M, lighting_too
 - `sway(obj, f0, f1, axis='Y', amp_deg=2.0, period_s=3.0, seed=0.0)`: Ambient environmental motion (plants, hanging things): two-sine, deterministic.
 - `shape_key_ramp(obj, key_name, f0, f1, v0=0.0, v1=1.0, ease_name='inout')`
 - `value_ramp(owner, path, f0, f1, v0, v1, ease_name='inout', index=-1)`: Animate any float property (material node input, modifier value, light energy).
+- `spring_follower(profile, f0, f1, rest, preload=250.0, stiffness=30000.0, damping=40.0, restitution=0.25, substeps=40, fps=None)`: Contact follower (lock pin, cam follower, valve): returns ({frame: pos}, landings).
+- `pendulum(t, amp_deg, period_s, decay)`: Damped pendulum angle (deg) at time t >= 0 (hanging objects after a jolt).

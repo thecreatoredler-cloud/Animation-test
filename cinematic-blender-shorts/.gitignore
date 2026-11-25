@@ -1,0 +1,8 @@
+# heavy/regenerable outputs (rebuild with scripts)
+projects/*/blend/
+projects/*/renders/
+projects/*/build/
+benchmarks/render_tests/**/*.png
+benchmarks/render_tests/**/*.jpg
+__pycache__/
+*.blend1

@@ -1,0 +1,32 @@
+{
+ "date": "2026-11-25 15:56",
+ "host": "vm",
+ "os": "Linux-6.18.44-fc-v880-x86_64-with-glibc2.39",
+ "python": "3.13.18",
+ "cpus": 4,
+ "cpu_model": "Intel(R) Xeon(R) Processor @ 2.30GHz",
+ "ram_gb": 16.9,
+ "disk_free_gb": 61.5,
+ "nvidia_gpu": "none",
+ "blender": {
+  "kind": "bpy-module",
+  "path": "/opt/bvenv/bin/python",
+  "version": "5.3.0"
+ },
+ "ffmpeg": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
+ "ffmpeg_libass": true,
+ "python_libs": {
+  "numpy": "2.5.3",
+  "cv2": "5.1.0",
+  "scipy": "1.18.1"
+ },
+ "network": {
+  "polyhaven": 200,
+  "ambientcg": 200,
+  "pypi": 200
+ },
+ "ready": true,
+ "advice": [
+  "No GPU: use Cycles CPU profiles; EEVEE falls back to software GL (very slow)"
+ ]
+}

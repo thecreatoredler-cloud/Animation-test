@@ -1,0 +1,3 @@
+date,host,cpus,blend,config,frame,seconds,peak_rss_mb,resolution,samples,status,note
+2026-11-25,container,4,s01_padlock.blend,eevee_final,1,247.89,2562,1440x2560,48,ok,"EEVEE via llvmpipe software GL; includes shader compile"
+2026-11-25,container,4,s01_padlock.blend,eevee_final,60,>300,,1440x2560,48,killed,"still rendering after 5+ min; EEVEE abandoned for CPU-only hosts"

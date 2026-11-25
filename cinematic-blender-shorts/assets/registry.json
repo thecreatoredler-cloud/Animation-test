@@ -1,0 +1,43 @@
+[
+ {
+  "id": "studio_small_09",
+  "name": "Studio Small 09",
+  "source": "Poly Haven",
+  "kind": "hdri",
+  "licence": "CC0 1.0",
+  "url": "https://polyhaven.com/a/studio_small_09",
+  "authors": [
+   "Sergej Majboroda"
+  ],
+  "resolution": "1k",
+  "format": "HDR",
+  "files": [
+   "assets/hdri/polyhaven/studio_small_09/studio_small_09_1k.hdr"
+  ],
+  "blender": "import via gltf / image",
+  "intended_use": "neutral studio IBL for product/macro shots",
+  "date": "2026-11-25"
+ },
+ {
+  "id": "Wood049",
+  "name": "Wood049",
+  "source": "ambientCG",
+  "kind": "material",
+  "licence": "CC0 1.0",
+  "url": "https://ambientcg.com/view?id=Wood049",
+  "authors": [
+   "ambientCG"
+  ],
+  "resolution": "1K-JPG",
+  "format": "JPG/PNG PBR maps",
+  "files": [
+   "assets/textures/ambientcg/Wood049/Wood049_1K-JPG_Color.jpg",
+   "assets/textures/ambientcg/Wood049/Wood049_1K-JPG_Displacement.jpg",
+   "assets/textures/ambientcg/Wood049/Wood049_1K-JPG_NormalGL.jpg",
+   "assets/textures/ambientcg/Wood049/Wood049_1K-JPG_Roughness.jpg"
+  ],
+  "blender": "materials.image_pbr()",
+  "intended_use": "table tops (wood)",
+  "date": "2026-11-25"
+ }
+]

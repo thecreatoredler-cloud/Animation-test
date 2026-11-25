@@ -1,0 +1,25 @@
+{
+  "video": "bone_grafting_explained.mp4",
+  "width": 720,
+  "height": 1280,
+  "fps": 29.97,
+  "frames": 957,
+  "analysed_seconds": 31.9,
+  "shots": 2,
+  "shot_len_median": 15.98,
+  "shot_len_mean": 15.98,
+  "shot_len_p10": 12.0,
+  "shot_len_p90": 19.96,
+  "camera_moves": {
+    "pan/track": 2
+  },
+  "zoom_abs_median": 0.0062,
+  "pan_median": 23.9,
+  "resid_median": 13.2,
+  "zoom_pct_per_frame_mean_abs": 0.25,
+  "zoom_pct_per_frame_max": 11.376,
+  "frac_zooming_in": 0.32,
+  "frac_zooming_out": 0.32,
+  "pan_px_per_frame_mean": 2.17,
+  "frac_camera_still": 0.2
+}

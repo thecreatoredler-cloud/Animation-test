@@ -1,0 +1,27 @@
+{
+  "video": "could_ancient_armor_stop_bullets.mp4",
+  "width": 608,
+  "height": 1080,
+  "fps": 29.97,
+  "frames": 882,
+  "analysed_seconds": 29.4,
+  "shots": 3,
+  "shot_len_median": 6.41,
+  "shot_len_mean": 9.81,
+  "shot_len_p10": 4.22,
+  "shot_len_p90": 16.76,
+  "camera_moves": {
+    "pull-out": 1,
+    "push-in": 1,
+    "pan/track": 1
+  },
+  "zoom_abs_median": 0.0269,
+  "pan_median": 170.5,
+  "resid_median": 31.1,
+  "zoom_pct_per_frame_mean_abs": 1.081,
+  "zoom_pct_per_frame_max": 11.247,
+  "frac_zooming_in": 0.56,
+  "frac_zooming_out": 0.33,
+  "pan_px_per_frame_mean": 8.88,
+  "frac_camera_still": 0.0
+}

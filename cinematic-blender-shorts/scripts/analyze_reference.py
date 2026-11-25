@@ -26,6 +26,8 @@ def main():
     ap.add_argument("--end", type=float, default=None)
     ap.add_argument("--fps", type=float, default=10, help="analysis sample rate")
     ap.add_argument("--cut", type=float, default=0.45, help="histogram distance for a cut")
+    ap.add_argument("--mad", type=float, default=38, help="blurred luma mean-abs-diff for a cut")
+    ap.add_argument("--min-shot", type=float, default=0.4, help="merge shots shorter than this (flashes, whip pans)")
     ap.add_argument("--out", default="analysis"); ap.add_argument("--thumbs", action="store_true")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -51,7 +53,10 @@ def main():
         idx += 1; t = a.start + (idx - 1) / src_fps
         sm = cv2.resize(f, None, fx=scale, fy=scale); g = cv2.cvtColor(sm, cv2.COLOR_BGR2GRAY)
         h = hist(sm)
-        if prevh is None or cv2.compareHist(prevh, h, cv2.HISTCMP_BHATTACHARYYA) > a.cut:
+        # cut = colour histogram jump OR large luminance change that camera motion can't explain
+        hd = 1.0 if prevh is None else cv2.compareHist(prevh, h, cv2.HISTCMP_BHATTACHARYYA)
+        mad = 0.0 if prev is None else float(np.mean(cv2.absdiff(cv2.GaussianBlur(prev, (9, 9), 0), cv2.GaussianBlur(g, (9, 9), 0))))
+        if prevh is None or hd > a.cut or (hd > a.cut * 0.4 and mad > a.mad):
             if cur: shots.append(cur)
             cur = new_shot(t, f)
         else:
@@ -70,6 +75,23 @@ def main():
         cur["end"] = t + dt; cur["frames"] += 1
         prev, prevh = g, h
     if cur: shots.append(cur)
+    merged = []  # absorb micro-shots (flashes / whip transitions) into the previous shot
+    for s in shots:
+        if merged and s["end"] - s["start"] < a.min_shot:
+            m = merged[-1]; m["end"] = s["end"]
+            for k in ("zoom", "pan", "rot", "resid"): m[k] += s[k]
+        else:
+            merged.append(s)
+    shots = merged
+    allz = np.array(sum((s["zoom"] for s in shots), [])) * dt * 100   # % per analysed step
+    allz = allz / step                                                 # -> % per source frame
+    allp = np.array(sum((s["pan"] for s in shots), [])) * dt / step    # px(1000-tall) per source frame
+    zoom_stats = dict(zoom_pct_per_frame_mean_abs=round(float(np.mean(np.abs(allz))), 3) if len(allz) else 0,
+                      zoom_pct_per_frame_max=round(float(np.max(np.abs(allz))), 3) if len(allz) else 0,
+                      frac_zooming_in=round(float(np.mean(allz > 0.05)), 2) if len(allz) else 0,
+                      frac_zooming_out=round(float(np.mean(allz < -0.05)), 2) if len(allz) else 0,
+                      pan_px_per_frame_mean=round(float(np.mean(allp)), 2) if len(allp) else 0,
+                      frac_camera_still=round(float(np.mean((np.abs(allz) < 0.05) & (allp < 0.5))), 2) if len(allz) else 0)
     rows = []
     for i, s in enumerate(shots, 1):
         m = lambda k: float(np.median(np.abs(s[k]))) if s[k] else 0.0
@@ -93,7 +115,7 @@ def main():
                 camera_moves=moves,
                 zoom_abs_median=round(float(np.median([abs(r["zoom_per_s"]) for r in rows])), 4),
                 pan_median=round(float(np.median([r["pan_px_s"] for r in rows])), 1),
-                resid_median=round(float(np.median([r["resid_px_s"] for r in rows])), 1))
+                resid_median=round(float(np.median([r["resid_px_s"] for r in rows])), 1), **zoom_stats)
     json.dump(summ, open(os.path.join(a.out, "summary.json"), "w"), indent=2)
     print(json.dumps(summ, indent=2))
 

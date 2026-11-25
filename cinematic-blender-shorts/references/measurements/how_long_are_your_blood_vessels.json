@@ -1,0 +1,26 @@
+{
+  "video": "how_long_are_your_blood_vessels.mp4",
+  "width": 608,
+  "height": 1080,
+  "fps": 29.97,
+  "frames": 1182,
+  "analysed_seconds": 39.4,
+  "shots": 7,
+  "shot_len_median": 6.07,
+  "shot_len_mean": 5.63,
+  "shot_len_p10": 3.78,
+  "shot_len_p90": 7.54,
+  "camera_moves": {
+    "pull-out": 6,
+    "pan/track": 1
+  },
+  "zoom_abs_median": 0.0365,
+  "pan_median": 76.7,
+  "resid_median": 24.1,
+  "zoom_pct_per_frame_mean_abs": 1.362,
+  "zoom_pct_per_frame_max": 26.922,
+  "frac_zooming_in": 0.13,
+  "frac_zooming_out": 0.7,
+  "pan_px_per_frame_mean": 12.92,
+  "frac_camera_still": 0.06
+}

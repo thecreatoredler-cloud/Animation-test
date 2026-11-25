@@ -1,0 +1,27 @@
+{
+  "video": "stuck_in_a_water_slide.mp4",
+  "width": 720,
+  "height": 1280,
+  "fps": 29.97,
+  "frames": 925,
+  "analysed_seconds": 30.9,
+  "shots": 4,
+  "shot_len_median": 3.13,
+  "shot_len_mean": 7.72,
+  "shot_len_p10": 0.49,
+  "shot_len_p90": 18.63,
+  "camera_moves": {
+    "still": 1,
+    "pull-out": 2,
+    "pan/track": 1
+  },
+  "zoom_abs_median": 0.01,
+  "pan_median": 229.7,
+  "resid_median": 66.7,
+  "zoom_pct_per_frame_mean_abs": 0.876,
+  "zoom_pct_per_frame_max": 61.792,
+  "frac_zooming_in": 0.37,
+  "frac_zooming_out": 0.5,
+  "pan_px_per_frame_mean": 8.81,
+  "frac_camera_still": 0.03
+}

@@ -1,0 +1,25 @@
+{
+  "video": "what_is_a_skin_tag.mp4",
+  "width": 720,
+  "height": 1280,
+  "fps": 30.0,
+  "frames": 966,
+  "analysed_seconds": 32.2,
+  "shots": 2,
+  "shot_len_median": 16.1,
+  "shot_len_mean": 16.1,
+  "shot_len_p10": 9.78,
+  "shot_len_p90": 22.42,
+  "camera_moves": {
+    "pan/track": 2
+  },
+  "zoom_abs_median": 0.0086,
+  "pan_median": 84.6,
+  "resid_median": 30.0,
+  "zoom_pct_per_frame_mean_abs": 0.909,
+  "zoom_pct_per_frame_max": 22.688,
+  "frac_zooming_in": 0.48,
+  "frac_zooming_out": 0.4,
+  "pan_px_per_frame_mean": 8.21,
+  "frac_camera_still": 0.02
+}

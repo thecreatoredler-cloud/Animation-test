@@ -1,0 +1,4 @@
+shot,start,dur,zoom_per_s,pan_px_s,rot_deg_s,resid_px_s,still_frac,camera
+1,0.0,18.22,-0.0552,166.6,1.86,35.4,0.01,pull-out
+2,18.22,6.47,0.02,34.2,1.51,34.5,0.0,push-in
+3,24.69,5.81,-0.0667,78.8,1.88,25.1,0.0,pull-out

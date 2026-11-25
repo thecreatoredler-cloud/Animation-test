@@ -1,0 +1,26 @@
+{
+  "video": "how_splinters_get_unstuck.mp4",
+  "width": 720,
+  "height": 1280,
+  "fps": 29.97,
+  "frames": 910,
+  "analysed_seconds": 30.4,
+  "shots": 3,
+  "shot_len_median": 4.54,
+  "shot_len_mean": 10.12,
+  "shot_len_p10": 1.39,
+  "shot_len_p90": 21.09,
+  "camera_moves": {
+    "push-in": 1,
+    "pan/track": 2
+  },
+  "zoom_abs_median": 0.0003,
+  "pan_median": 40.9,
+  "resid_median": 6.4,
+  "zoom_pct_per_frame_mean_abs": 0.333,
+  "zoom_pct_per_frame_max": 12.889,
+  "frac_zooming_in": 0.32,
+  "frac_zooming_out": 0.3,
+  "pan_px_per_frame_mean": 3.5,
+  "frac_camera_still": 0.33
+}

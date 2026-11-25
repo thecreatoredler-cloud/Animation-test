@@ -1,0 +1,27 @@
+{
+  "video": "an_island_of_toenail_clippings.mp4",
+  "width": 720,
+  "height": 1280,
+  "fps": 29.97,
+  "frames": 875,
+  "analysed_seconds": 29.2,
+  "shots": 7,
+  "shot_len_median": 2.2,
+  "shot_len_mean": 4.17,
+  "shot_len_p10": 1.21,
+  "shot_len_p90": 9.45,
+  "camera_moves": {
+    "push-in": 2,
+    "pull-out": 4,
+    "pan/track": 1
+  },
+  "zoom_abs_median": 0.0824,
+  "pan_median": 177.2,
+  "resid_median": 82.0,
+  "zoom_pct_per_frame_mean_abs": 0.889,
+  "zoom_pct_per_frame_max": 13.864,
+  "frac_zooming_in": 0.34,
+  "frac_zooming_out": 0.62,
+  "pan_px_per_frame_mean": 9.43,
+  "frac_camera_still": 0.01
+}

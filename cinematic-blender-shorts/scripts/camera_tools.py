@@ -50,7 +50,10 @@ class Seg:
     """
 
     def __init__(self, f0, f1, pos=None, tgt=None, lens=None, ease="inout", orbit=None,
-                 fstop=None, roll=0.0):
+                 fstop=None, roll=0.0, focus=None):
+        """focus: point(s) to keep sharp if different from the look target - ((x,y,z), (x,y,z))
+        animates a rack focus over the segment (eased like the move)."""
+        self.focus = focus
         self.f0, self.f1, self.pos, self.tgt, self.lens = f0, f1, pos, tgt, lens
         self.ease, self.orbit, self.fstop, self.roll = ease, orbit, fstop, roll
 
@@ -86,6 +89,9 @@ class Seg:
             fs = (self.fstop, self.fstop) if isinstance(self.fstop, (int, float)) else self.fstop
             pose["fstop"] = fs[0] + (fs[1] - fs[0]) * t
         pose["roll"] = self.roll
+        if self._pair(self.focus):
+            p = self._pair(self.focus)
+            pose["focus"] = lerp(p[0], p[1], t)
         return pose
 
 
@@ -148,7 +154,9 @@ def animate(cam, scene, segs, creep=0.0, drift=0.0, seed=0.0, focus_offset=0.0):
         cam.rotation_euler = e
         cam.data.lens = cur["lens"]
         cam.data.dof.aperture_fstop = cur["fstop"]
-        cam.data.dof.focus_distance = max(0.01, (tgt - pos).length + focus_offset)
+        fp = cur.get("focus")
+        fd = ((Vector(fp) - pos).dot((tgt - pos).normalized())) if fp is not None else (tgt - pos).length
+        cam.data.dof.focus_distance = max(0.005, fd + focus_offset)
         cam.keyframe_insert("location", frame=f)
         cam.keyframe_insert("rotation_euler", frame=f)
         cam.data.keyframe_insert("lens", frame=f)

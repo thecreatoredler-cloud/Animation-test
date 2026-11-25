@@ -51,7 +51,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     lines = []
     for c in captions:
         # quick pop-in (scale 85% -> 100% in 80 ms) like the reference's word swaps
-        txt = "{\\fscx85\\fscy85\\t(0,80,\\fscx100\\fscy100)\\blur0.6}" + c["text"]
+        body = c["text"]
+        while body.count("*") >= 2:   # *emphasis* -> warm gold, same weight (reference keeps captions white)
+            body = body.replace("*", "{\\c&H4FC8F5&}", 1).replace("*", "{\\c&HFFFFFF&}", 1)
+        txt = "{\\fscx85\\fscy85\\t(0,80,\\fscx100\\fscy100)\\blur0.6}" + body
         lines.append(f"Dialogue: 0,{ass_time(c['t0'])},{ass_time(c['t1'])},Cap,,0,0,0,,{txt}")
     with open(path, "w") as fh:
         fh.write(head + "\n".join(lines) + "\n")
@@ -97,7 +100,35 @@ def assemble(project_dir, profile="review", out=None, captions=True, audio=True)
     # 2) audio
     inputs = ["-f", "concat", "-safe", "0", "-i", listfile]
     amap = []
-    if audio and pj.get("audio"):
+    if audio and pj.get("foley"):
+        # event-driven Foley: each shot's build() exported build/events_<shot>.json
+        import foley
+        import numpy as np
+        from scipy.io import wavfile
+        evs, t0 = [], 0.0
+        for shot in pj["shots"]:
+            ej = json.load(open(os.path.join(project_dir, "build", f"events_{shot}.json")))
+            for e in ej["events"]:
+                e = dict(e)
+                e["t"] = e["t"] + t0
+                if "until" in e:
+                    e["until"] = e["until"] + t0
+                evs.append(e)
+            t0 += len(frames_of(project_dir, profile, shot)[1]) / fps
+        fc = pj["foley"]
+        st, info, log = foley.render(evs, fc["recipes"], dur, fc.get("space_timeline"), fc.get("ambience"),
+                                     fc.get("target_lufs", -20.0), fc.get("tp_ceiling", -1.0))
+        wav = os.path.join(build, "foley.wav")
+        wavfile.write(wav, foley.SR, (st * 32767).astype(np.int16))
+        json.dump(dict(info=info, events=log), open(os.path.join(build, "foley_log.json"), "w"), indent=1)
+        print("[video_assembler] foley", info)
+        inputs += ["-i", wav]
+        if pj.get("narration"):
+            inputs += ["-i", os.path.join(project_dir, pj["narration"])]
+            amap = ["-filter_complex", "[1:a][2:a]amix=inputs=2:normalize=0[aout]", "-map", "[aout]"]
+        else:
+            amap = ["-map", "1:a"]
+    elif audio and pj.get("audio"):
         import audio_tools
         a = dict(pj["audio"])
         a["duration"] = dur

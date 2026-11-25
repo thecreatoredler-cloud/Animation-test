@@ -1,0 +1,262 @@
+{
+ "title": "Pilot 02 - how a pin-tumbler padlock opens (v2, 8 s)",
+ "fps": 30,
+ "resolution": [
+  1440,
+  2560
+ ],
+ "duration": 8.0,
+ "shots": [
+  "s01_padlock_v2"
+ ],
+ "captions": [
+  {
+   "t0": 0.1,
+   "t1": 1.25,
+   "text": "How does a key open this?"
+  },
+  {
+   "t0": 1.35,
+   "t1": 2.45,
+   "text": "*Pin pairs* block the plug"
+  },
+  {
+   "t0": 2.55,
+   "t1": 3.75,
+   "text": "The key's ridges lift them"
+  },
+  {
+   "t0": 3.8,
+   "t1": 4.95,
+   "text": "squeezing the springs"
+  },
+  {
+   "t0": 5.0,
+   "t1": 5.42,
+   "text": "*Gaps align*"
+  },
+  {
+   "t0": 5.42,
+   "t1": 5.95,
+   "text": "The plug turns"
+  },
+  {
+   "t0": 5.95,
+   "t1": 6.8,
+   "text": "the cam frees the balls"
+  },
+  {
+   "t0": 6.85,
+   "t1": 7.95,
+   "text": "and the shackle *springs open*"
+  }
+ ],
+ "foley": {
+  "target_lufs": -22.0,
+  "tp_ceiling": -1.0,
+  "space_timeline": [
+   [
+    0,
+    "close"
+   ],
+   [
+    6.4,
+    "medium"
+   ]
+  ],
+  "ambience": {
+   "gain_db": -55
+  },
+  "recipes": {
+   "key_touch": {
+    "kind": "impact",
+    "objects": [
+     "key",
+     "brass_body"
+    ],
+    "mix": [
+     1,
+     0.6
+    ],
+    "hardness_ms": 0.06,
+    "gain_db": -17
+   },
+   "key_enter": {
+    "kind": "impact",
+    "objects": [
+     "key",
+     "brass_body"
+    ],
+    "mix": [
+     0.6,
+     1
+    ],
+    "hardness_ms": 0.1,
+    "gain_db": -23
+   },
+   "key_slide_start": {
+    "kind": "friction",
+    "objects": [
+     "key",
+     "brass_body"
+    ],
+    "mix": [
+     0.7,
+     1
+    ],
+    "rate": [
+     60,
+     420
+    ],
+    "hardness_ms": 0.3,
+    "gain_db": -31
+   },
+   "pin_click": {
+    "kind": "impact",
+    "objects": [
+     "brass_body",
+     "key"
+    ],
+    "mix": [
+     1,
+     0.45
+    ],
+    "hardness_ms": 0.05,
+    "transient": 0.5,
+    "gain_db": -19,
+    "min_strength": 0.45
+   },
+   "pin_land": {
+    "kind": "impact",
+    "objects": [
+     "brass_body"
+    ],
+    "hardness_ms": 0.05,
+    "gain_db": -27
+   },
+   "key_seat": {
+    "kind": "impact",
+    "objects": [
+     "key",
+     "brass_body"
+    ],
+    "mix": [
+     0.8,
+     1
+    ],
+    "hardness_ms": 0.07,
+    "gain_db": -17
+   },
+   "shear_align": {
+    "mute": true,
+    "note": "no physical contact - silence on purpose"
+   },
+   "turn_start": {
+    "kind": "impact",
+    "objects": [
+     "brass_body"
+    ],
+    "hardness_ms": 0.1,
+    "gain_db": -21
+   },
+   "turn_friction": {
+    "kind": "friction",
+    "objects": [
+     "brass_body",
+     "key"
+    ],
+    "mix": [
+     1,
+     0.4
+    ],
+    "rate": [
+     60,
+     220
+    ],
+    "hardness_ms": 0.35,
+    "gain_db": -33
+   },
+   "turn_stop": {
+    "kind": "impact",
+    "objects": [
+     "brass_body",
+     "key"
+    ],
+    "mix": [
+     1,
+     0.5
+    ],
+    "hardness_ms": 0.07,
+    "gain_db": -17
+   },
+   "balls_retract": {
+    "kind": "impact",
+    "objects": [
+     "tiny_steel",
+     "brass_body"
+    ],
+    "mix": [
+     1,
+     0.7
+    ],
+    "hardness_ms": 0.04,
+    "gain_db": -19
+   },
+   "shackle_pop": {
+    "kind": "impact",
+    "objects": [
+     "shackle",
+     "brass_body"
+    ],
+    "mix": [
+     1,
+     0.55
+    ],
+    "hardness_ms": 0.06,
+    "gain_db": -10
+   },
+   "body_drop": {
+    "kind": "impact",
+    "objects": [
+     "staple",
+     "shackle",
+     "door"
+    ],
+    "mix": [
+     1,
+     0.6,
+     0.55
+    ],
+    "hardness_ms": 0.12,
+    "gain_db": -12
+   },
+   "swing_creak": {
+    "kind": "friction",
+    "objects": [
+     "staple",
+     "shackle"
+    ],
+    "mix": [
+     1,
+     0.6
+    ],
+    "rate": [
+     0,
+     70
+    ],
+    "hardness_ms": 0.4,
+    "gain_db": -30
+   },
+   "shell_seat": {
+    "mute": true,
+    "note": "the lifting front half is an illustrative device, not a physical event"
+   }
+  },
+  "loudness_note": "Foley-only test: sparse transients mean the integrated loudness is set by the climax itself; -22 LUFS keeps limiting to ~3.7 dB on one 5 ms transient. With narration, mix voice to -16..-14 LUFS and keep Foley ~8 LU under it."
+ },
+ "finish": {
+  "grain": 2,
+  "vignette": 0.18,
+  "sharpen": 0.2
+ }
+}

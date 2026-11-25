@@ -44,6 +44,8 @@ def rounded_box(name, size, bevel=0.1, segments=4, loc=(0, 0, 0), origin="center
             v.co.z += size[2] / 2
     o = mesh_obj(name, bm)
     o.location = loc
+    if bevel <= 0:
+        return o
     m = o.modifiers.new("Bevel", "BEVEL")
     m.width = bevel * min(size)
     m.segments = segments
@@ -84,6 +86,21 @@ def sphere(name, radius, loc=(0, 0, 0), segments=32, rings=16):
     return o
 
 
+def arc_points(center, radius, a0_deg, a1_deg, n=16, plane="XZ"):
+    """Points on a circular arc (for exact tubes: shackles, hooks, staples)."""
+    cx, cy, cz = center
+    out = []
+    for i in range(n + 1):
+        a = math.radians(a0_deg + (a1_deg - a0_deg) * i / n)
+        if plane == "XZ":
+            out.append((cx + radius * math.cos(a), cy, cz + radius * math.sin(a)))
+        elif plane == "YZ":
+            out.append((cx, cy + radius * math.cos(a), cz + radius * math.sin(a)))
+        else:
+            out.append((cx + radius * math.cos(a), cy + radius * math.sin(a), cz))
+    return out
+
+
 def lathe(name, profile, loc=(0, 0, 0), steps=64):
     """Revolve a 2D profile [(r, z), ...] around Z (mugs, bottles, pins, vases)."""
     bm = bmesh.new()
@@ -100,15 +117,17 @@ def lathe(name, profile, loc=(0, 0, 0), steps=64):
     return o
 
 
-def tube(name, points, radius, loc=(0, 0, 0), resolution=12, bevel_res=6):
-    """Curve tube through points (shackles, wires, vessels, stitches)."""
+def tube(name, points, radius, loc=(0, 0, 0), resolution=12, bevel_res=6, exact=False):
+    """Curve tube through points (shackles, wires, vessels, stitches).
+    exact=True: polyline through the points (use dense points for arcs) - geometry lands
+    exactly where you put it (needed when parts must mate, e.g. shackle legs in bores)."""
     cu = bpy.data.curves.new(name, "CURVE")
     cu.dimensions = "3D"
     cu.bevel_depth = radius
     cu.bevel_resolution = bevel_res
     cu.resolution_u = resolution
     cu.use_fill_caps = True
-    sp = cu.splines.new("POLY" if len(points) < 3 else "NURBS")
+    sp = cu.splines.new("POLY" if (len(points) < 3 or exact) else "NURBS")
     sp.points.add(len(points) - 1)
     for p, co in zip(sp.points, points):
         p.co = (*co, 1.0)
@@ -138,10 +157,13 @@ def extrude_profile(name, profile_xy, depth, axis="X", loc=(0, 0, 0)):
     for v in [e for e in r["geom"] if isinstance(e, bmesh.types.BMVert)]:
         v.co.z += depth
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
-    # map (u, v, w) -> world: u along Y, v along Z, w along X (for axis X thickness)
+    # axis = thickness direction. "X": (u,v) -> (Y,Z); "Y": (u,v) -> (X,Z); "Z": (u,v) -> (X,Y)
     if axis == "X":
         for v in bm.verts:
             v.co = Vector((v.co.z, v.co.x, v.co.y))
+    elif axis == "Y":
+        for v in bm.verts:
+            v.co = Vector((v.co.x, v.co.z, v.co.y))
     o = mesh_obj(name, bm)
     o.location = loc
     return o
@@ -175,6 +197,34 @@ def curve_to_mesh(obj):
     new.name = name
     shade_smooth(new, 60)
     return new
+
+
+def split_by_box(obj, box_min, box_max, piece_name=None, cut_material=None):
+    """Cutaway piece tool: split `obj` into (remaining, piece) with STATIC exact booleans.
+
+    piece = obj inside the axis-aligned box, remaining = obj outside it. Both keep the
+    original materials; new cut faces get `cut_material` (if given) so the section reads
+    as the same part, machined. Animate `piece` (lift away / return) instead of animating
+    a boolean cutter: no per-frame boolean cost, and Cycles persistent data stays safe.
+    """
+    size = [b - a for a, b in zip(box_min, box_max)]
+    ctr = [(a + b) / 2 for a, b in zip(box_min, box_max)]
+
+    def cutter():
+        c = rounded_box("_cut", size, bevel=0.0, loc=ctr)
+        apply_modifiers(c)
+        for poly in c.data.polygons:
+            poly.use_smooth = False  # flat cut faces (smooth boolean fans streak)
+        if cut_material:
+            c.data.materials.append(cut_material)
+        return c
+    piece = obj.copy()
+    piece.data = obj.data.copy()
+    piece.name = piece_name or obj.name + "_piece"
+    bpy.context.scene.collection.objects.link(piece)
+    m = boolean(obj, cutter(), "DIFFERENCE", transfer_material=bool(cut_material))
+    m2 = boolean(piece, cutter(), "INTERSECT", transfer_material=bool(cut_material))
+    return obj, piece
 
 
 def apply_modifiers(obj):
@@ -225,6 +275,8 @@ def build_shot(project_dir, shot, profile="preview", engine=None):
     ctx = dict(project_dir=project_dir, shot=shot)
     mod.build(scene, ctx)
     bs.apply_profile(scene, profile)
+    # Safe only when no geometry is animated by modifiers (see render_optimization.md)
+    scene.render.use_persistent_data = bool(getattr(mod, "PERSISTENT_DATA", False))
     os.makedirs(os.path.join(project_dir, "blend"), exist_ok=True)
     out = os.path.join(project_dir, "blend", shot + ".blend")
     bs.save(out)

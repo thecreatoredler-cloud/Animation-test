@@ -207,3 +207,51 @@ def value_ramp(owner, path, f0, f1, v0, v1, ease_name="inout", index=-1):
             setattr(owner, path, v)
             owner.keyframe_insert(path, frame=f)
     _linear(owner if hasattr(owner, "animation_data") else owner.id_data)
+
+
+def spring_follower(profile, f0, f1, rest, preload=250.0, stiffness=3.0e4, damping=40.0,
+                    restitution=0.25, substeps=40, fps=None):
+    """Contact follower (lock pin, cam follower, valve): returns ({frame: pos}, landings).
+
+    A spring pushes the follower toward `rest` (acceleration = preload + stiffness * offset,
+    m/s^2) but it can never go below the moving surface `profile(t_seconds)` (None = no
+    surface, it rests at `rest`). Rising: carried by the surface. Falling: free under the
+    spring, so it lands and rebounds (restitution) - each landing is returned as
+    (time_s, impact_speed_m_s) for sound sync. Real lock pins: preload ~250 m/s^2 -> a 1 mm
+    drop takes ~3 ms (i.e. effectively instant at 30 fps; motion blur shows it).
+    Deterministic: re-simulated from f0 on every call.
+    """
+    fps = fps or FPS
+    dt = 1.0 / fps / substeps
+    s0 = profile(f0 / fps)
+    x = rest if s0 is None else max(rest, s0)
+    v = 0.0
+    out, landings = {}, []
+    airborne = False
+    for f in range(f0, f1 + 1):
+        for k in range(substeps):
+            t = (f + k / substeps) / fps
+            surf = profile(t)
+            floor = rest if surf is None else max(rest, surf)
+            a = -(preload + stiffness * max(0.0, x - rest)) - damping * v
+            v += a * dt
+            x += v * dt
+            if x > floor + 2e-5:
+                airborne = True               # genuinely off the surface (a drop, not resting)
+            if x <= floor:
+                if airborne and v < -0.03:
+                    landings.append((round(t, 4), round(-v, 3)))
+                    v = -v * restitution
+                else:
+                    v = 0.0
+                airborne = False
+                x = floor
+        out[f] = x
+    return out, landings
+
+
+def pendulum(t, amp_deg, period_s, decay):
+    """Damped pendulum angle (deg) at time t >= 0 (hanging objects after a jolt)."""
+    if t < 0:
+        return 0.0
+    return amp_deg * math.sin(2 * math.pi * t / period_s) * math.exp(-decay * t)

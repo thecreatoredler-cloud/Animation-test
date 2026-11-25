@@ -1,0 +1,70 @@
+{
+ "file": "pilot-01-padlock_review.mp4",
+ "seconds": 8.0,
+ "integrated_lufs": -22.5,
+ "lra_lu": 7.8,
+ "sample_peak_dbfs": -2.8,
+ "true_peak_dbtp": -2.8,
+ "momentary_lufs_per_0_5s": [
+  -42.6,
+  -41.8,
+  -41.9,
+  -26.8,
+  -24.9,
+  -25.7,
+  -25.4,
+  -24.8,
+  -25.6,
+  -26.6,
+  -21.0,
+  -18.7,
+  -14.9,
+  -23.0,
+  -33.6,
+  -44.3
+ ],
+ "events": [
+  {
+   "t": 0.02,
+   "peak_dbfs": -64.6,
+   "above_floor_db": 21.4,
+   "decay_ms": 7945,
+   "centroid_hz": 4504
+  },
+  {
+   "t": 2.0,
+   "peak_dbfs": -20.1,
+   "above_floor_db": 29.8,
+   "decay_ms": 3150,
+   "centroid_hz": 5671
+  },
+  {
+   "t": 4.93,
+   "peak_dbfs": -25.0,
+   "above_floor_db": 10.1,
+   "decay_ms": 10,
+   "centroid_hz": 8623
+  },
+  {
+   "t": 5.5,
+   "peak_dbfs": -12.6,
+   "above_floor_db": 31.9,
+   "decay_ms": 175,
+   "centroid_hz": 3409
+  },
+  {
+   "t": 5.945,
+   "peak_dbfs": -9.8,
+   "above_floor_db": 40.0,
+   "decay_ms": 175,
+   "centroid_hz": 2339
+  },
+  {
+   "t": 6.33,
+   "peak_dbfs": -9.2,
+   "above_floor_db": 40.9,
+   "decay_ms": 350,
+   "centroid_hz": 1711
+  }
+ ]
+}

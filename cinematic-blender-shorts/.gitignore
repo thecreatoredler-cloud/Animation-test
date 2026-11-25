@@ -6,3 +6,5 @@ benchmarks/render_tests/**/*.png
 benchmarks/render_tests/**/*.jpg
 __pycache__/
 *.blend1
+projects/*/build/stems/
+benchmarks/render_tests/**/*.png

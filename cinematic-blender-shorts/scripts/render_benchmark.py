@@ -24,6 +24,9 @@ CONFIGS = {
     "cycles_final_s32": ("final", "CYCLES", 32, None),
     "cycles_final_s16": ("final", "CYCLES", 16, None),
     "eevee_1080": ("final", "BLENDER_EEVEE", None, "1080x1920"),
+    "cycles_final_s4": ("final", "CYCLES", 4, None),
+    "cycles_final_s6": ("final", "CYCLES", 6, None),
+    "cycles_final_s12": ("final", "CYCLES", 12, None),
 }
 
 

@@ -1,0 +1,595 @@
+{
+ "file": "foley.wav",
+ "seconds": 8.0,
+ "integrated_lufs": -22.3,
+ "lra_lu": 6.7,
+ "sample_peak_dbfs": -1.8,
+ "true_peak_dbtp": -0.4,
+ "momentary_lufs_per_0_5s": [
+  -50.6,
+  -26.3,
+  -37.7,
+  -32.9,
+  -25.4,
+  -24.7,
+  -23.1,
+  -22.7,
+  -23.6,
+  -25.8,
+  -25.8,
+  -13.2,
+  -13.1,
+  -33.0,
+  -51.0,
+  -50.9
+ ],
+ "events": [
+  {
+   "t": 0.665,
+   "peak_dbfs": -21.9,
+   "above_floor_db": 37.4,
+   "decay_ms": 30,
+   "centroid_hz": 6791
+  },
+  {
+   "t": 0.835,
+   "peak_dbfs": -45.5,
+   "above_floor_db": 13.6,
+   "decay_ms": 5,
+   "centroid_hz": 4256
+  },
+  {
+   "t": 1.105,
+   "peak_dbfs": -43.8,
+   "above_floor_db": 14.8,
+   "decay_ms": 15,
+   "centroid_hz": 3487
+  },
+  {
+   "t": 1.19,
+   "peak_dbfs": -41.9,
+   "above_floor_db": 16.7,
+   "decay_ms": 10,
+   "centroid_hz": 2728
+  },
+  {
+   "t": 1.23,
+   "peak_dbfs": -41.7,
+   "above_floor_db": 16.9,
+   "decay_ms": 10,
+   "centroid_hz": 3842
+  },
+  {
+   "t": 1.355,
+   "peak_dbfs": -44.1,
+   "above_floor_db": 14.2,
+   "decay_ms": 10,
+   "centroid_hz": 2698
+  },
+  {
+   "t": 1.415,
+   "peak_dbfs": -42.9,
+   "above_floor_db": 15.4,
+   "decay_ms": 50,
+   "centroid_hz": 4105
+  },
+  {
+   "t": 1.54,
+   "peak_dbfs": -42.2,
+   "above_floor_db": 15.9,
+   "decay_ms": 30,
+   "centroid_hz": 3483
+  },
+  {
+   "t": 1.595,
+   "peak_dbfs": -38.6,
+   "above_floor_db": 19.3,
+   "decay_ms": 40,
+   "centroid_hz": 4533
+  },
+  {
+   "t": 1.655,
+   "peak_dbfs": -39.8,
+   "above_floor_db": 17.8,
+   "decay_ms": 30,
+   "centroid_hz": 3747
+  },
+  {
+   "t": 1.725,
+   "peak_dbfs": -40.6,
+   "above_floor_db": 17.1,
+   "decay_ms": 80,
+   "centroid_hz": 4298
+  },
+  {
+   "t": 1.795,
+   "peak_dbfs": -39.5,
+   "above_floor_db": 18.1,
+   "decay_ms": 20,
+   "centroid_hz": 3431
+  },
+  {
+   "t": 1.845,
+   "peak_dbfs": -38.4,
+   "above_floor_db": 19.2,
+   "decay_ms": 10,
+   "centroid_hz": 5491
+  },
+  {
+   "t": 1.9,
+   "peak_dbfs": -36.1,
+   "above_floor_db": 21.4,
+   "decay_ms": 25,
+   "centroid_hz": 4547
+  },
+  {
+   "t": 1.945,
+   "peak_dbfs": -34.3,
+   "above_floor_db": 23.2,
+   "decay_ms": 10,
+   "centroid_hz": 3618
+  },
+  {
+   "t": 2.0,
+   "peak_dbfs": -38.0,
+   "above_floor_db": 19.5,
+   "decay_ms": 25,
+   "centroid_hz": 4345
+  },
+  {
+   "t": 2.04,
+   "peak_dbfs": -37.2,
+   "above_floor_db": 20.1,
+   "decay_ms": 25,
+   "centroid_hz": 4742
+  },
+  {
+   "t": 2.095,
+   "peak_dbfs": -34.8,
+   "above_floor_db": 22.2,
+   "decay_ms": 60,
+   "centroid_hz": 4255
+  },
+  {
+   "t": 2.18,
+   "peak_dbfs": -34.6,
+   "above_floor_db": 22.4,
+   "decay_ms": 35,
+   "centroid_hz": 4842
+  },
+  {
+   "t": 2.22,
+   "peak_dbfs": -35.1,
+   "above_floor_db": 21.5,
+   "decay_ms": 15,
+   "centroid_hz": 5028
+  },
+  {
+   "t": 2.27,
+   "peak_dbfs": -22.0,
+   "above_floor_db": 34.6,
+   "decay_ms": 20,
+   "centroid_hz": 6120
+  },
+  {
+   "t": 2.31,
+   "peak_dbfs": -33.4,
+   "above_floor_db": 23.3,
+   "decay_ms": 95,
+   "centroid_hz": 5815
+  },
+  {
+   "t": 2.42,
+   "peak_dbfs": -36.1,
+   "above_floor_db": 19.7,
+   "decay_ms": 80,
+   "centroid_hz": 5018
+  },
+  {
+   "t": 2.52,
+   "peak_dbfs": -27.0,
+   "above_floor_db": 28.7,
+   "decay_ms": 30,
+   "centroid_hz": 5916
+  },
+  {
+   "t": 2.65,
+   "peak_dbfs": -36.5,
+   "above_floor_db": 18.9,
+   "decay_ms": 20,
+   "centroid_hz": 4634
+  },
+  {
+   "t": 2.705,
+   "peak_dbfs": -36.2,
+   "above_floor_db": 18.9,
+   "decay_ms": 120,
+   "centroid_hz": 4799
+  },
+  {
+   "t": 2.775,
+   "peak_dbfs": -34.7,
+   "above_floor_db": 20.1,
+   "decay_ms": 35,
+   "centroid_hz": 4915
+  },
+  {
+   "t": 2.83,
+   "peak_dbfs": -21.5,
+   "above_floor_db": 33.3,
+   "decay_ms": 20,
+   "centroid_hz": 6246
+  },
+  {
+   "t": 2.87,
+   "peak_dbfs": -23.5,
+   "above_floor_db": 30.5,
+   "decay_ms": 30,
+   "centroid_hz": 6685
+  },
+  {
+   "t": 2.91,
+   "peak_dbfs": -33.9,
+   "above_floor_db": 20.2,
+   "decay_ms": 10,
+   "centroid_hz": 5075
+  },
+  {
+   "t": 2.965,
+   "peak_dbfs": -23.2,
+   "above_floor_db": 30.7,
+   "decay_ms": 30,
+   "centroid_hz": 6386
+  },
+  {
+   "t": 3.02,
+   "peak_dbfs": -33.6,
+   "above_floor_db": 19.9,
+   "decay_ms": 30,
+   "centroid_hz": 4476
+  },
+  {
+   "t": 3.1,
+   "peak_dbfs": -26.5,
+   "above_floor_db": 26.5,
+   "decay_ms": 60,
+   "centroid_hz": 5922
+  },
+  {
+   "t": 3.25,
+   "peak_dbfs": -33.9,
+   "above_floor_db": 18.4,
+   "decay_ms": 30,
+   "centroid_hz": 4873
+  },
+  {
+   "t": 3.3,
+   "peak_dbfs": -21.7,
+   "above_floor_db": 29.9,
+   "decay_ms": 30,
+   "centroid_hz": 6335
+  },
+  {
+   "t": 3.38,
+   "peak_dbfs": -21.9,
+   "above_floor_db": 29.7,
+   "decay_ms": 20,
+   "centroid_hz": 6427
+  },
+  {
+   "t": 3.465,
+   "peak_dbfs": -22.8,
+   "above_floor_db": 28.7,
+   "decay_ms": 25,
+   "centroid_hz": 6300
+  },
+  {
+   "t": 3.515,
+   "peak_dbfs": -35.8,
+   "above_floor_db": 15.8,
+   "decay_ms": 15,
+   "centroid_hz": 4601
+  },
+  {
+   "t": 3.6,
+   "peak_dbfs": -20.9,
+   "above_floor_db": 32.5,
+   "decay_ms": 20,
+   "centroid_hz": 6699
+  },
+  {
+   "t": 3.65,
+   "peak_dbfs": -35.2,
+   "above_floor_db": 18.2,
+   "decay_ms": 10,
+   "centroid_hz": 4718
+  },
+  {
+   "t": 3.71,
+   "peak_dbfs": -38.2,
+   "above_floor_db": 15.7,
+   "decay_ms": 20,
+   "centroid_hz": 4291
+  },
+  {
+   "t": 3.8,
+   "peak_dbfs": -20.6,
+   "above_floor_db": 35.7,
+   "decay_ms": 20,
+   "centroid_hz": 6686
+  },
+  {
+   "t": 3.84,
+   "peak_dbfs": -30.6,
+   "above_floor_db": 25.2,
+   "decay_ms": 25,
+   "centroid_hz": 6438
+  },
+  {
+   "t": 3.885,
+   "peak_dbfs": -35.7,
+   "above_floor_db": 20.7,
+   "decay_ms": 20,
+   "centroid_hz": 5607
+  },
+  {
+   "t": 3.925,
+   "peak_dbfs": -37.1,
+   "above_floor_db": 19.8,
+   "decay_ms": 10,
+   "centroid_hz": 4377
+  },
+  {
+   "t": 3.965,
+   "peak_dbfs": -22.6,
+   "above_floor_db": 34.7,
+   "decay_ms": 25,
+   "centroid_hz": 6426
+  },
+  {
+   "t": 4.02,
+   "peak_dbfs": -39.7,
+   "above_floor_db": 17.5,
+   "decay_ms": 20,
+   "centroid_hz": 4042
+  },
+  {
+   "t": 4.065,
+   "peak_dbfs": -25.3,
+   "above_floor_db": 31.9,
+   "decay_ms": 20,
+   "centroid_hz": 6953
+  },
+  {
+   "t": 4.105,
+   "peak_dbfs": -32.2,
+   "above_floor_db": 25.1,
+   "decay_ms": 35,
+   "centroid_hz": 7197
+  },
+  {
+   "t": 4.205,
+   "peak_dbfs": -44.3,
+   "above_floor_db": 13.9,
+   "decay_ms": 25,
+   "centroid_hz": 3997
+  },
+  {
+   "t": 4.245,
+   "peak_dbfs": -45.9,
+   "above_floor_db": 12.7,
+   "decay_ms": 20,
+   "centroid_hz": 4475
+  },
+  {
+   "t": 4.285,
+   "peak_dbfs": -42.0,
+   "above_floor_db": 17.0,
+   "decay_ms": 15,
+   "centroid_hz": 3415
+  },
+  {
+   "t": 4.335,
+   "peak_dbfs": -46.2,
+   "above_floor_db": 12.8,
+   "decay_ms": 15,
+   "centroid_hz": 4164
+  },
+  {
+   "t": 4.38,
+   "peak_dbfs": -46.0,
+   "above_floor_db": 13.9,
+   "decay_ms": 20,
+   "centroid_hz": 4864
+  },
+  {
+   "t": 4.435,
+   "peak_dbfs": -47.1,
+   "above_floor_db": 14.0,
+   "decay_ms": 10,
+   "centroid_hz": 3504
+  },
+  {
+   "t": 4.49,
+   "peak_dbfs": -23.6,
+   "above_floor_db": 38.0,
+   "decay_ms": 20,
+   "centroid_hz": 7016
+  },
+  {
+   "t": 4.605,
+   "peak_dbfs": -46.2,
+   "above_floor_db": 15.6,
+   "decay_ms": 10,
+   "centroid_hz": 2842
+  },
+  {
+   "t": 4.66,
+   "peak_dbfs": -45.2,
+   "above_floor_db": 16.9,
+   "decay_ms": 10,
+   "centroid_hz": 3646
+  },
+  {
+   "t": 4.715,
+   "peak_dbfs": -44.5,
+   "above_floor_db": 17.7,
+   "decay_ms": 10,
+   "centroid_hz": 5039
+  },
+  {
+   "t": 4.76,
+   "peak_dbfs": -49.1,
+   "above_floor_db": 13.4,
+   "decay_ms": 25,
+   "centroid_hz": 3982
+  },
+  {
+   "t": 4.91,
+   "peak_dbfs": -50.4,
+   "above_floor_db": 13.3,
+   "decay_ms": 10,
+   "centroid_hz": 3930
+  },
+  {
+   "t": 5.0,
+   "peak_dbfs": -19.0,
+   "above_floor_db": 44.7,
+   "decay_ms": 20,
+   "centroid_hz": 6656
+  },
+  {
+   "t": 5.4,
+   "peak_dbfs": -26.1,
+   "above_floor_db": 37.7,
+   "decay_ms": 15,
+   "centroid_hz": 6255
+  },
+  {
+   "t": 5.445,
+   "peak_dbfs": -38.0,
+   "above_floor_db": 25.7,
+   "decay_ms": 10,
+   "centroid_hz": 4510
+  },
+  {
+   "t": 5.5,
+   "peak_dbfs": -39.3,
+   "above_floor_db": 24.5,
+   "decay_ms": 25,
+   "centroid_hz": 4342
+  },
+  {
+   "t": 5.545,
+   "peak_dbfs": -38.6,
+   "above_floor_db": 25.1,
+   "decay_ms": 15,
+   "centroid_hz": 4820
+  },
+  {
+   "t": 5.585,
+   "peak_dbfs": -36.4,
+   "above_floor_db": 27.2,
+   "decay_ms": 55,
+   "centroid_hz": 4011
+  },
+  {
+   "t": 5.66,
+   "peak_dbfs": -40.7,
+   "above_floor_db": 22.8,
+   "decay_ms": 615,
+   "centroid_hz": 4703
+  },
+  {
+   "t": 5.7,
+   "peak_dbfs": -34.9,
+   "above_floor_db": 28.6,
+   "decay_ms": 35,
+   "centroid_hz": 3849
+  },
+  {
+   "t": 5.765,
+   "peak_dbfs": -40.6,
+   "above_floor_db": 22.2,
+   "decay_ms": 475,
+   "centroid_hz": 4716
+  },
+  {
+   "t": 5.83,
+   "peak_dbfs": -24.9,
+   "above_floor_db": 37.7,
+   "decay_ms": 40,
+   "centroid_hz": 6705
+  },
+  {
+   "t": 5.91,
+   "peak_dbfs": -11.1,
+   "above_floor_db": 50.5,
+   "decay_ms": 85,
+   "centroid_hz": 4510
+  },
+  {
+   "t": 6.085,
+   "peak_dbfs": -31.1,
+   "above_floor_db": 30.3,
+   "decay_ms": 45,
+   "centroid_hz": 4362
+  },
+  {
+   "t": 6.15,
+   "peak_dbfs": -31.1,
+   "above_floor_db": 30.1,
+   "decay_ms": 70,
+   "centroid_hz": 5477
+  },
+  {
+   "t": 6.2,
+   "peak_dbfs": -21.3,
+   "above_floor_db": 39.4,
+   "decay_ms": 25,
+   "centroid_hz": 6288
+  },
+  {
+   "t": 6.245,
+   "peak_dbfs": -31.2,
+   "above_floor_db": 29.2,
+   "decay_ms": 20,
+   "centroid_hz": 3367
+  },
+  {
+   "t": 6.3,
+   "peak_dbfs": -31.6,
+   "above_floor_db": 27.6,
+   "decay_ms": 25,
+   "centroid_hz": 2874
+  },
+  {
+   "t": 6.43,
+   "peak_dbfs": -32.0,
+   "above_floor_db": 25.2,
+   "decay_ms": 55,
+   "centroid_hz": 2738
+  },
+  {
+   "t": 6.525,
+   "peak_dbfs": -33.3,
+   "above_floor_db": 24.2,
+   "decay_ms": 25,
+   "centroid_hz": 4030
+  },
+  {
+   "t": 6.585,
+   "peak_dbfs": -32.3,
+   "above_floor_db": 25.2,
+   "decay_ms": 25,
+   "centroid_hz": 3159
+  },
+  {
+   "t": 6.755,
+   "peak_dbfs": -47.5,
+   "above_floor_db": 10.8,
+   "decay_ms": 15,
+   "centroid_hz": 1759
+  }
+ ]
+}

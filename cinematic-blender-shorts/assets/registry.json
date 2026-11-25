@@ -1,5 +1,48 @@
 [
  {
+  "id": "distressed_painted_planks",
+  "name": "Distressed Painted Planks",
+  "source": "Poly Haven",
+  "kind": "texture",
+  "licence": "CC0 1.0",
+  "url": "https://polyhaven.com/a/distressed_painted_planks",
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "resolution": "1k",
+  "format": "glTF 2.0 (+bin, textures)",
+  "files": [
+   "assets/textures/polyhaven/distressed_painted_planks/distressed_painted_planks_1k.gltf",
+   "assets/textures/polyhaven/distressed_painted_planks/textures/distressed_painted_planks_nor_gl_1k.jpg",
+   "assets/textures/polyhaven/distressed_painted_planks/textures/distressed_painted_planks_arm_1k.jpg",
+   "assets/textures/polyhaven/distressed_painted_planks/distressed_painted_planks.bin",
+   "assets/textures/polyhaven/distressed_painted_planks/textures/distressed_painted_planks_diff_1k.jpg"
+  ],
+  "blender": "import via gltf / image",
+  "intended_use": "pilot-02 shed door",
+  "date": "2026-11-25"
+ },
+ {
+  "id": "garden_nook",
+  "name": "Garden Nook",
+  "source": "Poly Haven",
+  "kind": "hdri",
+  "licence": "CC0 1.0",
+  "url": "https://polyhaven.com/a/garden_nook",
+  "authors": [
+   "Dimitrios Savva",
+   "Jarod Guest"
+  ],
+  "resolution": "2k",
+  "format": "HDR",
+  "files": [
+   "assets/hdri/polyhaven/garden_nook/garden_nook_2k.hdr"
+  ],
+  "blender": "import via gltf / image",
+  "intended_use": "pilot-02 outdoor light + blurred garden background",
+  "date": "2026-11-25"
+ },
+ {
   "id": "studio_small_09",
   "name": "Studio Small 09",
   "source": "Poly Haven",

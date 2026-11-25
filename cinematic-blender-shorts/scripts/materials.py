@@ -177,8 +177,11 @@ def emission(name, color="#FFFFFF", strength=5.0):
     return m
 
 
-def image_pbr(name, color_path, rough_path=None, normal_path=None, scale=1.0):
-    """For downloaded CC0 texture sets (ambientCG / Poly Haven). Box-projected, no UVs needed."""
+def image_pbr(name, color_path, rough_path=None, normal_path=None, scale=1.0, arm_path=None,
+              normal_strength=1.0, rough_mult=1.0, tint=None):
+    """For downloaded CC0 texture sets (ambientCG / Poly Haven). Box-projected, no UVs needed.
+    arm_path: Poly Haven packed AO/Roughness/Metal map (G channel = roughness).
+    tint: optional hex colour multiplied over the base colour (art-direct a texture's hue)."""
     m, nt, bsdf = _new(name)
     tc = nt.nodes.new("ShaderNodeTexCoord")
     mp = nt.nodes.new("ShaderNodeMapping")
@@ -194,11 +197,34 @@ def image_pbr(name, color_path, rough_path=None, normal_path=None, scale=1.0):
             t.image.colorspace_settings.name = "Non-Color"
         nt.links.new(mp.outputs[0], t.inputs["Vector"])
         return t
-    nt.links.new(tex(color_path).outputs[0], bsdf.inputs["Base Color"])
+    col = tex(color_path).outputs[0]
+    if tint:
+        mul = nt.nodes.new("ShaderNodeMix")
+        mul.data_type = "RGBA"
+        mul.blend_type = "MULTIPLY"
+        mul.inputs["Factor"].default_value = 1.0
+        nt.links.new(col, mul.inputs[6])
+        mul.inputs[7].default_value = hex_to_linear(tint)
+        col = mul.outputs[2]
+    nt.links.new(col, bsdf.inputs["Base Color"])
+    rough = None
     if rough_path:
-        nt.links.new(tex(rough_path, True).outputs[0], bsdf.inputs["Roughness"])
+        rough = tex(rough_path, True).outputs[0]
+    elif arm_path:
+        sep = nt.nodes.new("ShaderNodeSeparateColor")
+        nt.links.new(tex(arm_path, True).outputs[0], sep.inputs[0])
+        rough = sep.outputs[1]
+    if rough is not None:
+        if rough_mult != 1.0:
+            mm = nt.nodes.new("ShaderNodeMath")
+            mm.operation = "MULTIPLY"
+            mm.inputs[1].default_value = rough_mult
+            nt.links.new(rough, mm.inputs[0])
+            rough = mm.outputs[0]
+        nt.links.new(rough, bsdf.inputs["Roughness"])
     if normal_path:
         nm = nt.nodes.new("ShaderNodeNormalMap")
+        nm.inputs["Strength"].default_value = normal_strength
         nt.links.new(tex(normal_path, True).outputs[0], nm.inputs["Color"])
         nt.links.new(nm.outputs[0], bsdf.inputs["Normal"])
     return m

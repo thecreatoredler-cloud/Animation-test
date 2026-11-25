@@ -1,3 +1,9 @@
 date,host,cpus,blend,config,frame,seconds,peak_rss_mb,resolution,samples,status,note
 2026-11-25,container,4,s01_padlock.blend,eevee_final,1,247.89,2562,1440x2560,48,ok,"EEVEE via llvmpipe software GL; includes shader compile"
 2026-11-25,container,4,s01_padlock.blend,eevee_final,60,>300,,1440x2560,48,killed,"still rendering after 5+ min; EEVEE abandoned for CPU-only hosts"
+2026-11-25,vm,4,s01_padlock.blend,cycles_final_s16,1,36.17,2173,1440x2560,16,ok,pilot v2 materials tuned in EEVEE; CPU 4 vCPU
+2026-11-25,vm,4,s01_padlock.blend,cycles_final_s16,110,47.21,2223,1440x2560,16,ok,pilot v2 materials tuned in EEVEE; CPU 4 vCPU
+2026-11-25,vm,4,s01_padlock.blend,cycles_final_s16,240,37.03,2225,1440x2560,16,ok,pilot v2 materials tuned in EEVEE; CPU 4 vCPU
+2026-11-25,vm,4,s01_padlock.blend,cycles_final_s32,1,71.96,2172,1440x2560,32,ok,pilot v2 materials tuned in EEVEE; CPU 4 vCPU
+2026-11-25,vm,4,s01_padlock.blend,cycles_final_s32,110,92.63,2221,1440x2560,32,ok,pilot v2 materials tuned in EEVEE; CPU 4 vCPU
+2026-11-25,vm,4,s01_padlock.blend,cycles_final_s32,240,70.89,2227,1440x2560,32,ok,pilot v2 materials tuned in EEVEE; CPU 4 vCPU

@@ -1,0 +1,4 @@
+frame,seconds,peak_rss_mb,engine,resolution,samples,status,timestamp
+1,71.96,2172,CYCLES,1440x2560,32,ok,1795622307
+110,92.63,2221,CYCLES,1440x2560,32,ok,1795622400
+240,70.89,2227,CYCLES,1440x2560,32,ok,1795622471

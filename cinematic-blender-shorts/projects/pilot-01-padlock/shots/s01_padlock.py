@@ -20,7 +20,7 @@ import camera_tools as ct
 import animation_tools as at
 
 SECONDS = 8.0
-ENGINE = "BLENDER_EEVEE"
+ENGINE = "CYCLES"   # CPU host: EEVEE needs a GPU (benchmarks/README.md)
 
 # --- lock geometry constants
 BW, BD, BH = 0.045, 0.024, 0.038          # body width (X), depth (Y), height (Z)
@@ -118,6 +118,8 @@ def build(scene, ctx):
     cut_mat = brass_cut
     cutter = sb.rounded_box("Cutter", (0.05, 0.06, 0.08), bevel=0.0, loc=(0.025, 0, 0.12))
     cutter.data.materials.append(cut_mat)
+    for poly in cutter.data.polygons:   # cut faces inherit the cutter's flat shading (no fan streaks)
+        poly.use_smooth = False
     for tgt in (body, plug):
         sb.boolean(tgt, cutter, apply=False, transfer_material=True)
     at.slide(cutter, 45, 100, (0.025, 0, 0.12), (0.025, 0, 0.034), ease_name="inout")

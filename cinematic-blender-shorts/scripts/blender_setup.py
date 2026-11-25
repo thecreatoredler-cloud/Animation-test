@@ -13,15 +13,21 @@ import bpy
 # 'engine' can be overridden per shot; quality knobs are per engine.
 # ---------------------------------------------------------------------------
 PROFILES = {
+    # Measured on a 4-vCPU Xeon, no GPU (benchmarks/README.md). Cycles cost ~ pixels x samples;
+    # motion blur, DOF, bounces and denoising each cost < 6 % - keep them on.
     # Composition / timing check. Fast, rough, no motion blur.
     "preview": dict(res=(360, 640), eevee_samples=8, cycles_samples=8, denoise=True,
                     motion_blur=False, dof=True, file_format="JPEG"),
-    # Animation review: full motion, readable lighting, every frame.
-    "review": dict(res=(720, 1280), eevee_samples=24, cycles_samples=24, denoise=True,
+    # Animation review: full motion, every frame, ~1/4 of final cost.
+    "review": dict(res=(720, 1280), eevee_samples=16, cycles_samples=8, denoise=True,
                    motion_blur=True, dof=True, file_format="JPEG"),
-    # Delivery: 1440x2560 (9:16), 30 fps.
-    "final": dict(res=(1440, 2560), eevee_samples=48, cycles_samples=64, denoise=True,
+    # Delivery: 1440x2560 (9:16), 30 fps. 8 samples + OIDN: visually = 16 samples at 100 % crop,
+    # ~0.55x the time (pilot macro frame 28 s vs 49 s).
+    "final": dict(res=(1440, 2560), eevee_samples=48, cycles_samples=8, denoise=True,
                   motion_blur=True, dof=True, file_format="PNG"),
+    # Long videos (45 s+): render 1080x1920 and let video_assembler upscale (lanczos) to 1440x2560.
+    "final_fast": dict(res=(1080, 1920), eevee_samples=32, cycles_samples=8, denoise=True,
+                       motion_blur=True, dof=True, file_format="PNG"),
 }
 
 

@@ -135,7 +135,7 @@ def main():
         au = [s for s in info["streams"] if s["codec_type"] == "audio"]
         num, den = map(int, v["r_frame_rate"].split("/"))
         exp = pj.get("resolution", [1440, 2560])
-        exp = exp if a.profile == "final" else [exp[0] // 2, exp[1] // 2]
+        exp = exp if a.profile in ("final", "final_fast") else [exp[0] // 2, exp[1] // 2]
         row("Video: resolution", [v["width"], v["height"]] == exp, f"{v['width']}x{v['height']} (expected {exp[0]}x{exp[1]})")
         row("Video: 30 fps", abs(num / den - fps) < 0.01, f"{num}/{den}")
         row("Video: audio track present", bool(au), f"{len(au)} audio stream(s)")

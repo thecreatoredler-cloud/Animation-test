@@ -69,7 +69,7 @@ def assemble(project_dir, profile="review", out=None, captions=True, audio=True)
     pj = json.load(open(os.path.join(project_dir, "project.json")))
     fps = pj.get("fps", 30)
     W, H = pj.get("resolution", [1440, 2560])
-    if profile != "final":
+    if profile not in ("final", "final_fast"):
         W, H = W // 2, H // 2  # review deliverable at half res (quick to encode/share)
     build = os.path.join(project_dir, "build")
     os.makedirs(build, exist_ok=True)

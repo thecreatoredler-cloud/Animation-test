@@ -7,7 +7,7 @@ from mathutils import Vector
 import scene_builder as sb, materials as M, lighting_tools as lt, camera_tools as ct
 SECONDS = 2.0
 ENGINE = "CYCLES"
-PERSISTENT_DATA = True
+PERSISTENT_DATA = False   # final renders: persistent data caused black geometry twice (see lighting-materials-and-rendering.md)
 
 
 def build(scene, ctx):

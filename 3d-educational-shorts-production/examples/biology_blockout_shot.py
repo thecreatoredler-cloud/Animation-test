@@ -6,7 +6,7 @@ from mathutils import Vector
 import scene_builder as sb, materials as M, lighting_tools as lt, camera_tools as ct, animation_tools as at
 SECONDS = 2.0
 ENGINE = "CYCLES"
-PERSISTENT_DATA = True   # only transforms animate
+PERSISTENT_DATA = False   # final renders: persistent data caused black geometry twice (see lighting-materials-and-rendering.md)
 CTRL = [(-2, 0, 0), (-1, 0.2, 0.05), (0, 0, 0), (1, -0.35, 0.1), (2, -0.2, 0.25), (3, 0.3, 0.2), (4, 0.4, 0)]
 R_VESSEL = 0.34
 

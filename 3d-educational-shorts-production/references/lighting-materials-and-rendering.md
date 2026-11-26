@@ -40,5 +40,5 @@ On a GPU machine, re-benchmark both. Don't assume.
 4. Keep what carries realism: motion blur, DOF and bounces each cost under 7 %.
 Found bottlenecks: pilot-01, samples × pixels; pilot-02, **OIDN at 3.7 MP = 16.6 of 52 s**.
 
-## Persistent data
-Safe only when no geometry is animated by modifiers. With animated booleans or armatures, turn it off. Pilot-01 rendered black frames from stale geometry with it on.
+## Persistent data: OFF for final renders (about +17 % time; correctness first)
+Black or missing geometry appeared **twice** with persistent data on: pilot-01 (animated booleans, frames 162–200) and pilot-04 (**no** animated modifiers; the brass body went black in frames 18–73 of a long run that a container restart had interrupted). Each bad frame rendered correctly in a fresh process. Rule: final renders with `--set render.use_persistent_data=False` (or `PERSISTENT_DATA = False` in the shot). **Always run `quality_control.py` before assembly.** Its temporal-spike check flagged both incidents. Re-render the flagged range with `--force` in a fresh process.

@@ -1,0 +1,26 @@
+{
+  "video": "pilot-04-padlock_final.mp4",
+  "width": 1440,
+  "height": 2560,
+  "fps": 30.0,
+  "frames": 240,
+  "analysed_seconds": 8.0,
+  "shots": 5,
+  "shot_len_median": 1.87,
+  "shot_len_mean": 1.6,
+  "shot_len_p10": 0.84,
+  "shot_len_p90": 2.17,
+  "camera_moves": {
+    "push-in": 2,
+    "pull-out": 3
+  },
+  "zoom_abs_median": 0.1388,
+  "pan_median": 191.5,
+  "resid_median": 26.5,
+  "zoom_pct_per_frame_mean_abs": 1.312,
+  "zoom_pct_per_frame_max": 8.039,
+  "frac_zooming_in": 0.39,
+  "frac_zooming_out": 0.56,
+  "pan_px_per_frame_mean": 11.08,
+  "frac_camera_still": 0.02
+}

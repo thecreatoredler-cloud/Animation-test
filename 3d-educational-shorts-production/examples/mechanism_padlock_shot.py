@@ -38,7 +38,7 @@ import animation_tools as at
 
 SECONDS = 8.0
 ENGINE = "CYCLES"
-PERSISTENT_DATA = True        # no modifier-animated geometry in this shot (cut is static)
+PERSISTENT_DATA = False   # final renders: persistent data caused black geometry twice (see lighting-materials-and-rendering.md)
 FPS = 30
 ASSETS = os.path.join(os.path.dirname(os.path.abspath(sb.__file__)), "..", "assets")
 

@@ -12,7 +12,7 @@
 |---|---|---|---|
 | Poly Haven | HDRIs, PBR textures, glTF models | CC0 | `asset_manager.py get polyhaven hdri <id> --res 1k` |
 | ambientCG | PBR textures | CC0 | `asset_manager.py get ambientcg texture <id> --res 1K-JPG` |
-It writes `assets/registry.json` automatically (id, source, licence, authors, files, intended use, date).
+It writes `<workspace>/assets/registry.json` automatically (id, source, licence, authors, files, intended use, date).
 **Network:** the sandbox must allow `api.polyhaven.com`, `dl.polyhaven.org`, `ambientcg.com` and `acg-download.struffelproductions.com`. Fallback: procedural materials only (every material in `materials.py` works offline).
 
 ## Characters, animals and sounds (not automated: verify per item)

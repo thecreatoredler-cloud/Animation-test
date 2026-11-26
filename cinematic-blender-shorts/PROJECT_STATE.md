@@ -1,6 +1,6 @@
 # Project state (read first in every new session)
 
-_Last updated: 2026-11-25._
+_Last updated: 2026-11-26._
 
 ## Works (tested, with evidence in the repo)
 | Capability | Evidence |
@@ -19,6 +19,18 @@ _Last updated: 2026-11-25._
 - Engine: **Cycles CPU** (no GPU here). Profiles: preview 360×640/8 samples, review 720×1280/8, final 1440×2560/8 + OIDN, final_fast 1080×1920/8 then upscale.
 - Colour: AgX + Medium High Contrast. Backdrop: screen-space gradient `#2B8ED8` → `#9FD3F3`.
 - Run Blender-side scripts with `BLENDER_PY=/opt/bvenv/bin/python` (bpy module) or `blender -b -P script -- args`.
+
+## Pilot-02 (v2 padlock), 2026-11-26
+Delivered: `projects/pilot-02-padlock/output/pilot-02-padlock_final.mp4` (1440×2560, 30 fps, 8 s). Diagnosis, plan, sound breakdown, render report, scored QC (`qc/QC_SCORED.md`) and v1/v2 comparison are all in that folder. Render: 61.0 min full (15.25 s/frame) on 4 vCPU, 3 % over the 60 min target.
+
+### Unresolved (next iteration)
+1. The Foley is synthesised and nobody has listened to it yet. **The owner must listen.** Swap the key slide and shackle pop for licensed recordings if they sound artificial.
+2. The section faces read paler than the exterior under direct sun (2–5 s).
+3. 2.8 s of frontal framing during the pin ride; add a slow orbit.
+4. The key is a flat extrusion (no bevels), and no hand holds it (characters not built).
+5. Render is 61 min against a 60 min target. Next levers: shorter fast-rotation segment, or 120° shutter on the turn only, 3 samples on wide shots (untested), or a GPU host (unmeasured).
+6. Loudness −23.3 LUFS: quiet for Shorts until narration exists.
+7. `--changed-only` is conservative (off-screen transform changes re-render). A visibility-aware version would need shadow and reflection reasoning. Not worth it yet.
 
 ## Not done / limits (be honest with the owner)
 1. **Characters (mode M4) are not built.** No rigged human imported or tested. Needs MPFB 2 hosts allowed (`references/character_guide.md`).

@@ -10,9 +10,9 @@ Contact sheet: `qc/contact_final.jpg`
 | Video: resolution | PASS | 1440x2560 (expected 1440x2560) |
 | Video: 30 fps | PASS | 30/1 |
 | Video: audio track present | PASS | 1 audio stream(s) |
-| Motion: camera never parked (still fraction <= 0.33) | PASS | still 0.04 |
-| Motion: zoom rate in reference range 0.25-2.00 %/frame | PASS | mean |zoom| 1.116 %/frame, in 0.48 / out 0.48 |
-| Motion: subject animates, not only the camera (residual >= 4 px/s) | PASS | residual 28.0 px/s |
+| Motion: camera never parked (still fraction <= 0.33) | PASS | still 0.03 |
+| Motion: zoom rate in reference range 0.25-2.00 %/frame | PASS | mean |zoom| 0.961 %/frame, in 0.46 / out 0.47 |
+| Motion: subject animates, not only the camera (residual >= 4 px/s) | PASS | residual 25.1 px/s |
 
 ## Manual checks (fill in after looking at the contact sheet and the video)
 

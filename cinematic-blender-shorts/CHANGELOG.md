@@ -30,3 +30,14 @@
 ### Phase 8: skill packaging
 - SKILL.md (frontmatter validated, all referenced paths exist), README, templates/project_template (PLAN.md, project.json, shot skeleton).
 - Fresh-agent test: built and rendered a new shot from SKILL.md alone. Its gaps were fixed: generated `references/api_quickref.md` (`gen_api_ref.py`), explicit template steps, a library gotchas list, a `BLENDER_PY` line from `check_env.py`, `sb.sphere()`, and Cycles as the default engine.
+
+## 2026-11-26: pilot-02 (padlock v2) and production-system upgrades
+- **Diagnosis** of v1 with new `audio_analysis.py` (BS.1770 LUFS, true peak, onsets, spectrogram): noise beds masked 11 of 12 clicks; sub-bass impacts; a wrong mechanism layout; a beige section block; frontal framing; captions before the visual.
+- **New shot** `s01_padlock_v2`: researched mechanism (bottom keyway, cam + locking balls + shackle spring); one-plane half-section; static cut piece that lifts away and returns (`split_by_box`); padlock hanging on a shed-door hasp (Poly Haven CC0 planks + garden HDRI); the body drops and swings on release.
+- **Animation:** `spring_follower` (contact physics, click events), `pendulum`, driver-derived release logic, per-part timing.
+- **Camera:** rack focus (`Seg(focus=...)`), the tested 6-segment mechanism progression.
+- **Sound:** `foley.py`, modal synthesis driven by animation events, with friction damping and detuned variants (fixed the tonal hum), one master gain, true-peak limiter with gain-reduction logging, `mute` for visual devices.
+- **Rendering:** `render_ablation.py` (bottleneck: OIDN at 16.6 of 52 s), `image_compare.py` (SSIM/PSNR plus crops). New `final` profile is 4 samples, fast albedo-guided OIDN, light tree off, PNG 0 (15.25 s/frame measured over 240 frames, 61.0 min). `final_hq` keeps the old settings. `--changed-only` re-renders by per-frame state hash.
+- **Captions:** `*emphasis*` in gold; `"pos": "top"` when the action sits low in frame.
+- **Iteration 7:** faster front-half exit (pins visible at 1.6 s), shorter turn transition (worst frame 23.5 → 20.9 s), captions moved after the visual and off the action.
+- **Docs:** LESSONS_LEARNED.md (29 lessons), BENCHMARKS.md (renamed), and guide updates. SKILL.md marked DRAFT at the owner's request.

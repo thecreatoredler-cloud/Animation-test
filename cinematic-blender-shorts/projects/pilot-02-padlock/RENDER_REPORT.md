@@ -23,7 +23,16 @@ Cycles, 4 samples (adaptive), OpenImageDenoise with **prefilter FAST, quality FA
 **Target: under 60 min. Result: missed by 1.9 min (3 %).** The prediction from 4 benchmark frames was 15.3 s/frame (actual 15.25).
 
 ## Iteration 7: re-render only the changed frames
-After fixing the front-half exit and the turn transition, `render_manager.py --changed-only` compared per-frame scene-state hashes and re-rendered only the frames that changed. See the final section below (filled in after the run).
+After fixing the front-half exit and the turn transition, `render_manager.py --changed-only` compared per-frame scene-state hashes and re-rendered only the frames that changed:
+| Metric | Value |
+|---|---|
+| Frames unchanged (skipped) | 31 (frames 1–30 and 240) |
+| Frames re-rendered | 209 (31–239) |
+| Wall time | 3,269 s = 54.5 min (mean 15.64 s, worst 20.9 s, down from 23.5 s thanks to the shorter turn) |
+| Why so many | The front half's off-screen resting pose (frames 53–203) changed with its new exit path. The hash is deliberately conservative: an off-screen object can still change shadows and reflections, so any transform change re-renders the frame |
+| Preserved | Iteration-6 frames in `renders/final_iter6_s01_padlock_v2/` (hard links), `output/pilot-02-padlock_final_iter6.mp4`, `qc/QC_final_iter6.md` |
+
+**Projected full render with iteration-7 settings:** 31 × about 13.5 s + 209 × 15.64 s ≈ 61.5 min. The target is still missed by about 2.5 %.
 
 ## How the time was found (ablation and candidates)
 Full tables are in `references/render_optimization.md`. Summary:

@@ -41,6 +41,9 @@ Each lesson cites the evidence. Read this before planning a new video; it's the 
 26. **Not everything is worth cutting.** Motion blur, DOF and bounces cost under 7 % each and carry the realism. Removing micro-bump saved 0.2 s and visibly changed the look (reverted).
 27. **Persistent data plus animated modifiers = stale geometry** (v1 frames 162–200 went black). Keep animated geometry out of modifiers, or keep persistent data off.
 
+30. **Captions must not cover the action.** At 6.0–6.6 s the bottom caption sat on the cam and balls. Check each caption against its frames and use `"pos": "top"` when the subject is low.
+31. **Change-detection must be conservative.** `--changed-only` re-rendered 209 of 240 frames after a small fix, because an off-screen piece's pose changed, and off-screen objects can still cast shadows and reflections. Plan edits so unchanged spans stay truly unchanged (e.g. keep a piece's hidden pose fixed) to benefit.
+
 ## Process
 28. **Write the event list in the shot, not by hand in the mix.** Sound timing then follows edits to the animation automatically.
 29. **Three focused attempts, then stop and document** (key brightness, micro-bump). This keeps usage bounded.

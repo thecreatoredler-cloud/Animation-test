@@ -43,6 +43,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: CapTop,Montserrat ExtraBold,{size},&H00FFFFFF,&H00FFFFFF,&H50000000,&H78000000,0,0,0,0,100,100,0,0,1,{max(2, size // 22)},{max(2, size // 14)},8,{w // 10},{w // 10},{int(h * 0.16)},1
 Style: Cap,Montserrat ExtraBold,{size},&H00FFFFFF,&H00FFFFFF,&H50000000,&H78000000,0,0,0,0,100,100,0,0,1,{max(2, size // 22)},{max(2, size // 14)},2,{w // 10},{w // 10},{margin_v},1
 
 [Events]
@@ -55,7 +56,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         while body.count("*") >= 2:   # *emphasis* -> warm gold, same weight (reference keeps captions white)
             body = body.replace("*", "{\\c&H4FC8F5&}", 1).replace("*", "{\\c&HFFFFFF&}", 1)
         txt = "{\\fscx85\\fscy85\\t(0,80,\\fscx100\\fscy100)\\blur0.6}" + body
-        lines.append(f"Dialogue: 0,{ass_time(c['t0'])},{ass_time(c['t1'])},Cap,,0,0,0,,{txt}")
+        style = "CapTop" if c.get("pos") == "top" else "Cap"   # "pos": "top" when the action sits low in frame
+        lines.append(f"Dialogue: 0,{ass_time(c['t0'])},{ass_time(c['t1'])},{style},,0,0,0,,{txt}")
     with open(path, "w") as fh:
         fh.write(head + "\n".join(lines) + "\n")
     return path

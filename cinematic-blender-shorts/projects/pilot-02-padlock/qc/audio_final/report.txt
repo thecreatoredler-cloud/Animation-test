@@ -1,0 +1,107 @@
+{
+ "file": "pilot-02-padlock_final.mp4",
+ "seconds": 8.0,
+ "integrated_lufs": -23.3,
+ "lra_lu": 7.8,
+ "sample_peak_dbfs": -1.3,
+ "true_peak_dbtp": -1.0,
+ "momentary_lufs_per_0_5s": [
+  -52.8,
+  -28.4,
+  -39.9,
+  -35.0,
+  -27.5,
+  -26.8,
+  -25.2,
+  -24.9,
+  -25.7,
+  -27.8,
+  -27.8,
+  -14.0,
+  -13.9,
+  -35.0,
+  -53.1,
+  -52.9
+ ]
+}
+80 events:
+  t= 0.665s  peak  -24.0 dBFS  +37.3 dB over floor  decay   50 ms  centroid 6757 Hz
+  t= 0.835s  peak  -47.6 dBFS  +13.5 dB over floor  decay    5 ms  centroid 4204 Hz
+  t= 1.105s  peak  -45.8 dBFS  +14.7 dB over floor  decay   15 ms  centroid 3302 Hz
+  t= 1.190s  peak  -44.0 dBFS  +16.5 dB over floor  decay   10 ms  centroid 2830 Hz
+  t= 1.230s  peak  -44.1 dBFS  +16.5 dB over floor  decay   10 ms  centroid 3749 Hz
+  t= 1.355s  peak  -46.1 dBFS  +14.3 dB over floor  decay   10 ms  centroid 2747 Hz
+  t= 1.415s  peak  -45.1 dBFS  +15.3 dB over floor  decay   50 ms  centroid 4049 Hz
+  t= 1.540s  peak  -44.2 dBFS  +15.9 dB over floor  decay   30 ms  centroid 3479 Hz
+  t= 1.590s  peak  -40.7 dBFS  +19.1 dB over floor  decay   40 ms  centroid 4511 Hz
+  t= 1.655s  peak  -42.0 dBFS  +17.7 dB over floor  decay   30 ms  centroid 3827 Hz
+  t= 1.725s  peak  -42.8 dBFS  +17.0 dB over floor  decay   80 ms  centroid 4313 Hz
+  t= 1.795s  peak  -41.7 dBFS  +17.9 dB over floor  decay   20 ms  centroid 3647 Hz
+  t= 1.845s  peak  -40.6 dBFS  +19.0 dB over floor  decay   10 ms  centroid 5343 Hz
+  t= 1.900s  peak  -38.1 dBFS  +21.4 dB over floor  decay   25 ms  centroid 4381 Hz
+  t= 1.945s  peak  -36.1 dBFS  +23.4 dB over floor  decay   10 ms  centroid 3653 Hz
+  t= 2.000s  peak  -40.0 dBFS  +19.6 dB over floor  decay   25 ms  centroid 4247 Hz
+  t= 2.040s  peak  -39.1 dBFS  +20.2 dB over floor  decay   20 ms  centroid 4426 Hz
+  t= 2.095s  peak  -37.1 dBFS  +22.0 dB over floor  decay   60 ms  centroid 4134 Hz
+  t= 2.180s  peak  -36.8 dBFS  +22.3 dB over floor  decay   35 ms  centroid 4783 Hz
+  t= 2.220s  peak  -37.3 dBFS  +21.4 dB over floor  decay   15 ms  centroid 4915 Hz
+  t= 2.270s  peak  -24.2 dBFS  +34.5 dB over floor  decay   20 ms  centroid 5957 Hz
+  t= 2.310s  peak  -35.6 dBFS  +23.1 dB over floor  decay   95 ms  centroid 5658 Hz
+  t= 2.420s  peak  -38.2 dBFS  +19.6 dB over floor  decay   80 ms  centroid 4903 Hz
+  t= 2.520s  peak  -29.1 dBFS  +28.5 dB over floor  decay   30 ms  centroid 5697 Hz
+  t= 2.650s  peak  -38.6 dBFS  +18.3 dB over floor  decay   20 ms  centroid 4675 Hz
+  t= 2.705s  peak  -38.3 dBFS  +18.5 dB over floor  decay   20 ms  centroid 4681 Hz
+  t= 2.775s  peak  -36.6 dBFS  +20.1 dB over floor  decay   35 ms  centroid 4966 Hz
+  t= 2.840s  peak  -23.6 dBFS  +33.1 dB over floor  decay   20 ms  centroid 6049 Hz
+  t= 2.910s  peak  -36.2 dBFS  +19.8 dB over floor  decay   10 ms  centroid 5007 Hz
+  t= 2.965s  peak  -25.1 dBFS  +30.4 dB over floor  decay   30 ms  centroid 6483 Hz
+  t= 3.020s  peak  -35.6 dBFS  +19.3 dB over floor  decay   30 ms  centroid 4495 Hz
+  t= 3.100s  peak  -28.7 dBFS  +26.0 dB over floor  decay   60 ms  centroid 5760 Hz
+  t= 3.250s  peak  -36.0 dBFS  +18.5 dB over floor  decay   95 ms  centroid 5891 Hz
+  t= 3.300s  peak  -23.6 dBFS  +30.0 dB over floor  decay   30 ms  centroid 6625 Hz
+  t= 3.380s  peak  -24.7 dBFS  +28.9 dB over floor  decay   20 ms  centroid 6260 Hz
+  t= 3.465s  peak  -24.8 dBFS  +28.8 dB over floor  decay   25 ms  centroid 6465 Hz
+  t= 3.515s  peak  -37.7 dBFS  +16.4 dB over floor  decay   55 ms  centroid 4743 Hz
+  t= 3.595s  peak  -22.9 dBFS  +31.6 dB over floor  decay   20 ms  centroid 7796 Hz
+  t= 3.650s  peak  -37.4 dBFS  +17.1 dB over floor  decay   10 ms  centroid 4435 Hz
+  t= 3.710s  peak  -40.3 dBFS  +15.2 dB over floor  decay   20 ms  centroid 4382 Hz
+  t= 3.800s  peak  -22.8 dBFS  +35.1 dB over floor  decay   20 ms  centroid 6518 Hz
+  t= 3.840s  peak  -32.6 dBFS  +24.5 dB over floor  decay   25 ms  centroid 6495 Hz
+  t= 3.885s  peak  -38.0 dBFS  +19.9 dB over floor  decay   20 ms  centroid 5582 Hz
+  t= 3.925s  peak  -39.1 dBFS  +19.0 dB over floor  decay   10 ms  centroid 4152 Hz
+  t= 3.965s  peak  -24.6 dBFS  +33.9 dB over floor  decay   25 ms  centroid 6380 Hz
+  t= 4.025s  peak  -41.6 dBFS  +17.3 dB over floor  decay   20 ms  centroid 4150 Hz
+  t= 4.065s  peak  -27.6 dBFS  +31.3 dB over floor  decay   20 ms  centroid 6301 Hz
+  t= 4.105s  peak  -34.2 dBFS  +24.7 dB over floor  decay   35 ms  centroid 6536 Hz
+  t= 4.205s  peak  -46.3 dBFS  +12.7 dB over floor  decay   25 ms  centroid 3985 Hz
+  t= 4.245s  peak  -48.7 dBFS  +11.3 dB over floor  decay   20 ms  centroid 4357 Hz
+  t= 4.285s  peak  -44.0 dBFS  +16.4 dB over floor  decay   15 ms  centroid 3493 Hz
+  t= 4.335s  peak  -48.3 dBFS  +12.4 dB over floor  decay   10 ms  centroid 4357 Hz
+  t= 4.380s  peak  -48.0 dBFS  +13.5 dB over floor  decay   15 ms  centroid 4843 Hz
+  t= 4.435s  peak  -49.1 dBFS  +13.0 dB over floor  decay   10 ms  centroid 3436 Hz
+  t= 4.490s  peak  -25.6 dBFS  +37.9 dB over floor  decay   20 ms  centroid 7498 Hz
+  t= 4.605s  peak  -48.3 dBFS  +15.3 dB over floor  decay   10 ms  centroid 2889 Hz
+  t= 4.660s  peak  -47.3 dBFS  +16.9 dB over floor  decay   10 ms  centroid 3593 Hz
+  t= 4.715s  peak  -46.6 dBFS  +17.8 dB over floor  decay   10 ms  centroid 5002 Hz
+  t= 4.760s  peak  -51.2 dBFS  +13.4 dB over floor  decay   25 ms  centroid 3871 Hz
+  t= 4.910s  peak  -52.4 dBFS  +13.3 dB over floor  decay   10 ms  centroid 3719 Hz
+  t= 5.000s  peak  -21.1 dBFS  +44.6 dB over floor  decay   20 ms  centroid 6602 Hz
+  t= 5.400s  peak  -28.2 dBFS  +37.6 dB over floor  decay   15 ms  centroid 5841 Hz
+  t= 5.445s  peak  -40.3 dBFS  +25.4 dB over floor  decay   10 ms  centroid 4526 Hz
+  t= 5.500s  peak  -41.4 dBFS  +24.3 dB over floor  decay   25 ms  centroid 4240 Hz
+  t= 5.545s  peak  -40.7 dBFS  +25.0 dB over floor  decay   15 ms  centroid 4644 Hz
+  t= 5.585s  peak  -38.5 dBFS  +27.1 dB over floor  decay   55 ms  centroid 3909 Hz
+  t= 5.660s  peak  -43.0 dBFS  +22.6 dB over floor  decay  615 ms  centroid 4497 Hz
+  t= 5.700s  peak  -37.0 dBFS  +28.5 dB over floor  decay   35 ms  centroid 3850 Hz
+  t= 5.765s  peak  -42.7 dBFS  +22.2 dB over floor  decay  480 ms  centroid 4503 Hz
+  t= 5.830s  peak  -26.7 dBFS  +37.9 dB over floor  decay  185 ms  centroid 4492 Hz
+  t= 5.910s  peak  -11.7 dBFS  +52.0 dB over floor  decay   85 ms  centroid 4286 Hz
+  t= 6.085s  peak  -32.8 dBFS  +30.7 dB over floor  decay   45 ms  centroid 4018 Hz
+  t= 6.150s  peak  -33.0 dBFS  +30.2 dB over floor  decay   70 ms  centroid 5250 Hz
+  t= 6.200s  peak  -23.5 dBFS  +39.3 dB over floor  decay   25 ms  centroid 6037 Hz
+  t= 6.245s  peak  -33.4 dBFS  +29.3 dB over floor  decay   20 ms  centroid 3180 Hz
+  t= 6.300s  peak  -33.7 dBFS  +27.4 dB over floor  decay   25 ms  centroid 2779 Hz
+  t= 6.430s  peak  -34.1 dBFS  +25.1 dB over floor  decay   55 ms  centroid 2629 Hz
+  t= 6.525s  peak  -35.4 dBFS  +24.0 dB over floor  decay   25 ms  centroid 3680 Hz
+  t= 6.585s  peak  -34.3 dBFS  +25.1 dB over floor  decay   25 ms  centroid 2969 Hz
+  t= 6.755s  peak  -49.6 dBFS  +10.8 dB over floor  decay   15 ms  centroid 1788 Hz

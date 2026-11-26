@@ -44,6 +44,12 @@ Each lesson cites the evidence. Read this before planning a new video; it's the 
 30. **Captions must not cover the action.** At 6.0–6.6 s the bottom caption sat on the cam and balls. Check each caption against its frames and use `"pos": "top"` when the subject is low.
 31. **Change-detection must be conservative.** `--changed-only` re-rendered 209 of 240 frames after a small fix, because an off-screen piece's pose changed, and off-screen objects can still cast shadows and reflections. Plan edits so unchanged spans stay truly unchanged (e.g. keep a piece's hidden pose fixed) to benefit.
 
+32. **Before changing a metal's shader, find out what it mirrors.** The cream section faces were a mirror image of the uniform front fill: fill off took brightness from 85 % to 8 %. Three plausible hypotheses (HDRI rotation, sun, AgX look) were each tested and **disproved** first. Keep big uniform lights off the axis of flat metal faces that face the camera; use grazing or gradient sources (pilot-03 audit).
+33. **An unchanged test result is a result.** Identical output from the HDRI-rotation test meant the hypothesis was wrong, not the test. Verify the change was applied (it was), then move on.
+34. **Small macro parts need readable, real-world proportions:** 8 tight coils of thin wire read as a screw thread; 5 open coils of thicker wire read as a spring.
+35. **Explanatory highlights:** a thin emissive strip, transparent when off (Mix Transparent ↔ Emission; a plain emissive material is still visible at zero emission), fading in for about 0.15 s on the beat. No bloom pass, about zero render cost.
+36. **Secondary motion needs a physical cause.** The keyring swings only when something jolts the key (touch, seat, drop, turn stop), and each kick also emits sound events.
+
 ## Process
 28. **Write the event list in the shot, not by hand in the mix.** Sound timing then follows edits to the animation automatically.
 29. **Three focused attempts, then stop and document** (key brightness, micro-bump). This keeps usage bounded.

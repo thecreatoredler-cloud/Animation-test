@@ -55,6 +55,70 @@ def _no_hdri(bpy, scene):
     scene.world = w
 
 
+def _mat_input(name, inp, val):
+    def f(bpy, s):
+        m = bpy.data.materials.get(name)
+        if m:
+            b = m.node_tree.nodes["Principled BSDF"]
+            for l in list(b.inputs[inp].links):
+                m.node_tree.links.remove(l)
+            b.inputs[inp].default_value = val
+    return f
+
+
+def _light_power(name, mult):
+    def f(bpy, s):
+        o = s.objects.get(name)
+        if o:
+            o.data.energy *= mult
+    return f
+
+
+def _fill_moved(bpy, s):
+    """Fill from low-left at a grazing angle: flat faces facing the lens no longer mirror it."""
+    from mathutils import Vector
+    o = s.objects.get("FillBounce")
+    o.location = Vector((-0.16, -0.06, -0.10))
+    o.rotation_euler = (Vector((0, 0, 0.02)) - o.location).to_track_quat("-Z", "Y").to_euler()
+    o.data.energy *= 1.6
+
+
+def _gradient_card(bpy, s):
+    """Replace the uniform fill with an emissive card whose brightness ramps top->bottom
+    (product-photo 'strip box'): reflections in flat metal get a gradient, i.e. read as metal."""
+    import bmesh
+    from mathutils import Vector
+    o = s.objects.get("FillBounce")
+    loc, rot = o.location.copy(), o.rotation_euler.copy()
+    o.data.energy = 0.0
+    me = bpy.data.meshes.new("GradCard")
+    bm = bmesh.new()
+    bmesh.ops.create_grid(bm, x_segments=1, y_segments=1, size=0.16)
+    bm.to_mesh(me)
+    card = bpy.data.objects.new("GradCard", me)
+    s.collection.objects.link(card)
+    card.location, card.rotation_euler = loc, rot
+    card.visible_camera = False
+    m = bpy.data.materials.new("GradCardMat")
+    m.use_nodes = True
+    nt = m.node_tree
+    nt.nodes.clear()
+    out = nt.nodes.new("ShaderNodeOutputMaterial")
+    em = nt.nodes.new("ShaderNodeEmission")
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+    ramp = nt.nodes.new("ShaderNodeValToRGB")
+    ramp.color_ramp.elements[0].color = (0.02, 0.02, 0.025, 1)
+    ramp.color_ramp.elements[1].color = (1.0, 1.0, 1.0, 1)
+    ramp.color_ramp.elements[0].position = 0.15
+    nt.links.new(tc.outputs["Generated"], sep.inputs[0])
+    nt.links.new(sep.outputs["Y"], ramp.inputs[0])
+    nt.links.new(ramp.outputs[0], em.inputs["Color"])
+    em.inputs["Strength"].default_value = 60.0
+    nt.links.new(em.outputs[0], out.inputs["Surface"])
+    me.materials.append(m)
+
+
 VARIANTS = {
     "baseline": lambda bpy, s: None,
     "no_hdri": _no_hdri,
@@ -74,6 +138,19 @@ VARIANTS = {
     "no_area_lights": lambda bpy, s: [setattr(o, "hide_render", True) for o in s.objects
                                       if o.type == "LIGHT" and o.data.type == "AREA"],
     "tile_512": lambda bpy, s: setattr(s.cycles, "tile_size", 512),
+    # look-dev probes (pilot-02 audit: why do section faces read cream?)
+    "sun_half": _light_power("SunKey", 0.5),
+    "fill_off": _light_power("FillBounce", 0.0),
+    "fill_04": _light_power("FillBounce", 0.4),
+    "fill_moved": _fill_moved,
+    "fill_gradient_card": _gradient_card,
+    "rim_off": _light_power("RimTop", 0.0),
+    "fill_rim_off": lambda bpy, s: [_light_power("FillBounce", 0.0)(bpy, s), _light_power("RimTop", 0.0)(bpy, s)],
+    "sun_off": _light_power("SunKey", 0.0),
+    "exposure_m07": lambda bpy, s: setattr(s.view_settings, "exposure", -0.7),
+    "look_none": lambda bpy, s: setattr(s.view_settings, "look", "None"),
+    "section_rough045": _mat_input("BrassSection", "Roughness", 0.45),
+    "section_dark": _mat_input("BrassSection", "Base Color", (0.18, 0.10, 0.025, 1)),
 }
 
 

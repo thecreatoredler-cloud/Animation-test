@@ -32,6 +32,9 @@ Delivered: `projects/pilot-02-padlock/output/pilot-02-padlock_final.mp4` (1440×
 6. Loudness −23.3 LUFS: quiet for Shorts until narration exists.
 7. `--changed-only` is conservative (off-screen transform changes re-render). A visibility-aware version would need shadow and reflection reasoning. Not worth it yet.
 
+## Pilot-03 (v3 = v2 + production audit), 2026-11-26
+`projects/pilot-03-padlock/AUDIT.md` (forensic audit, scorecard, top-5, narration design). Implemented: fill-light fix (measured root cause of the cream sections), bevelled key, open springs, flat rivets, shear-line glow, 30° orbit, keyring secondary motion and jingle, Foley ducking under narration (`foley.duck_gain`, verified), captions in the Shorts safe area.
+
 ## Not done / limits (be honest with the owner)
 1. **Characters (mode M4) are not built.** No rigged human imported or tested. Needs MPFB 2 hosts allowed (`references/character_guide.md`).
 2. **No narration voice.** The text-to-speech and Whisper model hosts are blocked. The owner records narration, or the video is captions-only.

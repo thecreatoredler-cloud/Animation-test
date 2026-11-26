@@ -31,7 +31,10 @@ def ass_time(t):
     return f"{h}:{m:02d}:{s:05.2f}"
 
 
-def write_ass(captions, w, h, path, size_frac=0.052, y_frac=0.76):
+def write_ass(captions, w, h, path, size_frac=0.052, y_frac=0.72, side_frac=0.14):
+    """Captions inside the YouTube Shorts safe area: the right ~12 % (buttons) and the bottom
+    ~20 % (title/description) are covered by the player UI, so text is centred at 72 % height
+    and wrapped within 72 % of the width (side margins 14 %)."""
     size = int(h * size_frac)
     margin_v = int(h * (1 - y_frac)) - size // 2
     head = f"""[Script Info]
@@ -43,8 +46,8 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: CapTop,Montserrat ExtraBold,{size},&H00FFFFFF,&H00FFFFFF,&H50000000,&H78000000,0,0,0,0,100,100,0,0,1,{max(2, size // 22)},{max(2, size // 14)},8,{w // 10},{w // 10},{int(h * 0.16)},1
-Style: Cap,Montserrat ExtraBold,{size},&H00FFFFFF,&H00FFFFFF,&H50000000,&H78000000,0,0,0,0,100,100,0,0,1,{max(2, size // 22)},{max(2, size // 14)},2,{w // 10},{w // 10},{margin_v},1
+Style: CapTop,Montserrat ExtraBold,{size},&H00FFFFFF,&H00FFFFFF,&H50000000,&H78000000,0,0,0,0,100,100,0,0,1,{max(2, size // 22)},{max(2, size // 14)},8,{int(w * side_frac)},{int(w * side_frac)},{int(h * 0.16)},1
+Style: Cap,Montserrat ExtraBold,{size},&H00FFFFFF,&H00FFFFFF,&H50000000,&H78000000,0,0,0,0,100,100,0,0,1,{max(2, size // 22)},{max(2, size // 14)},2,{int(w * side_frac)},{int(w * side_frac)},{margin_v},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -118,8 +121,16 @@ def assemble(project_dir, profile="review", out=None, captions=True, audio=True)
                 evs.append(e)
             t0 += len(frames_of(project_dir, profile, shot)[1]) / fps
         fc = pj["foley"]
+        voice = None
+        if pj.get("narration"):      # duck Foley under the voice (sidechain), then mix at -16 LUFS
+            sr_v, voice = wavfile.read(os.path.join(project_dir, pj["narration"]))
+            voice = voice.astype(float) / (32768.0 if voice.dtype.kind == "i" else 1.0)
+            if sr_v != foley.SR:
+                from scipy.signal import resample_poly
+                voice = resample_poly(voice, foley.SR, sr_v, axis=0)
         st, info, log = foley.render(evs, fc["recipes"], dur, fc.get("space_timeline"), fc.get("ambience"),
-                                     fc.get("target_lufs", -20.0), fc.get("tp_ceiling", -1.0))
+                                     fc.get("target_lufs", -20.0), fc.get("tp_ceiling", -1.0),
+                                     duck_voice=voice, duck_db=fc.get("duck_db", -8.0))
         wav = os.path.join(build, "foley.wav")
         wavfile.write(wav, foley.SR, (st * 32767).astype(np.int16))
         json.dump(dict(info=info, events=log), open(os.path.join(build, "foley_log.json"), "w"), indent=1)

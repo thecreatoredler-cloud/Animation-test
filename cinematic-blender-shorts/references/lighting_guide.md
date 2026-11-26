@@ -28,3 +28,6 @@ Tool: `scripts/lighting_tools.py`. Colour management: `blender_setup.set_color_m
 ## Pilot-02 outdoor rig (tested)
 Garden HDRI (Poly Haven `garden_nook`, **1k** is enough for reflections behind DOF; 2k cost +0.4 s/frame) at 0.38, plus a warm sun (3.0, 1.2°) for crisp outdoor shadows, plus a cool top rim area light (edges the lock top and shackle), plus a cool low bounce fill (the ground). At sun 4.2 and HDRI 0.55 the brass read pale cream.
 **Choosing a setting:** the environment must justify the object (a padlock hangs on a door) and give metals something to reflect. Don't default to a dark studio or to the blue backdrop.
+
+## Fill placement for metal (pilot-03 audit, measured)
+A uniform area light in front of the subject is mirrored by every flat metal face that faces the camera: it reads as flat cream brass and grey-plastic steel. Measured on the padlock section: front fill on → sat 29 %, val 85 %; fill moved low-left at a grazing angle → sat 86 %, val 29 % (rich brass). Rule: **grazing fill plus a weak (about 12 %) front fill.** Probe with `render_ablation.py` variants `fill_off`, `fill_moved`, `sun_off`, `exposure_m07`, `look_none`, `section_dark` before touching shaders.

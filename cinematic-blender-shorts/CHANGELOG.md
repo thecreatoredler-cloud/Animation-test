@@ -41,3 +41,9 @@
 - **Captions:** `*emphasis*` in gold; `"pos": "top"` when the action sits low in frame.
 - **Iteration 7:** faster front-half exit (pins visible at 1.6 s), shorter turn transition (worst frame 23.5 → 20.9 s), captions moved after the visual and off the action.
 - **Docs:** LESSONS_LEARNED.md (29 lessons), BENCHMARKS.md (renamed), and guide updates. SKILL.md marked DRAFT at the owner's request.
+
+## 2026-11-26: pilot-03 (production audit of v2)
+- AUDIT.md: reference benchmark for object explainers, shot-by-shot audit with priorities, per-layer audit, scorecard, top-5, revised plan, narration workflow, voice-over-dependent issues.
+- Root cause of the cream section faces found by single-variable render probes (`render_ablation.py` look-dev variants): the front fill was mirrored by flat metal. Fixed by a grazing fill plus a weak front fill.
+- v3 shot: bevelled nickel key, 5-coil springs, flat rivets, shear-line glow (transparent ↔ emission), 30° orbit in the pin ride, split keyring and second key (pendulum kicks) with `key_jingle` events.
+- `foley.duck_gain` and assembler narration ducking (−8 dB under speech, verified with a synthetic voice). Captions moved into the Shorts safe area (72 % height, 14 % side margins).

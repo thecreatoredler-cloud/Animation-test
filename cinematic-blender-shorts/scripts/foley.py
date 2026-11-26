@@ -173,7 +173,8 @@ def true_peak_db(x):
 
 # ---------------------------------------------------------------- render
 def render(events, recipes, duration, space_timeline=None, ambience=None, target_lufs=-18.0,
-           tp_ceiling=-1.0, seed=11, stems_dir=None):
+           tp_ceiling=-1.0, seed=11, stems_dir=None, duck_voice=None, duck_db=-8.0):
+    """duck_voice: narration samples (48 kHz) -> Foley is ducked under speech (duck_gain)."""
     """events: [{t, type, ...}] ; recipes: {type: {...}} (see project.json "foley")."""
     N = int(duration * SR) + SR
     mix = np.zeros(N)
@@ -215,6 +216,11 @@ def render(events, recipes, duration, space_timeline=None, ambience=None, target
         mix += a
         stems["ambience"] = a
     mix = mix[:int(duration * SR)]
+    if duck_voice is not None:
+        dv = np.zeros(len(mix))
+        vv = duck_voice.mean(1) if duck_voice.ndim > 1 else duck_voice
+        dv[:min(len(mix), len(vv))] = vv[:len(mix)]
+        mix = mix * duck_gain(dv, duck_db)
     st = np.stack([mix, np.roll(mix, 24) * 0.98], 1)        # 0.5 ms decorrelation, near-mono
     g = 10 ** ((target_lufs - lufs(st)) / 20)                # ONE master gain for loudness
     st *= g
@@ -236,6 +242,33 @@ def render(events, recipes, duration, space_timeline=None, ambience=None, target
             v = v[:int(duration * SR)] * g
             wavfile.write(os.path.join(stems_dir, f"stem_{k_}.wav"), SR, (np.clip(v, -1, 1) * 32767).astype(np.int16))
     return st, info, log
+
+
+def duck_gain(voice, depth_db=-8.0, threshold_db=-40.0, attack_s=0.03, release_s=0.25, hold_s=0.08):
+    """Sidechain envelope from a narration track: Foley gain (linear, per sample) that dips by
+    depth_db while the voice speaks and recovers in the gaps. Smooth (attack/hold/release) so
+    effects never 'pump'; pauses left for visual reveals keep full-level Foley automatically."""
+    v = voice.mean(1) if voice.ndim > 1 else voice
+    win = int(0.02 * SR)
+    rms = np.sqrt(np.convolve(v ** 2, np.ones(win) / win, mode="same") + 1e-12)
+    active = 20 * np.log10(rms) > threshold_db
+    hold = int(hold_s * SR)
+    if hold:   # extend speech regions so syllable gaps don't release the duck
+        idx = np.flatnonzero(active)
+        if len(idx):
+            act = np.zeros_like(active)
+            for i in idx[::max(1, hold // 4)]:
+                act[i:i + hold] = True
+            active = act | active
+    target = np.where(active, 10 ** (depth_db / 20), 1.0)
+    g = np.empty_like(target)
+    a, r = math.exp(-1 / (attack_s * SR)), math.exp(-1 / (release_s * SR))
+    cur = 1.0
+    for i, tg in enumerate(target):
+        k = a if tg < cur else r
+        cur = k * cur + (1 - k) * tg
+        g[i] = cur
+    return g
 
 
 def _space_at(tl, t):

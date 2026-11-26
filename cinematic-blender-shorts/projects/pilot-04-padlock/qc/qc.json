@@ -2,8 +2,8 @@
  "rows": [
   [
    "Frames: complete, readable, 9:16, no black/frozen/flicker",
-   "FIX",
-   "s01_padlock_v4: temporal spike at 0018.png (change 58.3 vs typical 4.6); s01_padlock_v4: temporal spike at 0074.png (change 54.4 vs typical 4.7)"
+   "PASS",
+   "240 frames checked"
   ],
   [
    "Video: resolution",
@@ -23,17 +23,17 @@
   [
    "Motion: camera never parked (still fraction <= 0.33)",
    "PASS",
-   "still 0.02"
+   "still 0.03"
   ],
   [
    "Motion: zoom rate in reference range 0.25-2.00 %/frame",
    "PASS",
-   "mean |zoom| 1.312 %/frame, in 0.39 / out 0.56"
+   "mean |zoom| 1.431 %/frame, in 0.38 / out 0.57"
   ],
   [
    "Motion: subject animates, not only the camera (residual >= 4 px/s)",
    "PASS",
-   "residual 26.5 px/s"
+   "residual 25.3 px/s"
   ]
  ],
  "motion": {
@@ -43,27 +43,24 @@
   "fps": 30.0,
   "frames": 240,
   "analysed_seconds": 8.0,
-  "shots": 5,
-  "shot_len_median": 1.87,
-  "shot_len_mean": 1.6,
-  "shot_len_p10": 0.84,
-  "shot_len_p90": 2.17,
+  "shots": 3,
+  "shot_len_median": 2.13,
+  "shot_len_mean": 2.67,
+  "shot_len_p10": 1.39,
+  "shot_len_p90": 4.16,
   "camera_moves": {
-   "push-in": 2,
-   "pull-out": 3
+   "push-in": 1,
+   "pull-out": 2
   },
-  "zoom_abs_median": 0.1388,
-  "pan_median": 191.5,
-  "resid_median": 26.5,
-  "zoom_pct_per_frame_mean_abs": 1.312,
-  "zoom_pct_per_frame_max": 8.039,
-  "frac_zooming_in": 0.39,
-  "frac_zooming_out": 0.56,
-  "pan_px_per_frame_mean": 11.08,
-  "frac_camera_still": 0.02
+  "zoom_abs_median": 0.0469,
+  "pan_median": 204.4,
+  "resid_median": 25.3,
+  "zoom_pct_per_frame_mean_abs": 1.431,
+  "zoom_pct_per_frame_max": 12.835,
+  "frac_zooming_in": 0.38,
+  "frac_zooming_out": 0.57,
+  "pan_px_per_frame_mean": 12.13,
+  "frac_camera_still": 0.03
  },
- "issues": [
-  "s01_padlock_v4: temporal spike at 0018.png (change 58.3 vs typical 4.6)",
-  "s01_padlock_v4: temporal spike at 0074.png (change 54.4 vs typical 4.7)"
- ]
+ "issues": []
 }

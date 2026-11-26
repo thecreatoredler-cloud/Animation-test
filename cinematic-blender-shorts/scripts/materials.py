@@ -241,3 +241,24 @@ def assign(obj, mat, slot=None):
             obj.data.materials.append(None)
         obj.data.materials[slot] = mat
     return obj
+
+
+def add_distance_haze(mat, haze_hex="#B8CCDD", start=20.0, end=400.0):
+    """Aerial perspective WITHOUT volumes: mix the surface toward a haze colour by camera
+    distance (Camera Data > View Distance). Near-zero render cost vs volumetric fog."""
+    nt = mat.node_tree
+    out = [n for n in nt.nodes if n.type == "OUTPUT_MATERIAL"][0]
+    src = out.inputs["Surface"].links[0].from_socket
+    cam = nt.nodes.new("ShaderNodeCameraData")
+    mr = nt.nodes.new("ShaderNodeMapRange")
+    mr.inputs["From Min"].default_value, mr.inputs["From Max"].default_value = start, end
+    emit = nt.nodes.new("ShaderNodeEmission")
+    emit.inputs["Color"].default_value = hex_to_linear(haze_hex)
+    emit.inputs["Strength"].default_value = 1.0
+    mix = nt.nodes.new("ShaderNodeMixShader")
+    nt.links.new(cam.outputs["View Distance"], mr.inputs["Value"])
+    nt.links.new(mr.outputs["Result"], mix.inputs[0])
+    nt.links.new(src, mix.inputs[1])
+    nt.links.new(emit.outputs[0], mix.inputs[2])
+    nt.links.new(mix.outputs[0], out.inputs["Surface"])
+    return mat

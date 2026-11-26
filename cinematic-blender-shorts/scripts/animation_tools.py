@@ -255,3 +255,37 @@ def pendulum(t, amp_deg, period_s, decay):
     if t < 0:
         return 0.0
     return amp_deg * math.sin(2 * math.pi * t / period_s) * math.exp(-decay * t)
+
+
+def wave_chain(arm, f0, f1, amp_deg=12.0, freq_hz=2.0, wavelength_bones=4.0, grow=1.6, axis="Z"):
+    """Travelling body wave along a bone chain (fish, snakes, tails): each bone rotates with a
+    phase lag so the wave moves head->tail; amplitude grows toward the tail (carangiform)."""
+    bones = sorted(arm.pose.bones, key=lambda b: b.name)
+    n = len(bones)
+    idx = "XYZ".index(axis)
+    for f in range(f0, f1 + 1):
+        t = f / FPS
+        for i, pb in enumerate(bones):
+            pb.rotation_mode = "XYZ"
+            a = amp_deg * (0.25 + grow * i / max(1, n - 1)) / (1 + grow)
+            e = [0.0, 0.0, 0.0]
+            e[idx] = math.radians(a * math.sin(2 * math.pi * (freq_hz * t - i / wavelength_bones)))
+            pb.rotation_euler = e
+            pb.keyframe_insert("rotation_euler", frame=f)
+
+
+def pose_keys(arm, keys, interp="BEZIER"):
+    """Pose-to-pose acting: keys = {frame: {bone: (rx, ry, rz) degrees}}. Bezier (eased) by
+    default - hold a pose by repeating it on two frames (readable 0.5-1.5 s holds)."""
+    for f, pose in sorted(keys.items()):
+        for bn, rot in pose.items():
+            pb = arm.pose.bones[bn]
+            pb.rotation_mode = "XYZ"
+            pb.rotation_euler = [math.radians(v) for v in rot]
+            pb.keyframe_insert("rotation_euler", frame=f)
+    ad = arm.animation_data
+    if ad and ad.action:
+        from camera_tools import _fcurves
+        for fc in _fcurves(ad.action):
+            for kp in fc.keyframe_points:
+                kp.interpolation = interp

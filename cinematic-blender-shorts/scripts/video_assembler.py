@@ -60,6 +60,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             body = body.replace("*", "{\\c&H4FC8F5&}", 1).replace("*", "{\\c&HFFFFFF&}", 1)
         txt = "{\\fscx85\\fscy85\\t(0,80,\\fscx100\\fscy100)\\blur0.6}" + body
         style = "CapTop" if c.get("pos") == "top" else "Cap"   # "pos": "top" when the action sits low in frame
+        if "y" in c:   # explicit centre position from caption_placer.py (negative space per caption)
+            txt = f"{{\\an5\\pos({w // 2},{int(c['y'] * h)})}}" + txt
         lines.append(f"Dialogue: 0,{ass_time(c['t0'])},{ass_time(c['t1'])},{style},,0,0,0,,{txt}")
     with open(path, "w") as fh:
         fh.write(head + "\n".join(lines) + "\n")

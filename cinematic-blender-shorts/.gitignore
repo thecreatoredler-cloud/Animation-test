@@ -8,3 +8,4 @@ __pycache__/
 *.blend1
 projects/*/build/stems/
 benchmarks/render_tests/**/*.png
+projects/xcat-*/renders/

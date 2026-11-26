@@ -257,6 +257,101 @@ def parent(child, par, keep_world=True):
     return child
 
 
+# ------------------------------------------------------------------ characters / creatures (blockout)
+HUMAN_SKELETON = {   # name: (position m, skin radius x, radius y) - 1.75 m adult, Z-up, facing -Y
+    "pelvis": ((0, 0, 0.98), 0.17, 0.11), "spine": ((0, 0, 1.18), 0.15, 0.10), "chest": ((0, 0, 1.38), 0.18, 0.11),
+    "neck": ((0, 0, 1.53), 0.055, 0.055), "head": ((0, 0, 1.66), 0.095, 0.11), "head_top": ((0, 0, 1.78), 0.07, 0.08),
+    "l_shoulder": ((0.20, 0, 1.46), 0.06, 0.06), "l_elbow": ((0.27, 0, 1.18), 0.045, 0.045), "l_hand": ((0.31, 0, 0.93), 0.04, 0.03),
+    "r_shoulder": ((-0.20, 0, 1.46), 0.06, 0.06), "r_elbow": ((-0.27, 0, 1.18), 0.045, 0.045), "r_hand": ((-0.31, 0, 0.93), 0.04, 0.03),
+    "l_hip": ((0.10, 0, 0.92), 0.08, 0.08), "l_knee": ((0.11, 0, 0.50), 0.06, 0.06), "l_foot": ((0.11, 0.0, 0.07), 0.045, 0.05),
+    "r_hip": ((-0.10, 0, 0.92), 0.08, 0.08), "r_knee": ((-0.11, 0, 0.50), 0.06, 0.06), "r_foot": ((-0.11, 0.0, 0.07), 0.045, 0.05),
+}
+HUMAN_EDGES = [("pelvis", "spine"), ("spine", "chest"), ("chest", "neck"), ("neck", "head"), ("head", "head_top"),
+               ("chest", "l_shoulder"), ("l_shoulder", "l_elbow"), ("l_elbow", "l_hand"),
+               ("chest", "r_shoulder"), ("r_shoulder", "r_elbow"), ("r_elbow", "r_hand"),
+               ("pelvis", "l_hip"), ("l_hip", "l_knee"), ("l_knee", "l_foot"),
+               ("pelvis", "r_hip"), ("r_hip", "r_knee"), ("r_knee", "r_foot")]
+
+
+def mannequin(name="Mannequin", skeleton=None, edges=None, subdiv=2):
+    """BLOCKOUT rigged body: Skin modifier on a joint graph + generated armature (auto weights).
+    Use for staging, blocking, camera coverage and timing - NOT a hero character (no face rig).
+    Returns (mesh_obj, armature_obj); bones are named after the edge's END joint."""
+    skeleton = skeleton or HUMAN_SKELETON
+    edges = edges or HUMAN_EDGES
+    names = list(skeleton)
+    me = bpy.data.meshes.new(name)
+    me.from_pydata([skeleton[n][0] for n in names], [(names.index(a), names.index(b)) for a, b in edges], [])
+    obj = link(bpy.data.objects.new(name, me))
+    sk = obj.modifiers.new("Skin", "SKIN")
+    sk.use_smooth_shade = True
+    for i, n in enumerate(names):
+        obj.data.skin_vertices[0].data[i].radius = (skeleton[n][1], skeleton[n][2])
+    obj.data.skin_vertices[0].data[0].use_root = True
+    sd = obj.modifiers.new("Subsurf", "SUBSURF")
+    sd.levels = sd.render_levels = subdiv
+    before = set(bpy.data.objects)
+    for o in bpy.context.selected_objects:
+        o.select_set(False)
+    bpy.context.view_layer.objects.active = obj          # operator needs real selection, not an override
+    obj.select_set(True)
+    bpy.ops.object.skin_armature_create(modifier="Skin")
+    arm = [o for o in bpy.data.objects if o not in before and o.type == "ARMATURE"][0]
+    arm.name = name + "_Rig"
+    # name bones after the joint they end in (skin_armature_create names them bone, bone.001 ...)
+    for b in arm.data.bones:
+        tail = Vector(b.tail_local)
+        best = min(names, key=lambda n: (Vector(skeleton[n][0]) - tail).length)
+        b.name = best
+    return obj, arm
+
+
+def scatter_instances(name, source, points, rots=None, scales=None, collection=None):
+    """Linked duplicates (shared mesh = cheap memory) at given points: trees, cells, rocks, snow."""
+    out = []
+    for i, p in enumerate(points):
+        o = bpy.data.objects.new(f"{name}{i:04d}", source.data)
+        o.location = p
+        if rots:
+            o.rotation_euler = rots[i]
+        if scales:
+            o.scale = (scales[i],) * 3 if isinstance(scales[i], (int, float)) else scales[i]
+        for m in source.material_slots:
+            pass
+        link(o, collection)
+        out.append(o)
+    source.hide_render = True
+    source.hide_viewport = True
+    return out
+
+
+def chain_armature(name, start, end, n_bones):
+    """Straight bone chain (spines, tails, tentacles, fish bodies) from start to end, Z-up."""
+    arm_data = bpy.data.armatures.new(name)
+    arm = link(bpy.data.objects.new(name, arm_data))
+    bpy.context.view_layer.objects.active = arm
+    with bpy.context.temp_override(object=arm, active_object=arm):
+        bpy.ops.object.mode_set(mode="EDIT")
+        s, e = Vector(start), Vector(end)
+        prev = None
+        for i in range(n_bones):
+            b = arm_data.edit_bones.new(f"b{i:02d}")
+            b.head = s.lerp(e, i / n_bones)
+            b.tail = s.lerp(e, (i + 1) / n_bones)
+            if prev:
+                b.parent, b.use_connect = prev, True
+            prev = b
+        bpy.ops.object.mode_set(mode="OBJECT")
+    return arm
+
+
+def bind_auto(mesh_obj, arm):
+    """Parent with automatic (heat) weights."""
+    with bpy.context.temp_override(object=arm, active_object=arm, selected_objects=[mesh_obj, arm],
+                                   selected_editable_objects=[mesh_obj, arm]):
+        bpy.ops.object.parent_set(type="ARMATURE_AUTO")
+
+
 # ------------------------------------------------------------------ runner
 def load_shot_module(project_dir, shot):
     path = os.path.join(project_dir, "shots", shot + ".py")

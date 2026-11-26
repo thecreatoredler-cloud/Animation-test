@@ -1,0 +1,11 @@
+{
+ "title": "<title>",
+ "fps": 30,
+ "resolution": [1440, 2560],
+ "shots": ["s01_example"],
+ "captions": [{"t0": 0.2, "t1": 1.2, "text": "First words"}],
+ "narration": null,
+ "audio": {"duration": 0, "bed": {"type": "room", "gain_db": -44},
+           "cues": [{"t": 0.5, "type": "whoosh", "dur": 0.8, "gain_db": -24, "space": "wide"}]},
+ "finish": {"grain": 3, "vignette": 0.22, "sharpen": 0.25}
+}

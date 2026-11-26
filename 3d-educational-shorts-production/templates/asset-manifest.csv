@@ -1,0 +1,3 @@
+asset_name,purpose,provider,source_url,licence,allowed_use,local_path,attribution_required,modified,date_added
+Montserrat ExtraBold,caption font,JulietaUla/Montserrat,https://github.com/JulietaUla/Montserrat,SIL OFL 1.1,commercial use incl. video,assets/fonts/Montserrat-ExtraBold.ttf,no (licence file kept),no,2026-11-25
+example_hdri,environment light,Poly Haven,https://polyhaven.com/a/<id>,CC0 1.0,any,assets/hdri/polyhaven/<id>/<id>_1k.hdr,no,no,

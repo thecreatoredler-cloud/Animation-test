@@ -259,12 +259,13 @@ def parent(child, par, keep_world=True):
 
 # ------------------------------------------------------------------ characters / creatures (blockout)
 HUMAN_SKELETON = {   # name: (position m, skin radius x, radius y) - 1.75 m adult, Z-up, facing -Y
+    # foot joint z == its skin radius so the sole touches z=0 (xcat test: feet hovered 2.5 cm)
     "pelvis": ((0, 0, 0.98), 0.17, 0.11), "spine": ((0, 0, 1.18), 0.15, 0.10), "chest": ((0, 0, 1.38), 0.18, 0.11),
     "neck": ((0, 0, 1.53), 0.055, 0.055), "head": ((0, 0, 1.66), 0.095, 0.11), "head_top": ((0, 0, 1.78), 0.07, 0.08),
     "l_shoulder": ((0.20, 0, 1.46), 0.06, 0.06), "l_elbow": ((0.27, 0, 1.18), 0.045, 0.045), "l_hand": ((0.31, 0, 0.93), 0.04, 0.03),
     "r_shoulder": ((-0.20, 0, 1.46), 0.06, 0.06), "r_elbow": ((-0.27, 0, 1.18), 0.045, 0.045), "r_hand": ((-0.31, 0, 0.93), 0.04, 0.03),
-    "l_hip": ((0.10, 0, 0.92), 0.08, 0.08), "l_knee": ((0.11, 0, 0.50), 0.06, 0.06), "l_foot": ((0.11, 0.0, 0.07), 0.045, 0.05),
-    "r_hip": ((-0.10, 0, 0.92), 0.08, 0.08), "r_knee": ((-0.11, 0, 0.50), 0.06, 0.06), "r_foot": ((-0.11, 0.0, 0.07), 0.045, 0.05),
+    "l_hip": ((0.10, 0, 0.92), 0.08, 0.08), "l_knee": ((0.11, 0, 0.50), 0.06, 0.06), "l_foot": ((0.11, -0.03, 0.045), 0.045, 0.05),
+    "r_hip": ((-0.10, 0, 0.92), 0.08, 0.08), "r_knee": ((-0.11, 0, 0.50), 0.06, 0.06), "r_foot": ((-0.11, -0.03, 0.045), 0.045, 0.05),
 }
 HUMAN_EDGES = [("pelvis", "spine"), ("spine", "chest"), ("chest", "neck"), ("neck", "head"), ("head", "head_top"),
                ("chest", "l_shoulder"), ("l_shoulder", "l_elbow"), ("l_elbow", "l_hand"),

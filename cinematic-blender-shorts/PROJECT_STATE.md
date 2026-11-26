@@ -34,6 +34,7 @@ Delivered: `projects/pilot-02-padlock/output/pilot-02-padlock_final.mp4` (1440×
 
 ## Pilot-03 (v3 = v2 + production audit), 2026-11-26
 `projects/pilot-03-padlock/AUDIT.md` (forensic audit, scorecard, top-5, narration design). Implemented: fill-light fix (measured root cause of the cream sections), bevelled key, open springs, flat rivets, shear-line glow, 30° orbit, keyring secondary motion and jingle, Foley ducking under narration (`foley.duck_gain`, verified), captions in the Shorts safe area.
+**Result:** `projects/pilot-03-padlock/output/pilot-03-padlock_final.mp4`. Render 57.6 min (14.4 s/frame), **under the 60 min target**; survived a container restart via resume. Still open: no human hand, synthetic Foley not yet heard by anyone (recording recipe in AUDIT §9), bright key bow in the opening, limiter now 5.2 dB GR (jingle coincides with the drop), voice-over-dependent items (AUDIT §15).
 
 ## Not done / limits (be honest with the owner)
 1. **Characters (mode M4) are not built.** No rigged human imported or tested. Needs MPFB 2 hosts allowed (`references/character_guide.md`).

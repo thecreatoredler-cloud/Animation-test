@@ -41,7 +41,7 @@ def write_ass(captions, w, h, path, size_frac=0.052, y_frac=0.72, side_frac=0.14
 ScriptType: v4.00+
 PlayResX: {w}
 PlayResY: {h}
-WrapStyle: 2
+WrapStyle: 0
 ScaledBorderAndShadow: yes
 
 [V4+ Styles]

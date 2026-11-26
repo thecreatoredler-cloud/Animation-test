@@ -8,20 +8,23 @@ description: Plan and produce original 3D-animated educational YouTube Shorts in
 A tested production workflow for vertical (9:16, 1440×2560, 30 fps) 3D explainer Shorts: curiosity-driven, factually checked, cinematic, with sound and captions on one timeline. **The topic decides the visual approach.** Never copy the padlock pilot's structure, camera, materials or palette onto unrelated subjects.
 
 ## 0. Check what this environment can actually do (always first)
+Paths in this Skill are relative to the skill folder. Scripts write their outputs to the current working directory (or `$SHORTS_WORKSPACE`), so run them from the user's project folder, not from inside the skill.
 ```bash
-python3 scripts/check_env.py --render-test     # Blender? GPU? ffmpeg+libass? numpy/scipy/opencv? network to asset hosts?
-python3 scripts/tests/run_tests.py             # self-test of every shipped script (Blender test runs if found)
+python3 <skill>/scripts/check_env.py           # Blender? GPU? ffmpeg+libass? numpy/scipy/opencv? asset hosts?
+python3 <skill>/scripts/tests/run_tests.py     # self-test (the Blender test is skipped if no Blender)
 ```
-- No Blender → you can still do stages 1–7 (brief, facts, story, archetype, shot list, asset plan, sound plan). Tell the user exactly what must run on a machine with Blender 5.x (`BLENDER_PY=<blender or a python with bpy>`).
+- `"blender": null` → **planning mode**: do stages 1–7 fully (brief, facts, story, archetypes, shot list, asset manifest, sound/caption plan) and hand over a build list. Blender stages run wherever Blender 5.x exists (`BLENDER_PY=<blender or a python with bpy>`).
+- Blender found → also run `check_env.py --render-test` to get a real per-frame time before promising render times.
 - No GPU → **Cycles CPU** (EEVEE falls back to software GL and is unusable). Read `references/render-benchmarks.md` before promising times.
 - This Skill does not supply Blender, a GPU, assets or file access. Say so when relevant.
 
 ## 1. Workflow (⛔ = stop for the user's approval)
+One-shot requests ("just make it"): state your assumptions explicitly and continue through planning. Never start a long render (over about 15 min) or delete work without approval.
 1. **Intake.** Fill `templates/content-brief.md`. List missing information and ask. Never invent facts.
-2. **Facts.** Fill `templates/fact-check-sheet.md`: every on-screen claim sourced, or flagged as inference or reconstruction. Research mechanisms and processes before animating them.
+2. **Facts.** Fill `templates/fact-check-sheet.md`: every on-screen claim sourced, or flagged as inference or reconstruction. Research mechanisms and processes before animating them. Superlatives ("fastest", "faster than a bullet") need a source or a qualifier ("one of the"). Uncertain numbers go on screen as "~" or a range, or not at all.
 3. **Story.** Write the curiosity hook, the cause→effect chain, the payoff and the takeaway. ⛔
 4. **Archetypes.** Read `references/content-archetypes.md`. Choose per beat (A mechanism, B biology, C animal, D history, E events, F science, G inventions, H abstract, I geography, J characters). Combine them, and explain why each fits.
-5. **Shot list.** `templates/shot-list.md` puts narration, action, camera, caption, sound and light in **one timeline**. Every beat gets a distinct framing. Without a VO, mark beats "retime after VO". Read `references/story-and-script-pipeline.md`, `references/visual-language.md` and `references/camera-and-composition.md`.
+5. **Shot list.** **Before writing it, read** `references/story-and-script-pipeline.md`, `references/visual-language.md`, `references/camera-and-composition.md` and `references/sound-and-editing.md`. `templates/shot-list.md` (lite table for planning, full table for production) puts narration, action, camera, caption, sound and light in **one timeline**. Every beat gets a distinct framing. Without a VO, mark beats "retime after VO" (word budget: about 75 words for 30 s, about 110 for 45 s).
 6. **Assets.** CC0 first (`scripts/asset_manager.py`), procedural otherwise. Log every external asset in `templates/asset-manifest.csv`. Read `references/asset-library-and-licensing.md`.
 7. **Build** (one `.py` per shot, real scale). Read `references/blender-scene-building.md`, `references/animation-and-rigging.md` and `references/lighting-materials-and-rendering.md`. Start from the closest example in `examples/` (mechanism, character, animal, biology, environment), **adapt it, don't clone it**. Export sound events from the same functions that drive the motion.
 8. **Preview.** Stills at every beat (`render_manager.py --profile preview --frames …`), then full motion at `--step 2`. Check phone-size readability. ⛔
@@ -31,7 +34,7 @@ python3 scripts/tests/run_tests.py             # self-test of every shipped scri
 12. **Learn.** Append tested findings (what, evidence, when it applies) to `references/lessons-learned.md`.
 
 ## 2. Non-negotiables
-- Context before macro. One new picture per beat. Explained parts stay sharp. Captions never cover the action and appear after the thing they name.
+- Establish the subject's context before going close (the person before the organ, the place before the event, the habitat before the ability, the whole object before its insides). One new picture per beat. Explained parts stay sharp. Captions never cover the action and appear after the thing they name.
 - Every sound has a visible source. No generic whooshes or booms on small objects. Silence carries the insight beat.
 - Measure, don't guess: render cost (ablation), image quality (`image_compare.py`), motion (`analyze_reference.py`), audio (`audio_analysis.py`).
 - Non-graphic, respectful treatment of anatomy, accidents and history. Separate fact from reconstruction.

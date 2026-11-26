@@ -16,7 +16,7 @@ The subject, script and facts drive the visual design. These archetypes are **st
 9. What does the audience **hear** at each moment (Foley from contacts, ambience of the place)?
 10. How do **voice-over, captions and sound** share the timeline? (`sound-and-editing.md`)
 
-Quick router:
+Quick router (the order means nothing; A is not a default):
 | The question is about… | Primary | Often combined with |
 |---|---|---|
 | How a thing works inside | A | G, F |
@@ -51,6 +51,7 @@ Quick router:
 - **Animation:** flow speed and direction consistent. Pulsing with a heart-rate period (about 1 s). Secondary wobble of soft tissue.
 - **Light:** soft and bright, subsurface or translucency feel, warm reds with a cool background for separation.
 - **Sound:** low body-interior ambience (filtered), soft organic Foley. Keep it sparse.
+- **Person → organ transition (theory):** keep the camera's screen position on the organ continuous. Push in on the torso, cross-dissolve at about 0.3 s to the stylised organ framed the same way, keep moving. Reverse it to return to the person.
 - **Risks:** gore (stay non-graphic), wrong scale, metaphor shown as fact, mush (every object the same red).
 - **Success:** you can tell layers and particles apart at phone size, and the scale transition is understood.
 
@@ -71,9 +72,11 @@ Quick router:
 - **Risks:** anachronisms, invented specifics, copying a film's look.
 
 ### E. Unusual real-world events and accidents ⬜
-- **Forms:** location and context → the sequence with clear geography → the consequence explained. **Respectful and non-graphic**: no injuries, no sensationalised victims; cut to the explanation.
-- **Build:** only details supported by sources (fact sheet first). Simplified humans or silhouettes where identity is unknown.
-- **Risks:** sensationalism, false precision, missing context.
+- **Forms:** map or location → the scene as it was (period-correct, sourced) → the trigger (cause, labelled "likely" if it's a hypothesis) → the sequence with clear geography (tracking along the path of the event) → the consequence → what changed afterwards (rules, design).
+- **Build:** only details supported by sources (fact sheet first). Faceless silhouettes where identity is unknown. One consistent reconstruction look (see story pipeline).
+- **Fluids and waves (theory, not tested):** prefer a displaced or animated mesh surface (cheap, art-directable) over a fluid simulation. If you simulate, bake once, and benchmark the cache and render cost first. Avoid volumetric splashes and mist; use `add_distance_haze` for air.
+- **Camera:** an establishing map move, then a street-level crane, then lateral tracking with the event's motion, then a wide aftermath with **no victims shown**.
+- **Risks:** sensationalism, false precision (show estimates as ranges), missing context, implying blame without a source.
 
 ### F. Science, physics and counter-intuitive phenomena 🟡 (partly: the biology flow test exercises instancing and flow)
 - **Forms:** a scale change, force or flow visualisation, a controlled simulation, side-by-side comparison, motion trails and vectors **only where they clarify**.

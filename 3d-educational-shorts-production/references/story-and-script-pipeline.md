@@ -17,8 +17,8 @@
 | 14 | Learning capture | append to `lessons-learned.md` | |
 
 ## Hook (first 1–2 s)
-- Open on the **subject already in motion**, phrased as a question in the first caption ("How does a key open this?" worked; the padlock pilots).
-- **Establish the spatial context fast** (≤ 0.7 s) before going macro. In v3 the opening showed only the underside, so the viewer couldn't place it. v4 starts on the whole lock and pushes in.
+- Open on the **subject already in motion**, with the first caption as a question. Examples by archetype: mechanism "How does a key open this?" (tested); body "Why doesn't your stomach digest you?"; animal "How does this shrimp boil water?"; event "Could syrup flatten a street?".
+- **Establish context fast** (≤ 0.7–1.5 s) before going close: the whole object (mechanism), the person (body), the habitat (animal), the place on a map or street (event or history). The padlock v3 opening showed only a detail, so the viewer couldn't place it.
 - No logos, no title cards, no slow intros.
 
 ## Information sequence
@@ -33,6 +33,13 @@
 - Captions come **from** the narration (1–3 words). Leave 0.4–0.6 s VO pauses before reveals.
 - Without VO: build a provisional timeline, keep VO space (Foley about −22 LUFS, captions as placeholders), and tag every beat "retime after VO".
 
+## Word budget (2.3–2.7 words/s)
+20 s ≈ 50 words · 30 s ≈ 75 · 35 s ≈ 85 · 40 s ≈ 100 · 45 s ≈ 110. Leave about 10 % for reveal pauses.
+
 ## Facts vs reconstruction
 - Established fact (cite) · reasonable inference (say so) · visual reconstruction (stylised or generic where unknown).
-- Historical and accident topics: no invented dialogue, faces or injuries. Uncertainty is shown visually (silhouettes, desaturated "reconstruction" look). Non-graphic always.
+- Historical and accident topics: no invented dialogue, faces or injuries. Non-graphic always.
+- **Show uncertainty visually and consistently** (theory; suggested by a Skill test): one reconstruction look per video (e.g. desaturated with ink outlines, plus a small "reconstruction" tag) against full colour for documented facts. Hypotheses get "likely" in the caption.
+- **Numbers on screen:** use "~" or a range for estimates, give the source in the video description, and drop any number you can't source.
+- **Superlatives** ("fastest", "biggest", "faster than a bullet") need a source **for the exact comparison**, or a qualifier ("one of the").
+- **Archival photos and footage:** use them as reference only, unless the item is verified public domain or licensed (record it in the manifest). Never trace a photo's exact composition.

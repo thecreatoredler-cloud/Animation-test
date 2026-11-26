@@ -36,21 +36,28 @@ def build(scene, ctx):
         sb.parent(eye, fish)
     arm = sb.chain_armature("Spine", (0.0, 0, 0), (-0.37, 0, 0), 6)
     sb.bind_auto(fish, arm)
-    at.wave_chain(arm, 1, 60, amp_deg=14, freq_hz=2.4, wavelength_bones=5, axis="Z")
-    for f in range(1, 61):   # forward motion + tiny vertical bob
-        arm.location = (-0.3 + SPEED * f / 30, 0, 0.25 + 0.01 * math.sin(f / 30 * 2 * math.pi * 1.2))
+    at.wave_chain(arm, 1, 60, amp_deg=13, freq_hz=2.4, wavelength_bones=8, axis="Z")   # measured: tail sweep ~0.1-0.15 body length (was 2 % with 14 deg / 5 bones: phases cancelled)
+    def fish_pos(f):          # ONE function drives the fish AND the follow camera (xcat lesson)
+        return Vector((-0.1 + SPEED * f / 30, 0, 0.25 + 0.01 * math.sin(f / 30 * 2 * math.pi * 1.2)))
+    for f in range(1, 61):
+        arm.location = fish_pos(f)
         arm.keyframe_insert("location", frame=f)
     # habitat
     sand = sb.rounded_box("Sand", (12, 12, 0.02), bevel=0.0, loc=(2, 3, -0.01))
-    sm = M.skin("SandM", tone="#C7B58F", roughness=0.9, pores=3, pore_scale=60, redness=0.0)   # grainy bump reused
+    sm = M.skin("SandM", tone="#8F8366", roughness=0.9, pores=3, pore_scale=60, redness=0.0)   # grainy bump reused
     nt = sm.node_tree; bsdf = nt.nodes["Principled BSDF"]
     vor = nt.nodes.new("ShaderNodeTexVoronoi"); vor.voronoi_dimensions = "4D"; vor.feature = "DISTANCE_TO_EDGE"
     vor.inputs["Scale"].default_value = 6.0
-    tc = nt.nodes.new("ShaderNodeTexCoord"); nt.links.new(tc.outputs["Object"], vor.inputs["Vector"])
-    ramp = nt.nodes.new("ShaderNodeValToRGB"); ramp.color_ramp.elements[0].position = 0.0; ramp.color_ramp.elements[1].position = 0.06
-    ramp.color_ramp.elements[0].color = (1.6, 1.7, 1.6, 1); ramp.color_ramp.elements[1].color = (0, 0, 0, 1)
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    warp = nt.nodes.new("ShaderNodeTexNoise"); warp.inputs["Scale"].default_value = 3.0; warp.inputs["Distortion"].default_value = 2.0
+    nt.links.new(tc.outputs["Object"], warp.inputs["Vector"])
+    vmix = nt.nodes.new("ShaderNodeMix"); vmix.data_type = "VECTOR"; vmix.inputs["Factor"].default_value = 0.35
+    nt.links.new(tc.outputs["Object"], vmix.inputs[4]); nt.links.new(warp.outputs["Color"], vmix.inputs[5])
+    nt.links.new(vmix.outputs[1], vor.inputs["Vector"])   # warped cells read as caustics, not tiles
+    ramp = nt.nodes.new("ShaderNodeValToRGB"); ramp.color_ramp.elements[0].position = 0.0; ramp.color_ramp.elements[1].position = 0.035
+    ramp.color_ramp.elements[0].color = (0.9, 1.0, 0.95, 1); ramp.color_ramp.elements[1].color = (0, 0, 0, 1)
     nt.links.new(vor.outputs["Distance"], ramp.inputs[0])
-    nt.links.new(ramp.outputs[0], bsdf.inputs["Emission Color"]); bsdf.inputs["Emission Strength"].default_value = 0.35   # fake caustics
+    nt.links.new(ramp.outputs[0], bsdf.inputs["Emission Color"]); bsdf.inputs["Emission Strength"].default_value = 0.22   # fake caustics (subtle)
     for f in (1, 60):
         vor.inputs["W"].default_value = f / 30 * 0.8
         vor.inputs["W"].keyframe_insert("default_value", frame=f)
@@ -69,6 +76,11 @@ def build(scene, ctx):
     lt.sky_backdrop(scene, top="#0E3A4C", bottom="#2E8A96", light_color="#3E8FA0", light_strength=0.8)
     lt.sun_light("SunDown", (0.2, 0.3, 0), power=2.5, color="#DDF3F0", angle_deg=4, loc=(0.4, 0.2, 5))
     lt.area_light("RimUp", (-0.6, 0.8, 1.2), (0.2, 0, 0.25), power=40, size=0.6, color="#BFEFFF")
-    cam = ct.make_camera(lens=40, fstop=4.0)
-    ct.animate(cam, scene, [ct.Seg(1, 60, pos=((-0.05, -0.75, 0.32), (0.55, -0.62, 0.30)), tgt=((-0.15, 0, 0.25), (0.40, 0, 0.25)),
-                                   ease="linear")], drift=0.003)
+    cam = ct.make_camera(lens=35, fstop=5.6)
+    segs = []
+    for f0 in range(1, 60, 10):   # follow cam, 3/4 from ABOVE: fish bend laterally, a side view hides the wave
+        f1 = min(60, f0 + 10)
+        c0, c1 = fish_pos(f0 - 3) + Vector((-0.17, 0, 0)), fish_pos(f1 - 3) + Vector((-0.17, 0, 0))   # body centre
+        segs.append(ct.Seg(f0, f1, pos=(tuple(c0 + Vector((0.18, -0.80, 0.42))), tuple(c1 + Vector((0.18, -0.80, 0.42)))),
+                           tgt=(tuple(c0), tuple(c1)), ease="linear"))
+    ct.animate(cam, scene, segs, drift=0.002)

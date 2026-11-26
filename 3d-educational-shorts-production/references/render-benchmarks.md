@@ -14,7 +14,7 @@ All numbers come from the source project's real renders. **Hardware: Claude Code
 |---|---|---|---|---|
 | Padlock v2 (outdoor HDRI, textures, metal cutaway) | final | 15.25 / 14.9 / 23.5 | 61.0 min | first full run |
 | Padlock v3 (+keyring, glow, grazing fill) | final | 14.4 / 13.9 / 21.0 | **57.6 min** | resumed after a container restart (no re-render) |
-| Padlock v4 (establishing wide shot + more beats) | final | (see `lessons-learned.md` once measured) | | |
+| Padlock v4 (establishing wide shot + more beats) | final | 18.4 / 18.1 / 26.4 | 73.7 min **under CPU contention** (builds, tests, other renders, restart): not a clean benchmark | frames 18–73 re-rendered fresh with persistent data off after black-body frames |
 Assembly (Foley, captions, H.264): about 55 s. Peak RAM: 2.2 GB.
 
 ## Where the time goes (padlock v2, single frame 165 at 8 samples, 52.4 s)
@@ -31,4 +31,10 @@ Pilot-01 (simpler scene): time ≈ pixels × samples (7 s fixed + 2.65 s per sam
 ## Budget planning
 frames = seconds × 30. Budget hours × 0.8 (20 % reserve) / frames = ceiling s/frame.
 At about 15 s/frame on 4 vCPU: 8 s ≈ 1 h · 30 s ≈ 3.8 h · 45 s ≈ 5.6 h. With `final_fast` (1080→1440 upscale) about 0.57× that.
-Blockout previews (360×640, 8 samples): about 1.5–3 s/frame.
+Blockout previews (360×640, 8 samples; partly contended):
+| Test | 30 frames (step 2) | Note |
+|---|---|---|
+| Character (room, mannequin) | 104 s (3.5 s/frame) | uncontended |
+| Animal (underwater, fish, 160 particles) | 170 s (5.7 s/frame) | uncontended |
+| Biology (about 140 instanced cells) | 485 s (16 s/frame) | contended, so treat it as an upper bound |
+| Environment (220² grid terrain, 900 trees) | 329 s (11 s/frame) | contended |

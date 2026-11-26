@@ -43,7 +43,7 @@ Quick router (the order means nothing; A is not a default):
 - **Cheap preview:** preview stills at the beats (about 2.5 s/frame at 360×640) and a motion check at step 2.
 - **Success:** a viewer can retell the cause→effect chain from the pictures alone.
 
-### B. Human biology, anatomy and psychology 🟡 (biology test: vessel and cell flow)
+### B. Human biology, anatomy and psychology 🟡 (biology test: vessel and cell flow; works, but cells near the lens become blobs)
 - **Forms:** everyday scene → push through skin to a layer section → process at cell or organ scale → back out to the person. Psychology: a clearly stylised metaphor space (label it as a metaphor).
 - **Build:** stylised anatomy (clean, saturated, non-graphic). Instanced cells or particles (`instance_along_curve` in the test). Translucent tissue only where needed (render cost).
 - **Assets:** procedural, plus a human (J) for the in-and-out transition.
@@ -55,7 +55,7 @@ Quick router (the order means nothing; A is not a default):
 - **Risks:** gore (stay non-graphic), wrong scale, metaphor shown as fact, mush (every object the same red).
 - **Success:** you can tell layers and particles apart at phone size, and the scale transition is understood.
 
-### C. Animal abilities and behaviour 🟡 (animal test: fish locomotion)
+### C. Animal abilities and behaviour 🟡 (animal test: fish; tail sweep measured 0.21 body lengths, follow camera derived from the fish function)
 - **Forms:** the animal in its habitat → the ability in action → a close-up of the organ or sense → a comparison (scale, speed).
 - **Build:** correct proportions and silhouette first. Species-specific locomotion: a body wave for fish (`fish_swim` test), gait cycles for quadrupeds, flapping with an up/down asymmetry for birds. A rig or deform cage. Sourced models need a licence check.
 - **Camera:** track with the animal (follow cam with lag). Low angles for size. A macro insert of the organ.
@@ -91,7 +91,7 @@ Quick router (the order means nothing; A is not a default):
 - **Forms:** a visual metaphor with a **stated rule set** (e.g. "each marble = one memory"), spatial analogies, graphic elements.
 - **Risks:** a metaphor mistaken for fact. Keep its look clearly distinct from the "real" footage.
 
-### I. Geography, environments and large-scale processes 🟡 (environment test: terrain fly-over)
+### I. Geography, environments and large-scale processes 🟡 (environment test: river valley; 3 fixes: noise scale in metres, no global offset, tree scale)
 - **Forms:** a wide establishing shot → a map or topography → a cross-section → a scale reference (a person, a building) → a process over time.
 - **Build:** procedural terrain (displaced grid), a water plane, haze and mist **without volumes** (world colour plus distance fade), an instanced scatter for trees and rocks.
 - **Camera:** high oblique fly-overs on smooth paths, slow (camera speed scaled to the scene). An orthographic or top-down map moment.
@@ -99,7 +99,7 @@ Quick router (the order means nothing; A is not a default):
 - **Risks:** no scale reference; flat lighting hides the relief; volumetric fog render cost.
 - **Success:** the viewer can say where things are relative to each other.
 
-### J. Character-led stories and scenarios 🟡 (character test: blockout mannequin with an armature)
+### J. Character-led stories and scenarios 🟡 (character test: mannequin rig and acting work; no face, so no close-ups yet)
 - **Forms:** a person in a recognisable place, readable silhouette and pose, an interaction with a prop, a reaction close-up.
 - **Build:** **a facial rig is required for hero characters** (lesson from the tutorial). Here only a **blockout mannequin** (skin-modifier body plus a generated armature) is tested; a production character needs MPFB 2 or another licensed rigged human (`asset-library-and-licensing.md`).
 - **Camera:** coverage: wide (blocking) → medium (action) → close-up (reaction). Eye-level by default; low for power, high for vulnerability. Motivated moves only.

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-26: final learning cycle and Skill package
+- Pilot-04 padlock (v4) with AUDIT_V4.md and v3-vs-v4 comparisons.
+- `caption_placer.py` (importance-map caption placement with centre protection); `\pos` placement and WrapStyle 0 in the assembler.
+- `scene_builder.mannequin`, `chain_armature`, `scatter_instances`; `animation_tools.wave_chain/pendulum/spring_follower/pose_keys`; `materials.add_distance_haze`.
+- 4 cross-category blockouts; content-archetype matrix A–J.
+- Skill package `3d-educational-shorts-production` + ZIP, validator, self-tests, SKILL_TEST_REPORT.md.
+
 ## 2026-11-25: first build (one session)
 ### Phase 1: reference analysis
 - `analyze_reference.py`: shot cuts (histogram plus luma, merges micro-shots), per-shot camera move, zoom %/frame, pan, stillness, subject (residual) motion. **Validated**: 0.536 vs the tutorial's 0.541 %/frame on "How Stitches Work".

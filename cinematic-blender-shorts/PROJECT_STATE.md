@@ -53,5 +53,11 @@ Delivered: `projects/pilot-02-padlock/output/pilot-02-padlock_final.mp4` (1440×
 - Smooth-shaded boolean cut faces: radial streaks. Flat-shade the cutter.
 - Brushed noise on large flat faces: radial streak pattern.
 
+## Final learning cycle, 2026-11-26
+- Pilot-04 (padlock v4): establishing wide shot, beat-distinct middle, f/16 turn (sharpness 18.5 → 23.4), auto-placed captions. QC all PASS after frames 18–73 were re-rendered (persistent-data black body). See `projects/pilot-04-padlock/AUDIT_V4.md`.
+- Cross-category blockouts (character, fish, cells, valley): `benchmarks/cross_category/CROSS_CATEGORY_TESTS.md`.
+- Skill `3d-educational-shorts-production/` (repo root) plus ZIP: validated and self-tested, with 3 fresh-agent prompts. See `../SKILL_TEST_REPORT.md`. **The Skill's references are now the canonical docs** (`PROJECT_OVERVIEW.md` maps them).
+- Persistent data is **off** for finals (black geometry twice).
+
 ## Next development task
 Phase 4b, characters: allow the MPFB 2 hosts, install it, generate two CC0 humans with Rigify and face expressions, build `character_setup.py`, test 6 expressions and 6 poses, and benchmark. Then make the 30–45 s pilot (mixing M4 + M1/M2) after the owner approves its PLAN.md.

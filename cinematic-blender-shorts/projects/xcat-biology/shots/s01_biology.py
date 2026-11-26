@@ -41,11 +41,18 @@ def build(scene, ctx):
         cells.append(dict(s0=rnd.random(), r=r, a=a, spin=rnd.uniform(-2, 2), rot=(rnd.uniform(0, 6.3), rnd.uniform(0, 6.3), 0),
                           v=0.085 * (1 - (r / R_VESSEL) ** 2) + 0.02))       # parabolic flow: faster in the centre
     objs = sb.scatter_instances("Cell", rbc, [(0, 0, 0)] * len(cells))
+    def cam_s(f):            # camera path parameter (shared with the camera below)
+        return 0.22 + 0.12 * (f - 1) / 59
     for o, c in zip(objs, cells):
         for f in range(1, 61):
             s = (c["s0"] + c["v"] * f / 30) % 1.0
             tan, side, up = frame_at(s)
             o.location = spline(s) + side * c["r"] * math.cos(c["a"]) + up * c["r"] * math.sin(c["a"])
+            # keep-out zone: cells within 0.22 of the lens (0.12 still filled the 28 mm frame) are pushed outward (no giant blurred blobs)
+            cp = spline(cam_s(f)) + frame_at(cam_s(f))[2] * 0.05
+            dv = o.location - cp
+            if dv.length < 0.22:
+                o.location = cp + dv.normalized() * 0.22 if dv.length > 1e-6 else cp + side * 0.22
             o.rotation_euler = (c["rot"][0] + c["spin"] * f / 30, c["rot"][1], 0)
             o.keyframe_insert("location", frame=f); o.keyframe_insert("rotation_euler", frame=f)
     wbc = sb.sphere("WBC", 0.085, segments=32, rings=16)
